@@ -73,8 +73,8 @@ const Register = () => {
 
                         {/* Header */}
                         <div className="mb-10 text-center">
-                            <h1 className="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-3">Create your account</h1>
-                            <p className="text-slate-500 dark:text-slate-400 text-lg">Start your journey into the global researcher network.</p>
+                            <h1 className="text-3xl lg:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-3">Crea tu cuenta</h1>
+                            <p className="text-slate-500 dark:text-slate-400 text-lg">Comienza tu viaje en la red global de investigadores.</p>
                         </div>
 
                         {/* Error Message */}
@@ -89,10 +89,10 @@ const Register = () => {
                             <form className="space-y-6" onSubmit={handleSubmit}>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="flex flex-col gap-2">
-                                        <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">First Name</label>
+                                        <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Nombres</label>
                                         <input
                                             className="w-full px-5 py-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-slate-400"
-                                            placeholder="e.g. Marie"
+                                            placeholder="Ej. Marie"
                                             type="text"
                                             name="nombres"  // Antes era nombre
                                             value={formData.nombres}
@@ -101,10 +101,10 @@ const Register = () => {
                                         />
                                     </div>
                                     <div className="flex flex-col gap-2">
-                                        <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Last Name</label>
+                                        <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Apellidos</label>
                                         <input
                                             className="w-full px-5 py-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-slate-400"
-                                            placeholder="e.g. Curie"
+                                            placeholder="Ej. Curie"
                                             type="text"
                                             name="apellidos" // Antes era apellido
                                             value={formData.apellidos}
@@ -114,7 +114,7 @@ const Register = () => {
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Email Address</label>
+                                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Correo Institucional</label>
                                     <div className="relative group">
                                         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -124,7 +124,7 @@ const Register = () => {
                                         </div>
                                         <input
                                             className="w-full pl-12 pr-5 py-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-slate-400"
-                                            placeholder="name@university.edu"
+                                            placeholder="nombre@universidad.edu"
                                             type="email"
                                             name="correoInstitucional"
                                             value={formData.correoInstitucional}
@@ -134,7 +134,7 @@ const Register = () => {
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Password</label>
+                                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Contraseña</label>
                                     <div className="relative group">
                                         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -144,7 +144,7 @@ const Register = () => {
                                         </div>
                                         <input
                                             className="w-full pl-12 pr-5 py-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-slate-400"
-                                            placeholder="Create a strong password"
+                                            placeholder="Crea una contraseña segura"
                                             type="password"
                                             name="password"
                                             value={formData.password}
@@ -152,19 +152,19 @@ const Register = () => {
                                             required
                                         />
                                     </div>
-                                    <p className="text-xs text-slate-400 ml-1 mt-1">At least 8 characters, including numbers and symbols.</p>
+                                    <p className="text-xs text-slate-400 ml-1 mt-1">Al menos 8 caracteres, incluyendo números y símbolos.</p>
                                 </div>
                                 <div className="pt-8 border-t border-slate-50 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
                                     <p className="text-sm text-slate-500 font-medium order-2 sm:order-1">
-                                        Already have an account?{' '}
-                                        <Link to="/login" className="text-primary font-bold hover:underline">Sign in</Link>
+                                        ¿Ya tienes una cuenta?{' '}
+                                        <Link to="/login" className="text-primary font-bold hover:underline">Inicia sesión</Link>
                                     </p>
                                     <button
                                         className="w-full sm:w-auto bg-primary hover:bg-primary/90 disabled:bg-primary/50 disabled:cursor-not-allowed text-white font-bold py-4 px-10 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-xl shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-0.5 active:scale-[0.98] order-1 sm:order-2"
                                         type="submit"
                                         disabled={isLoading}
                                     >
-                                        {isLoading ? 'Registering...' : 'Create Account'}
+                                        {isLoading ? 'Registrando...' : 'Crear Cuenta'}
                                         {!isLoading && (
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                                                 <line x1="5" y1="12" x2="19" y2="12" />
@@ -176,51 +176,6 @@ const Register = () => {
                             </form>
                         </div>
 
-                        {/* Helper Illustration / Visual */}
-                        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {[
-                                {
-                                    icon: (
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                                        </svg>
-                                    ),
-                                    title: 'Secure Network',
-                                    desc: 'Verified identity for all researchers.'
-                                },
-                                {
-                                    icon: (
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                            <circle cx="9" cy="7" r="4" />
-                                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                        </svg>
-                                    ),
-                                    title: 'Collaboration',
-                                    desc: 'Find partners easily.'
-                                },
-                                {
-                                    icon: (
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-                                            <circle cx="12" cy="12" r="10" />
-                                            <line x1="2" y1="12" x2="22" y2="12" />
-                                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                                        </svg>
-                                    ),
-                                    title: 'Global Reach',
-                                    desc: 'Across 150+ countries.'
-                                }
-                            ].map((item, i) => (
-                                <div key={i} className="flex flex-col items-center text-center p-4 rounded-2xl border border-slate-100 dark:border-slate-800/50 hover:border-primary/20 transition-all hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
-                                    <div className="size-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-3 shadow-inner">
-                                        {item.icon}
-                                    </div>
-                                    <h4 className="text-[11px] font-extrabold mb-1 text-slate-900 dark:text-white uppercase tracking-wider">{item.title}</h4>
-                                    <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{item.desc}</p>
-                                </div>
-                            ))}
-                        </div>
                     </div>
                 </main>
             </div>

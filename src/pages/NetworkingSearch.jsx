@@ -34,10 +34,10 @@ const NetworkingSearch = () => {
     });
 
     return (
-        <div className="bg-slate-50 dark:bg-slate-900 min-h-screen font-display text-slate-900 dark:text-slate-100">
-            {/* Top Navigation Bar */}
-            <nav className="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="flex h-screen bg-slate-50 dark:bg-slate-900 font-display text-slate-900 dark:text-slate-100 overflow-hidden">
+            {/* Sidebar */}
+            <aside className="w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 hidden md:flex flex-col flex-shrink-0 z-20">
+                <div className="h-16 flex items-center px-6 border-b border-slate-200 dark:border-slate-800">
                     <div className="flex items-center gap-3">
                         <div className="size-8 bg-gradient-to-br from-primary to-cyan-500 rounded-lg flex items-center justify-center text-white shadow-md">
                             <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2">
@@ -46,16 +46,60 @@ const NetworkingSearch = () => {
                         </div>
                         <span className="font-bold text-lg tracking-tight">dattapro</span>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <Link to="/login" className="text-sm font-semibold text-slate-500 hover:text-primary transition-colors">
-                            Cerrar sesión
-                        </Link>
+                </div>
+
+                <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
+                    {/* Inicio (Not active) */}
+                    <Link to="/" className="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-primary dark:hover:text-primary rounded-xl transition-colors font-medium">
+                        <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        <span>Inicio</span>
+                    </Link>
+
+                    {/* Networking (Active) */}
+                    <Link to="/network" className="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary dark:text-primary rounded-xl transition-colors font-bold">
+                        <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        <span>Networking</span>
+                    </Link>
+
+                    {/* Convocatorias (Not active) */}
+                    <Link to="/convocatorias" className="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-primary dark:hover:text-primary rounded-xl transition-colors font-medium">
+                        <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-.586-1.414l-4.5-4.5A2 2 0 0015.5 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14z"/>
+                        </svg>
+                        <span>Convocatorias</span>
+                    </Link>
+                </div>
+
+                <div className="p-4 border-t border-slate-200 dark:border-slate-800">
+                    <Link to="/login" className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors font-medium">
+                        <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        <span>Cerrar sesión</span>
+                    </Link>
+                </div>
+            </aside>
+
+            {/* Main Content Area */}
+            <main className="flex-1 overflow-y-auto w-full relative">
+                {/* Mobile Header (Only visible on small screens) */}
+                <div className="md:hidden bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between sticky top-0 z-30">
+                    <div className="flex items-center gap-2">
+                        <div className="size-8 bg-gradient-to-br from-primary to-cyan-500 rounded-lg flex items-center justify-center text-white shadow-md">
+                            <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4" stroke="currentColor" strokeWidth="2">
+                                <path d="M12 2L2 7l10 5l10-5l-10-5zM2 17l10 5l10-5M2 12l10 5l10-5" />
+                            </svg>
+                        </div>
+                        <span className="font-bold tracking-tight">dattapro</span>
                     </div>
                 </div>
-            </nav>
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Header Section */}
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+                    {/* Header Section */}
                 <div className="mb-8 md:flex md:items-center md:justify-between">
                     <div className="flex-1 min-w-0">
                         <h2 className="text-2xl font-black leading-7 text-slate-900 dark:text-white sm:text-3xl sm:truncate">
@@ -114,13 +158,13 @@ const NetworkingSearch = () => {
                                     <div className="flex items-center space-x-4">
                                         <div className="flex-shrink-0">
                                             {/* LÓGICA DE IMAGEN O INICIALES */}
-                                            <div className="h-14 w-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xl font-bold font-display shadow-inner">
+                                            <div className="h-14 w-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xl font-bold font-display shadow-inner overflow-hidden">
                                                 {usuario.foto ? (
                                                     <img
                                                         /* El backend ahora envía bytes que llegan como Base64 en el JSON */
                                                         src={`data:image/jpeg;base64,${usuario.foto}`}
                                                         alt="Foto de perfil"
-                                                        className="h-full w-full object-cover"
+                                                        className="h-full w-full object-cover rounded-full"
                                                     />
                                                 ) : (
                                                     <span>{usuario.nombres?.charAt(0)}{usuario.apellidos?.charAt(0)}</span>
@@ -155,6 +199,7 @@ const NetworkingSearch = () => {
                         ))}
                     </div>
                 )}
+                </div>
             </main>
         </div>
     );
