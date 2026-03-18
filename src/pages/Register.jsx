@@ -35,7 +35,7 @@ const Register = () => {
 
             if (response.status === 201) {
                 // Registro exitoso
-                navigate('/login');
+                navigate('/login', { state: { message: '¡Cuenta creada con éxito! Por favor, inicia sesión.' } });
             } else if (response.status === 409) {
                 // Conflicto: correo ya existe
                 setErrorMessage('El correo institucional ya está registrado.');

@@ -1,7 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Login = () => {
+    // Extraemos el mensaje del estado de la navegación (viene desde Register)
+    const location = useLocation();
+    const successMsg = location.state?.message;
+
     return (
         <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
             <div className="flex min-h-screen">
@@ -16,6 +20,19 @@ const Login = () => {
                             </div>
                             <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">dattapro-app</h2>
                         </div>
+
+                        {/* MENSAJE DE ÉXITO DINÁMICO */}
+                        {successMsg && (
+                            <div className="mb-6 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-400 text-sm font-medium">
+                                <div className="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
+                                    </svg>
+                                    {successMsg}
+                                </div>
+                            </div>
+                        )}
+
                         <h1 className="text-4xl font-black leading-tight tracking-tight text-slate-900 dark:text-slate-100 mb-2">
                             Welcome back
                         </h1>
@@ -28,7 +45,7 @@ const Login = () => {
                         <form action="#" className="space-y-6" method="POST" onSubmit={(e) => e.preventDefault()}>
                             <div>
                                 <label className="block text-sm font-semibold leading-6 text-slate-900 dark:text-slate-100" htmlFor="email">
-                                    Email address
+                                    Dirección de correo electrónico
                                 </label>
                                 <div className="mt-2">
                                     <input
@@ -46,11 +63,11 @@ const Login = () => {
                             <div>
                                 <div className="flex items-center justify-between">
                                     <label className="block text-sm font-semibold leading-6 text-slate-900 dark:text-slate-100" htmlFor="password">
-                                        Password
+                                        Contraseña
                                     </label>
                                     <div className="text-sm">
                                         <a className="font-semibold text-primary hover:opacity-80 transition-opacity" href="#">
-                                            Forgot password?
+                                            ¿Olvidó su contraseña?
                                         </a>
                                     </div>
                                 </div>
@@ -80,9 +97,9 @@ const Login = () => {
                                     name="remember-me"
                                     type="checkbox"
                                 />
-                                <label className="ml-3 block text-sm leading-6 text-slate-500 dark:text-slate-400 cursor-pointer" htmlFor="remember-me">
+                                {/* <label className="ml-3 block text-sm leading-6 text-slate-500 dark:text-slate-400 cursor-pointer" htmlFor="remember-me">
                                     Keep me logged in
-                                </label>
+                                </label> */}
                             </div>
 
                             <div>
@@ -90,18 +107,18 @@ const Login = () => {
                                     className="flex w-full justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 px-3 py-4 text-sm font-bold leading-6 text-white shadow-xl shadow-blue-500/20 hover:shadow-blue-500/30 hover:-translate-y-0.5 active:scale-[0.98] transition-all"
                                     type="submit"
                                 >
-                                    Sign in
+                                    Iniciar sesión
                                 </button>
                             </div>
                         </form>
 
                         <p className="mt-10 text-center text-sm text-slate-500">
-                            Not a member yet?{' '}
+                            ¿Aún no estas registrado?{' '}
                             <Link
                                 to="/register"
                                 className="font-semibold leading-6 text-primary hover:opacity-80 transition-opacity"
                             >
-                                Start your free trial
+                                Crea tu cuenta
                             </Link>
                         </p>
                     </div>
