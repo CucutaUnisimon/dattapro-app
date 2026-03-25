@@ -21,8 +21,19 @@ const PerfilWizard = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const userId = localStorage.getItem('userId') || 1;
-        const response = await fetch(`http://localhost:8080/api/v1/usuarios/perfil/${userId}`);
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('No se encontró el token de autenticación');
+          setIsLoadingData(false);
+          return;
+        }
+
+        const response = await fetch(`http://localhost:8080/api/v1/usuarios/perfil/me`, {
+          headers: {
+            'accept': '*/*',
+            'Authorization': `Bearer ${token}`
+          }
+        });
 
         if (response.ok) {
           const rawData = await response.json();
@@ -70,9 +81,14 @@ const PerfilWizard = () => {
     setSubmitResult(null);
     try {
       const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
+      const token = localStorage.getItem('token');
+      
       const response = await fetch(`${API_BASE_URL}/usuarios/perfil`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(data)
       });
       if (!response.ok) throw new Error('Error al enviar los datos');

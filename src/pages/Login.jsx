@@ -1,10 +1,57 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Login = () => {
-    // Extraemos el mensaje del estado de la navegación (viene desde Register)
+    const navigate = useNavigate();
     const location = useLocation();
     const successMsg = location.state?.message;
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError('');
+
+        try {
+            const response = await fetch('http://localhost:8080/api/v1/auth/login', {
+                method: 'POST',
+                headers: {
+                    'accept': '*/*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || 'Credenciales inválidas');
+            }
+
+            const data = await response.json();
+            
+            // Guardar token y datos básicos en localStorage
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+                // Si el backend devuelve el ID de usuario u otros datos, guardarlos también
+                if (data.userId) localStorage.setItem('userId', data.userId);
+                if (data.email) localStorage.setItem('userEmail', data.email);
+                
+                // Redirigir al perfil o dashboard
+                navigate('/perfil');
+            } else {
+                throw new Error('No se recibió el token de autenticación');
+            }
+
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
@@ -13,22 +60,33 @@ const Login = () => {
                 <div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-24 bg-white dark:bg-background-dark">
                     <div className="sm:mx-auto sm:w-full sm:max-w-md">
                         <div className="flex items-center gap-3 mb-10">
-                            <div className="size-8 bg-[#4b5e26] rounded-md flex items-center justify-center p-1.5">
+                            <div className="size-8 bg-primary rounded-md flex items-center justify-center p-1.5 shadow-lg shadow-orange-500/20">
                                 <svg viewBox="0 0 24 24" fill="none" className="text-white w-full h-full" stroke="currentColor" strokeWidth="2">
                                     <path d="M12 2L2 7l10 5l10-5l-10-5zM2 17l10 5l10-5M2 12l10 5l10-5" />
                                 </svg>
                             </div>
-                            <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">dattapro-app</h2>
+                            <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">dattapro</h2>
                         </div>
 
-                        {/* MENSAJE DE ÉXITO DINÁMICO */}
-                        {successMsg && (
-                            <div className="mb-6 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-400 text-sm font-medium">
+                        {/* MENSAJE DE ÉXITO O ERROR DINÁMICO */}
+                        {successMsg && !error && (
+                            <div className="mb-6 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-400 text-sm font-medium animate-in fade-in slide-in-from-top-2">
                                 <div className="flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
                                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
                                     </svg>
                                     {successMsg}
+                                </div>
+                            </div>
+                        )}
+
+                        {error && (
+                            <div className="mb-6 p-4 rounded-2xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 text-red-700 dark:text-red-400 text-sm font-medium animate-in shake duration-300">
+                                <div className="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+                                    </svg>
+                                    {error}
                                 </div>
                             </div>
                         )}
@@ -42,20 +100,22 @@ const Login = () => {
                     </div>
 
                     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
-                        <form action="#" className="space-y-6" method="POST" onSubmit={(e) => e.preventDefault()}>
+                        <form className="space-y-6" onSubmit={handleSubmit}>
                             <div>
                                 <label className="block text-sm font-semibold leading-6 text-slate-900 dark:text-slate-100" htmlFor="email">
                                     Dirección de correo electrónico
                                 </label>
-                                <div className="mt-2">
+                                <div className="mt-2 text-primary">
                                     <input
                                         autoComplete="email"
-                                        className="block w-full rounded-2xl border border-slate-200 py-4 px-4 text-slate-900 dark:text-slate-100 shadow-sm placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none sm:text-sm bg-white dark:bg-slate-800 transition-all"
+                                        className="block w-full rounded-2xl border border-slate-200 py-4 px-4 text-slate-900 dark:text-slate-100 shadow-sm placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none sm:text-sm bg-white dark:bg-slate-800 transition-all font-medium"
                                         id="email"
                                         name="email"
                                         placeholder="name@institution.edu"
                                         required
                                         type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -74,12 +134,14 @@ const Login = () => {
                                 <div className="mt-2 relative">
                                     <input
                                         autoComplete="current-password"
-                                        className="block w-full rounded-2xl border border-slate-200 py-4 px-4 text-slate-900 dark:text-slate-100 shadow-sm placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none sm:text-sm bg-white dark:bg-slate-800 transition-all"
+                                        className="block w-full rounded-2xl border border-slate-200 py-4 px-4 text-slate-900 dark:text-slate-100 shadow-sm placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none sm:text-sm bg-white dark:bg-slate-800 transition-all font-medium"
                                         id="password"
                                         name="password"
                                         placeholder="••••••••"
                                         required
                                         type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
                                     />
                                     <button className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-slate-600 transition-colors" type="button">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -90,24 +152,21 @@ const Login = () => {
                                 </div>
                             </div>
 
-                            <div className="flex items-center">
-                                <input
-                                    className="h-5 w-5 rounded-full border-slate-300 text-primary focus:ring-primary/20 accent-primary cursor-pointer"
-                                    id="remember-me"
-                                    name="remember-me"
-                                    type="checkbox"
-                                />
-                                {/* <label className="ml-3 block text-sm leading-6 text-slate-500 dark:text-slate-400 cursor-pointer" htmlFor="remember-me">
-                                    Keep me logged in
-                                </label> */}
-                            </div>
-
                             <div>
                                 <button
-                                    className="flex w-full justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 px-3 py-4 text-sm font-bold leading-6 text-white shadow-xl shadow-blue-500/20 hover:shadow-blue-500/30 hover:-translate-y-0.5 active:scale-[0.98] transition-all"
+                                    className="flex w-full justify-center rounded-2xl bg-primary px-3 py-4 text-sm font-bold leading-6 text-white shadow-xl shadow-orange-500/20 hover:shadow-orange-500/30 hover:-translate-y-0.5 active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:translate-y-0"
                                     type="submit"
+                                    disabled={isLoading}
                                 >
-                                    Iniciar sesión
+                                    {isLoading ? (
+                                        <div className="flex items-center gap-2">
+                                            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Iniciando sesión...
+                                        </div>
+                                    ) : 'Iniciar sesión'}
                                 </button>
                             </div>
                         </form>
