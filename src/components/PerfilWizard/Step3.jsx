@@ -3,10 +3,40 @@ import { useFormContext, useFieldArray } from 'react-hook-form';
 
 const Step3 = () => {
   const { register, control, formState: { errors } } = useFormContext();
-  const { fields, append, remove } = useFieldArray({
+
+  const { fields: formaciónFields, append: appendFormación, remove: removeFormación } = useFieldArray({
     control,
     name: "formaciones"
   });
+
+  const { fields: areaFields, append: appendArea, remove: removeArea } = useFieldArray({
+    control,
+    name: "areas"
+  });
+
+  const { fields: certificacionFields, append: appendCertificacion, remove: removeCertificacion } = useFieldArray({
+    control,
+    name: "certificaciones"
+  });
+
+  const areasOpciones = [
+    "Agronomía, Veterinaria y afines",
+    "Bellas Artes",
+    "Ciencias de la Educación",
+    "Ciencias de la Salud",
+    "Ciencias Sociales y Humanas",
+    "Economía, Administración, Contaduría y afines",
+    "Ingeniería, Arquitectura, Urbanismo y afines",
+    "Matemáticas y Ciencias Naturales"
+  ];
+
+  const certificacionesOpciones = [
+    "Scrum/Agile",
+    "PMP/proyectos",
+    "ISO Auditor",
+    "Marketing Digital",
+    "TIC (Cisco/Microsoft)"
+  ];
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -28,7 +58,7 @@ const Step3 = () => {
 
           <button
             type="button"
-            onClick={() => append({ nivel: '', titulo: '' })}
+            onClick={() => appendFormación({ nivel: '', titulo: '' })}
             className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all font-bold text-sm"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -39,12 +69,12 @@ const Step3 = () => {
         </div>
 
         <div className="space-y-6">
-          {fields.map((field, index) => (
+          {formaciónFields.map((field, index) => (
             <div key={field.id} className="p-6 bg-slate-50 border border-slate-200 rounded-[2rem] relative group animate-in zoom-in-95 duration-300">
-              {fields.length > 1 && (
+              {formaciónFields.length > 1 && (
                 <button
                   type="button"
-                  onClick={() => remove(index)}
+                  onClick={() => removeFormación(index)}
                   className="absolute -top-3 -right-3 w-8 h-8 bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 rounded-full flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-all z-10"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -85,15 +115,107 @@ const Step3 = () => {
           ))}
         </div>
 
-        <div className="space-y-2 max-w-md">
-          <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Áreas de Conocimiento</label>
-          <input
-            type="text"
-            placeholder="Ej. IA, Ciencia de Datos"
-            {...register('areas', { required: 'Las áreas son requeridas' })}
-            className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-semibold text-slate-700 placeholder:text-slate-400"
-          />
-          {errors.areas && <span className="text-red-500 text-[11px] font-bold uppercase block ml-1">{errors.areas.message}</span>}
+        {/* Sección Certificaciones */}
+        <div className="space-y-6 pt-4 border-t border-slate-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Certificaciones y Logros</label>
+              <p className="text-[11px] text-slate-400 font-medium ml-1">Selecciona tus certificaciones oficiales</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => appendCertificacion({ nombre: '' })}
+              className="text-xs font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1.5"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Agregar certificación
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {certificacionFields.map((field, index) => (
+              <div key={field.id} className="relative group animate-in slide-in-from-right-2 duration-300">
+                <select
+                  {...register(`certificaciones.${index}.nombre`, { required: 'La certificación es requerida' })}
+                  className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none appearance-none transition-all font-semibold text-slate-700 text-sm shadow-sm"
+                >
+                  <option value="">Seleccione certificación...</option>
+                  {certificacionesOpciones.map(opcion => (
+                    <option key={opcion} value={opcion}>{opcion}</option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-10 flex items-center px-2 text-slate-400">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+                {certificacionFields.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeCertificacion(index)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-red-500 transition-colors p-1"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+                {errors.certificaciones?.[index]?.nombre && <span className="text-red-500 text-[10px] font-bold uppercase block mt-1 ml-1">{errors.certificaciones[index].nombre.message}</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Sección Áreas de Conocimiento */}
+        <div className="space-y-6 pt-4 border-t border-slate-100">
+          <div className="flex items-center justify-between">
+            <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Áreas de Conocimiento</label>
+            <button
+              type="button"
+              onClick={() => appendArea({ nombre: '' })}
+              className="text-xs font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1.5"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Agregar área
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {areaFields.map((field, index) => (
+              <div key={field.id} className="relative group animate-in slide-in-from-left-2 duration-300">
+                <select
+                  {...register(`areas.${index}.nombre`, { required: 'El área es requerida' })}
+                  className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none appearance-none transition-all font-semibold text-slate-700 text-sm shadow-sm"
+                >
+                  <option value="">Seleccione un área...</option>
+                  {areasOpciones.map(opcion => (
+                    <option key={opcion} value={opcion}>{opcion}</option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-10 flex items-center px-2 text-slate-400">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+                {areaFields.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeArea(index)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-red-500 transition-colors p-1"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+                {errors.areas?.[index]?.nombre && <span className="text-red-500 text-[10px] font-bold uppercase block mt-1 ml-1">{errors.areas[index].nombre.message}</span>}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -118,7 +240,7 @@ const Step3 = () => {
               rows="4"
               placeholder="Describe brevemente tus años de experiencia y roles principales..."
               {...register('experiencia', { required: 'La experiencia es requerida' })}
-              className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400 resize-none leading-relaxed"
+              className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400 resize-none leading-relaxed shadow-sm"
             ></textarea>
             {errors.experiencia && <span className="text-red-500 text-[11px] font-bold uppercase block ml-1">{errors.experiencia.message}</span>}
           </div>
@@ -129,7 +251,7 @@ const Step3 = () => {
               rows="4"
               placeholder="Un párrafo introductorio sobre tu enfoque y visión..."
               {...register('perfil', { required: 'El perfil profesional es requerido' })}
-              className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400 resize-none leading-relaxed"
+              className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400 resize-none leading-relaxed shadow-sm"
             ></textarea>
             {errors.perfil && <span className="text-red-500 text-[11px] font-bold uppercase block ml-1">{errors.perfil.message}</span>}
           </div>

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const location = useLocation();
     const successMsg = location.state?.message;
 
@@ -33,15 +35,19 @@ const Login = () => {
 
             const data = await response.json();
             
-            // Guardar token y datos básicos en localStorage
             if (data.token) {
-                localStorage.setItem('token', data.token);
-                // Si el backend devuelve el ID de usuario u otros datos, guardarlos también
-                if (data.userId) localStorage.setItem('userId', data.userId);
-                if (data.email) localStorage.setItem('userEmail', data.email);
+                // Guardar token y datos en el contexto (esto también maneja localStorage)
+                login(data.token, { id: data.userId, email: data.email }, data.rol);
                 
-                // Redirigir al perfil o dashboard
-                navigate('/perfil');
+                // Redirección condicional según el rol
+                if (data.rol === 'admin') {
+                    navigate('/admin');
+                } else if (data.rol === 'profesor') {
+                    navigate('/perfil');
+                } else {
+                    // Redirección por defecto para otros roles
+                    navigate('/network');
+                }
             } else {
                 throw new Error('No se recibió el token de autenticación');
             }

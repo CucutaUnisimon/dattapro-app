@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const AdminUsers = () => {
     const navigate = useNavigate();
+    const { logout } = useAuth();
     const [usuarios, setUsuarios] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('userEmail');
-        navigate('/login');
-    };
     const [updatingId, setUpdatingId] = useState(null); // Para mostrar carga en el select
 
     const fetchUsuarios = async () => {
@@ -109,66 +105,9 @@ const AdminUsers = () => {
     };
 
     return (
-        <div className="flex h-screen bg-slate-50 dark:bg-slate-900 font-display text-slate-900 dark:text-slate-100 overflow-hidden">
-            {/* Sidebar (Admin) */}
-            <aside className="w-64 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col flex-shrink-0 z-20 text-slate-100">
-                <div className="h-16 flex items-center px-6 border-b border-slate-800 bg-slate-950">
-                    <div className="flex items-center gap-3">
-                        <div className="size-8 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg flex items-center justify-center text-white shadow-md">
-                            <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
-                        </div>
-                        <span className="font-bold text-lg tracking-tight">Admin Panel</span>
-                    </div>
-                </div>
-
-                <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
-                    {/* Inicio (Not active) */}
-                    <Link to="/" className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition-colors font-medium">
-                        <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                        </svg>
-                        <span>Inicio Sitio</span>
-                    </Link>
-
-                    {/* Gestión de Usuarios (Active) */}
-                    <Link to="/admin/users" className="flex items-center gap-3 px-4 py-3 bg-red-500/20 text-red-500 rounded-xl transition-colors font-bold">
-                        <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                        <span>Usuarios</span>
-                    </Link>
-                </div>
-
-                <div className="p-4 border-t border-slate-800 bg-slate-950">
-                    <button 
-                        onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-colors font-medium text-left"
-                    >
-                        <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                        </svg>
-                        <span>Cerrar sesión</span>
-                    </button>
-                </div>
-            </aside>
-
-            {/* Main Content Area */}
-            <main className="flex-1 overflow-y-auto w-full relative">
-                {/* Mobile Header (Only visible on small screens) */}
-                <div className="md:hidden bg-slate-900 border-b border-slate-800 p-4 flex items-center justify-between sticky top-0 z-30">
-                    <div className="flex items-center gap-2 text-white">
-                        <div className="size-8 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg flex items-center justify-center text-white shadow-md">
-                            <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
-                        </div>
-                        <span className="font-bold tracking-tight">Admin Panel</span>
-                    </div>
-                </div>
-
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <div className="flex-1 bg-slate-50 dark:bg-slate-900 font-display text-slate-900 dark:text-slate-100">
+            {/* Contenido Principal */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
                     {/* Header Section */}
                     <div className="mb-8 md:flex md:items-center md:justify-between">
                         <div className="flex-1 min-w-0">
@@ -311,8 +250,7 @@ const AdminUsers = () => {
                             ))}
                         </div>
                     )}
-                </div>
-            </main>
+            </div>
         </div>
     );
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
@@ -8,17 +9,12 @@ import Step4 from './Step4';
 
 const PerfilWizard = () => {
   const navigate = useNavigate();
+  const { logout, token: authToken } = useAuth();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [submitResult, setSubmitResult] = useState(null);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userEmail');
-    navigate('/login');
-  };
 
   const methods = useForm({
     mode: 'onChange',
@@ -29,7 +25,7 @@ const PerfilWizard = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = authToken || localStorage.getItem('token');
         if (!token) {
           console.error('No se encontró el token de autenticación');
           setIsLoadingData(false);
@@ -58,18 +54,32 @@ const PerfilWizard = () => {
             formaciones: Array.isArray(rawData.formaciones) && rawData.formaciones.length > 0 
               ? rawData.formaciones 
               : [{ nivel: '', titulo: '' }],
-            areas: rawData.areasConocimiento || '',
+            areas: Array.isArray(rawData.areas) && rawData.areas.length > 0 
+              ? rawData.areas 
+              : [{ nombre: '' }],
             idiomas: Array.isArray(rawData.idiomas) ? rawData.idiomas.join(', ') : (rawData.idiomas || ''),
-            certificaciones: rawData.certificaciones || '',
+            certificaciones: Array.isArray(rawData.certificaciones) && rawData.certificaciones.length > 0 
+              ? rawData.certificaciones 
+              : [{ nombre: '' }],
             experiencia: rawData.experiencia || '',
             proyectos: rawData.proyectosDestacados || '',
             perfil: rawData.perfilProfesional || '',
-            competencias: rawData.competencias || '',
+            competenciasTecnicas: Array.isArray(rawData.competenciasTecnicas) && rawData.competenciasTecnicas.length > 0 
+              ? rawData.competenciasTecnicas 
+              : [{ nombre: '', nivel: 1 }],
+            competenciasTransversales: Array.isArray(rawData.competenciasTransversales) && rawData.competenciasTransversales.length > 0 
+              ? rawData.competenciasTransversales 
+              : [{ nombre: '', nivel: 1 }],
             redes: rawData.redesProfesionales || '',
             servicios: rawData.serviciosOffrecidos || '',
             sectores: rawData.sectoresInteres || '',
-            intereses: rawData.interesesAdicionales || '',
+            intereses: Array.isArray(rawData.intereses) && rawData.intereses.length > 0
+              ? rawData.intereses
+              : [{ nombre: '' }],
             objetivo: rawData.objetivoProfesional || '',
+            areasEspecialidad: Array.isArray(rawData.areasEspecialidad) && rawData.areasEspecialidad.length > 0
+              ? rawData.areasEspecialidad
+              : [{ nombre: '' }],
             deseaVincularse: 'true',
             autorizaDatos: 'true'
           };
@@ -89,7 +99,7 @@ const PerfilWizard = () => {
     setSubmitResult(null);
     try {
       const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
-      const token = localStorage.getItem('token');
+      const token = authToken || localStorage.getItem('token');
       
       const response = await fetch(`${API_BASE_URL}/usuarios/perfil`, {
         method: 'POST',
@@ -151,95 +161,22 @@ const PerfilWizard = () => {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 font-sans text-slate-900">
-
-      {/* TOP NAVBAR */}
-      <nav className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-50">
-        <div className="flex items-center space-x-4">
-          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
-            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 2L2 7l10 5l10-5l-10-5zM2 17l10 5l10-5M2 12l10 5l10-5" />
-            </svg>
-          </div>
-          <span className="text-2xl font-black tracking-tight">dattapro</span>
-        </div>
-
-        <div className="flex-1 max-w-xl mx-12 hidden md:block">
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-            </div>
-            <input
-              type="text"
-              placeholder="Quick search..."
-              className="w-full bg-slate-100 border-transparent focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-primary rounded-2xl py-3 pl-12 pr-4 transition-all outline-none text-sm font-medium"
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-6">
-          <button className="relative p-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-            <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-primary border-2 border-white rounded-full"></span>
-          </button>
-          <button className="p-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-          </button>
-          <div className="h-10 w-10 rounded-full border-2 border-slate-200 overflow-hidden bg-slate-200">
-            <img src="https://ui-avatars.com/api/?name=Investigator+Pro&background=ec5b13&color=fff" alt="User" />
-          </div>
-        </div>
-      </nav>
-
-      <div className="flex flex-1 overflow-hidden">
-
-        {/* LEFT SIDEBAR (Mirrored from NetworkingSearch.jsx) */}
-        <aside className="w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 hidden md:flex flex-col shrink-0 z-20">
-          <div className="h-16 flex items-center px-6 border-b border-slate-200 dark:border-slate-800">
-            <div className="flex items-center gap-3">
-              <div className="size-8 bg-gradient-to-br from-primary to-cyan-500 rounded-lg flex items-center justify-center text-white shadow-md">
-                <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 2L2 7l10 5l10-5l-10-5zM2 17l10 5l10-5M2 12l10 5l10-5" />
-                </svg>
-              </div>
-              <span className="font-bold text-lg tracking-tight">dattapro</span>
-            </div>
-          </div>
-
-          <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-            {/* Main Nav Items */}
-            <Link to="/" className="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-primary rounded-xl transition-colors font-medium">
-              <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-              <span>Inicio</span>
-            </Link>
-
-            <Link to="/network" className="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-primary rounded-xl transition-colors font-medium">
-              <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              <span>Networking</span>
-            </Link>
-
-            <Link to="/convocatorias" className="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-primary rounded-xl transition-colors font-medium">
-              <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-.586-1.414l-4.5-4.5A2 2 0 0015.5 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14z" />
-              </svg>
-              <span>Convocatorias</span>
-            </Link>
-
-            {/* WIZARD PROGRESS SECTION */}
-            <div className="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800 space-y-1">
-              <p className="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Wizard Progress</p>
-              {steps.map(s => (
+    <div className="w-full px-4 py-8 sm:px-6 lg:px-8">
+      <div className="flex flex-col lg:flex-row gap-12">
+        {/* Wizard Progress - Local to this page */}
+        <aside className="w-full lg:w-64 shrink-0">
+          <div className="bg-white dark:bg-slate-950 rounded-[2rem] shadow-sm border border-slate-200 dark:border-slate-800 p-6 sticky top-28">
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6 px-2">Progreso del Perfil</p>
+            <nav className="space-y-2">
+              {steps.map((s) => (
                 <button
                   key={s.id}
                   onClick={() => setStep(s.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-bold text-sm ${step === s.id
-                    ? 'bg-primary text-white shadow-lg shadow-orange-500/30'
-                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400'
-                    }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all font-bold text-sm ${
+                    step === s.id
+                      ? 'bg-primary text-white shadow-lg shadow-orange-500/30'
+                      : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400'
+                  }`}
                 >
                   <div className={`${step === s.id ? 'text-white' : 'text-slate-400'}`}>
                     {s.icon}
@@ -247,25 +184,12 @@ const PerfilWizard = () => {
                   <span>{s.label}</span>
                 </button>
               ))}
-            </div>
-          </div>
-
-          <div className="p-4 border-t border-slate-200 dark:border-slate-800 font-medium">
-            <button 
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
-            >
-              <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              <span>Cerrar sesión</span>
-            </button>
+            </nav>
           </div>
         </aside>
 
-        {/* MAIN CONTENT AREA */}
-        <main className="flex-1 overflow-y-auto p-8 md:p-12 lg:p-16">
-          <div className="max-w-4xl mx-auto">
+        {/* MAIN FORM AREA */}
+        <div className="flex-1">
 
             {/* Header */}
             <div className="mb-10">
@@ -308,10 +232,9 @@ const PerfilWizard = () => {
                 </form>
               </FormProvider>
             )}
+            </div>
           </div>
-        </main>
-      </div>
-    </div>
+        </div>
   );
 };
 

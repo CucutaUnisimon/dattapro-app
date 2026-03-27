@@ -69,12 +69,31 @@ const Step2 = () => {
         <div className="space-y-2">
           <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Programa Académico</label>
           <div className="relative group">
-            <input
-              type="text"
+            <select
               {...register('programa', { required: 'El programa es requerido' })}
-              className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-semibold text-slate-700 placeholder:text-slate-400"
-              placeholder="Ej. Ingeniería de Sistemas"
-            />
+              className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none appearance-none transition-all font-semibold text-slate-700"
+            >
+              <option value="">Seleccione un programa...</option>
+              <option value="Administración de Empresas">Administración de Empresas</option>
+              <option value="Comercio y Negocios Internacionales">Comercio y Negocios Internacionales</option>
+              <option value="Contaduría Pública">Contaduría Pública</option>
+              <option value="Marketing y Negocios Digitales">Marketing y Negocios Digitales</option>
+              <option value="Derecho">Derecho</option>
+              <option value="Psicología">Psicología</option>
+              <option value="Trabajo Social">Trabajo Social</option>
+              <option value="Ingeniería de Sistemas">Ingeniería de Sistemas</option>
+              <option value="Ingeniería Multimedia">Ingeniería Multimedia</option>
+              <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+              <option value="Ingeniería Mecánica">Ingeniería Mecánica</option>
+              <option value="Ingeniería de Datos e Inteligencia Artificial">Ingeniería de Datos e Inteligencia Artificial</option>
+              <option value="Matemáticas y Ciencias de la Computación">Matemáticas y Ciencias de la Computación</option>
+            </select>
+            {/* Ícono de flecha para el select custom */}
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+               </svg>
+            </div>
             {errors.programa && <span className="text-red-500 text-[11px] font-bold absolute -bottom-5 left-1 uppercase">{errors.programa.message}</span>}
           </div>
         </div>
@@ -126,6 +145,8 @@ const Step2 = () => {
               <option value="">Seleccione...</option>
               <option value="Tiempo Completo">Tiempo Completo</option>
               <option value="Medio Tiempo">Medio Tiempo</option>
+              <option value="Planta tiempo completo">Planta tiempo completo</option>
+              <option value="Planta medio tiempo">Planta medio tiempo</option>
               <option value="Catedratico">Catedrático</option>
             </select>
           </div>
