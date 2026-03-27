@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AdminUsers = () => {
+    const navigate = useNavigate();
     const [usuarios, setUsuarios] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userEmail');
+        navigate('/login');
+    };
     const [updatingId, setUpdatingId] = useState(null); // Para mostrar carga en el select
 
     const fetchUsuarios = async () => {
@@ -134,12 +142,15 @@ const AdminUsers = () => {
                 </div>
 
                 <div className="p-4 border-t border-slate-800 bg-slate-950">
-                    <Link to="/login" className="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-colors font-medium">
+                    <button 
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-colors font-medium text-left"
+                    >
                         <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                         </svg>
                         <span>Cerrar sesión</span>
-                    </Link>
+                    </button>
                 </div>
             </aside>
 
