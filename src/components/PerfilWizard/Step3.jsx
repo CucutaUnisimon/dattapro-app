@@ -206,24 +206,33 @@ const Step3 = () => {
             <Controller
               name="certificacionesNombres"
               control={control}
-              render={({ field }) => (
-                <CreatableSelect
-                  {...field}
-                  isMulti
-                  options={apiCertificaciones}
-                  placeholder="Escribe para buscar o crear..."
-                  classNamePrefix="react-select"
-                  styles={customSelectStyles}
-                  formatCreateLabel={(inputValue) => `Crear "${inputValue}"`}
-                  noOptionsMessage={() => "No se encontraron resultados"}
-                  value={apiCertificaciones.filter(option => field.value?.includes(option.value)) || []}
-                  onChange={(newValue) => {
-                    field.onChange(newValue ? newValue.map(opt => opt.value) : []);
-                  }}
-                  onBlur={field.onBlur}
-                  aria-label="Certificaciones"
-                />
-              )}
+              render={({ field }) => {
+                const handleCreate = (inputValue) => {
+                  const newOption = { label: inputValue, value: inputValue };
+                  setApiCertificaciones(prev => [...prev, newOption]);
+                  field.onChange([...(field.value || []), inputValue]);
+                };
+
+                return (
+                  <CreatableSelect
+                    {...field}
+                    isMulti
+                    options={apiCertificaciones}
+                    placeholder="Escribe para buscar o crear..."
+                    classNamePrefix="react-select"
+                    styles={customSelectStyles}
+                    formatCreateLabel={(inputValue) => `Crear "${inputValue}"`}
+                    noOptionsMessage={() => "No se encontraron resultados"}
+                    value={(field.value || []).map(val => ({ label: val, value: val }))}
+                    onChange={(newValue) => {
+                      field.onChange(newValue ? newValue.map(opt => opt.value) : []);
+                    }}
+                    onCreateOption={handleCreate}
+                    onBlur={field.onBlur}
+                    aria-label="Certificaciones"
+                  />
+                );
+              }}
             />
           </div>
         </div>

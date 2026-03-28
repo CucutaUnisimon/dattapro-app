@@ -101,13 +101,21 @@ const PerfilWizard = () => {
       const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
       const token = authToken || localStorage.getItem('token');
       
+      const { certificacionesNombres, ...rest } = data;
+      const formattedData = {
+        ...rest,
+        perfilAcademico: {
+          certificacionesNombres: (certificacionesNombres || []).map(c => typeof c === 'object' ? (c.nombre || c.value) : c)
+        }
+      };
+
       const response = await fetch(`${API_BASE_URL}/usuarios/perfil`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(formattedData)
       });
       if (!response.ok) throw new Error('Error al enviar los datos');
       setSubmitResult({ success: true, message: 'Perfil actualizado exitosamente.' });
