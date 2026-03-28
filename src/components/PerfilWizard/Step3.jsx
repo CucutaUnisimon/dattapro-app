@@ -1,8 +1,30 @@
-import React from 'react';
-import { useFormContext, useFieldArray } from 'react-hook-form';
+import React, { useState, useEffect } from 'react';
+import { useFormContext, useFieldArray, Controller } from 'react-hook-form';
+import CreatableSelect from 'react-select/creatable';
 
 const Step3 = () => {
   const { register, control, formState: { errors } } = useFormContext();
+  const [apiCertificaciones, setApiCertificaciones] = useState([]);
+
+  // Cargar certificaciones desde la API
+  useEffect(() => {
+    const fetchCertificaciones = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/v1/certificaciones');
+        if (response.ok) {
+          const data = await response.json();
+          const options = data.map(cert => ({
+            value: cert.nombre,
+            label: cert.nombre
+          }));
+          setApiCertificaciones(options);
+        }
+      } catch (error) {
+        console.error("Error cargando certificaciones:", error);
+      }
+    };
+    fetchCertificaciones();
+  }, []);
 
   const { fields: formaciónFields, append: appendFormación, remove: removeFormación } = useFieldArray({
     control,
@@ -12,11 +34,6 @@ const Step3 = () => {
   const { fields: areaFields, append: appendArea, remove: removeArea } = useFieldArray({
     control,
     name: "areas"
-  });
-
-  const { fields: certificacionFields, append: appendCertificacion, remove: removeCertificacion } = useFieldArray({
-    control,
-    name: "certificaciones"
   });
 
   const areasOpciones = [
@@ -30,13 +47,76 @@ const Step3 = () => {
     "Matemáticas y Ciencias Naturales"
   ];
 
-  const certificacionesOpciones = [
-    "Scrum/Agile",
-    "PMP/proyectos",
-    "ISO Auditor",
-    "Marketing Digital",
-    "TIC (Cisco/Microsoft)"
-  ];
+  // Estilos personalizados para react-select
+  const customSelectStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      borderRadius: '1rem',
+      padding: '0.4rem 0.5rem',
+      backgroundColor: '#f8fafc', // slate-50
+      borderColor: state.isFocused ? '#10b981' : '#e2e8f0', // primary vs slate-200
+      boxShadow: state.isFocused ? '0 0 0 4px rgba(16, 185, 129, 0.1)' : 'none',
+      '&:hover': {
+        borderColor: state.isFocused ? '#10b981' : '#cbd5e1',
+      },
+      transition: 'all 0.2s ease',
+      fontSize: '0.875rem',
+      fontWeight: '600',
+      color: '#334155'
+    }),
+    menu: (provided) => ({
+      ...provided,
+      borderRadius: '1rem',
+      padding: '0.5rem',
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+      zIndex: 100,
+      backgroundColor: 'white',
+      border: '1px solid #f1f5f9',
+      overflow: 'hidden'
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      borderRadius: '0.5rem',
+      backgroundColor: state.isSelected 
+        ? '#10b981' 
+        : state.isFocused 
+          ? '#ecfdf5' 
+          : 'white',
+      color: state.isSelected ? 'white' : '#475569',
+      fontSize: '0.875rem',
+      fontWeight: '600',
+      cursor: 'pointer',
+      '&:active': {
+        backgroundColor: '#10b981'
+      }
+    }),
+    multiValue: (provided) => ({
+      ...provided,
+      backgroundColor: '#10b981',
+      borderRadius: '0.5rem',
+      color: 'white',
+      padding: '2px 8px'
+    }),
+    multiValueLabel: (provided) => ({
+      ...provided,
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: '0.75rem'
+    }),
+    multiValueRemove: (provided) => ({
+      ...provided,
+      color: 'white',
+      '&:hover': {
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        color: 'white',
+      },
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: '#94a3b8',
+      fontWeight: '500'
+    })
+  };
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -115,56 +195,36 @@ const Step3 = () => {
           ))}
         </div>
 
-        {/* Sección Certificaciones */}
+        {/* Sección Certificaciones Avanzada */}
         <div className="space-y-6 pt-4 border-t border-slate-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Certificaciones y Logros</label>
-              <p className="text-[11px] text-slate-400 font-medium ml-1">Selecciona tus certificaciones oficiales</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => appendCertificacion({ nombre: '' })}
-              className="text-xs font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1.5"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-              Agregar certificación
-            </button>
+          <div>
+            <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Certificaciones y Logros</label>
+            <p className="text-[11px] text-slate-400 font-medium ml-1">Busca, selecciona o escribe tus certificaciones oficiales</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {certificacionFields.map((field, index) => (
-              <div key={field.id} className="relative group animate-in slide-in-from-right-2 duration-300">
-                <select
-                  {...register(`certificaciones.${index}.nombre`, { required: 'La certificación es requerida' })}
-                  className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none appearance-none transition-all font-semibold text-slate-700 text-sm shadow-sm"
-                >
-                  <option value="">Seleccione certificación...</option>
-                  {certificacionesOpciones.map(opcion => (
-                    <option key={opcion} value={opcion}>{opcion}</option>
-                  ))}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-10 flex items-center px-2 text-slate-400">
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-                {certificacionFields.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeCertificacion(index)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-red-500 transition-colors p-1"
-                  >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
-                {errors.certificaciones?.[index]?.nombre && <span className="text-red-500 text-[10px] font-bold uppercase block mt-1 ml-1">{errors.certificaciones[index].nombre.message}</span>}
-              </div>
-            ))}
+          <div className="relative">
+            <Controller
+              name="certificacionesNombres"
+              control={control}
+              render={({ field }) => (
+                <CreatableSelect
+                  {...field}
+                  isMulti
+                  options={apiCertificaciones}
+                  placeholder="Escribe para buscar o crear..."
+                  classNamePrefix="react-select"
+                  styles={customSelectStyles}
+                  formatCreateLabel={(inputValue) => `Crear "${inputValue}"`}
+                  noOptionsMessage={() => "No se encontraron resultados"}
+                  value={apiCertificaciones.filter(option => field.value?.includes(option.value)) || []}
+                  onChange={(newValue) => {
+                    field.onChange(newValue ? newValue.map(opt => opt.value) : []);
+                  }}
+                  onBlur={field.onBlur}
+                  aria-label="Certificaciones"
+                />
+              )}
+            />
           </div>
         </div>
 

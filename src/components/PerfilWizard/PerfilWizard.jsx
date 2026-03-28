@@ -58,9 +58,9 @@ const PerfilWizard = () => {
               ? rawData.areas 
               : [{ nombre: '' }],
             idiomas: Array.isArray(rawData.idiomas) ? rawData.idiomas.join(', ') : (rawData.idiomas || ''),
-            certificaciones: Array.isArray(rawData.certificaciones) && rawData.certificaciones.length > 0 
-              ? rawData.certificaciones 
-              : [{ nombre: '' }],
+            certificacionesNombres: Array.isArray(rawData.certificaciones) 
+              ? rawData.certificaciones.map(c => c.nombre || c) 
+              : [],
             experiencia: rawData.experiencia || '',
             proyectos: rawData.proyectosDestacados || '',
             perfil: rawData.perfilProfesional || '',
