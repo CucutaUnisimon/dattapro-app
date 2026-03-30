@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import Login from './pages/Login';
 import Register from './pages/Register';
 import NetworkingSearch from './pages/NetworkingSearch';
+import ProfileDetail from './pages/ProfileDetail';
 import PerfilWizard from './components/PerfilWizard/PerfilWizard';
 import AdminUsers from './pages/AdminUsers';
 import Navbar from './components/Navbar';
@@ -41,6 +42,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/network" element={<NetworkingSearch />} />
+          <Route path="/perfil/ver/:id" element={<ProfileDetail />} />
           <Route path="/perfil" element={<PerfilWizard />} />
           <Route path="/admin" element={<AdminUsers />} /> {/* Admin specific route */}
           <Route path="/" element={<Navigate to="/login" replace />} />

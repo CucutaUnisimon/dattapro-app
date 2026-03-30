@@ -38,6 +38,12 @@ const Step3 = () => {
     name: "areas"
   });
 
+  // Field Array para Idiomas
+  const { fields: idiomasFields, append: appendIdioma, remove: removeIdioma } = useFieldArray({
+    control,
+    name: "idiomas"
+  });
+
   // Field Arrays para Servicios y Sectores
   const { fields: serviciosFields, append: appendServicio, remove: removeServicio } = useFieldArray({
     control,
@@ -58,6 +64,28 @@ const Step3 = () => {
     "Economía, Administración, Contaduría y afines",
     "Ingeniería, Arquitectura, Urbanismo y afines",
     "Matemáticas y Ciencias Naturales"
+  ];
+
+  const idiomasOpciones = [
+    "Inglés",
+    "Español",
+    "Francés",
+    "Alemán",
+    "Italiano",
+    "Portugués",
+    "Mandarín",
+    "Japonés",
+    "Otro"
+  ];
+
+  const nivelesIdiomaOpciones = [
+    "A1",
+    "A2",
+    "B1",
+    "B2",
+    "C1",
+    "C2",
+    "Nativo"
   ];
 
   const serviciosOpciones = [
@@ -326,6 +354,75 @@ const Step3 = () => {
           </div>
         </div>
 
+        {/* Sección Idiomas */}
+        <div className="space-y-6 pt-4 border-t border-slate-100">
+          <div className="flex items-center justify-between">
+            <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Idiomas</label>
+            <button
+              type="button"
+              onClick={() => appendIdioma({ idioma: '', nivel: '' })}
+              className="text-xs font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1.5"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Agregar idioma
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            {idiomasFields.map((field, index) => (
+              <div key={field.id} className="flex gap-4 relative group animate-in slide-in-from-left-2 duration-300">
+                <div className="flex-1 relative">
+                  <select
+                    {...register(`idiomas.${index}.idioma`, { required: 'El idioma es requerido' })}
+                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none appearance-none transition-all font-semibold text-slate-700 text-sm shadow-sm"
+                  >
+                    <option value="">Seleccione idioma...</option>
+                    {idiomasOpciones.map(opcion => (
+                      <option key={opcion} value={opcion}>{opcion}</option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center px-2 text-slate-400">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                  {errors.idiomas?.[index]?.idioma && <span className="text-red-500 text-[10px] font-bold uppercase block mt-1 ml-1">{errors.idiomas[index].idioma.message}</span>}
+                </div>
+                
+                <div className="w-48 relative">
+                  <select
+                    {...register(`idiomas.${index}.nivel`, { required: 'El nivel es requerido' })}
+                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none appearance-none transition-all font-semibold text-slate-700 text-sm shadow-sm"
+                  >
+                    <option value="">Seleccione nivel...</option>
+                    {nivelesIdiomaOpciones.map(opcion => (
+                      <option key={opcion} value={opcion}>{opcion}</option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center px-2 text-slate-400">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                  {idiomasFields.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeIdioma(index)}
+                      className="absolute -right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-red-500 transition-colors bg-white rounded-full shadow-sm p-1 z-10"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                  {errors.idiomas?.[index]?.nivel && <span className="text-red-500 text-[10px] font-bold uppercase block mt-1 ml-1">{errors.idiomas[index].nivel.message}</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
       </section>
 

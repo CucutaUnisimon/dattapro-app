@@ -134,7 +134,10 @@ const NetworkingSearch = () => {
                                         </div>
                                     </div>
                                     <div className="bg-slate-50 dark:bg-slate-900/50 px-6 py-3 border-t border-slate-200 dark:border-slate-800 flex justify-center">
-                                        <button className="text-sm font-semibold text-primary hover:text-indigo-600 transition-colors w-full">
+                                        <button 
+                                            onClick={() => navigate(`/perfil/ver/${usuario.id}`)}
+                                            className="text-sm font-semibold text-primary hover:text-indigo-600 transition-colors w-full"
+                                        >
                                             Ver Perfil Completo
                                         </button>
                                     </div>

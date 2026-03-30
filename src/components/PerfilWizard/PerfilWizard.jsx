@@ -48,7 +48,7 @@ const PerfilWizard = () => {
       linkedin: '',
       googleScholar: '',
       otraRed: '',
-      idiomas: ''
+      idiomas: [{ idioma: '', nivel: '' }]
     },
     mode: 'onChange',
   });
@@ -95,9 +95,9 @@ const PerfilWizard = () => {
               ? rawData.areas
               : [{ nombre: '' }],
 
-            idiomas: Array.isArray(rawData.idiomas)
-              ? rawData.idiomas.map(i => `${i.idioma} (${i.nivel})`).join(', ')
-              : (rawData.idiomas || ''),
+            idiomas: Array.isArray(rawData.idiomas) && rawData.idiomas.length > 0
+              ? rawData.idiomas
+              : [{ idioma: '', nivel: '' }],
 
             certificacionesNombres: Array.isArray(rawData.certificaciones)
               ? rawData.certificaciones.map(c => c.nombre || c)
