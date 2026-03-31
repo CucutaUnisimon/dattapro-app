@@ -274,10 +274,29 @@ const Step3 = () => {
               name="certificacionesNombres"
               control={control}
               render={({ field }) => {
-                const handleCreate = (inputValue) => {
-                  const newOption = { label: inputValue, value: inputValue };
-                  setApiCertificaciones(prev => [...prev, newOption]);
-                  field.onChange([...(field.value || []), inputValue]);
+                const handleCreate = async (inputValue) => {
+                  try {
+                    const token = localStorage.getItem('token');
+                    const response = await fetch(`${API_BASE_URL}/certificaciones`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                      },
+                      body: JSON.stringify({ nombre: inputValue })
+                    });
+                    
+                    if (response.ok) {
+                      const data = await response.json();
+                      const newOption = { label: data.nombre, value: data.nombre };
+                      setApiCertificaciones(prev => [...prev, newOption]);
+                      field.onChange([...(field.value || []), data.nombre]);
+                    } else {
+                      console.error("Error en el backend al crear la certificación");
+                    }
+                  } catch (error) {
+                    console.error("Error de red intentando crear la certificación:", error);
+                  }
                 };
 
                 return (
