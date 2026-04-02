@@ -166,13 +166,126 @@ const PerfilWizard = () => {
     try {
       const token = authToken || localStorage.getItem('token');
 
-      const { certificacionesNombres, ...rest } = data;
+      // Helper para extraer arrays desde react-hook-form
+      const getArray = (val) => {
+        if (!val) return [];
+        if (Array.isArray(val)) {
+          return val.map(item => typeof item === 'object' ? (item.id || item.value || item.nombre || item) : item).filter(i => i !== null && i !== "");
+        }
+        return [];
+      };
+
+      // Mapeador de textos a IDs numéricos basado en el schema de base de datos
+      const mapId = (mapName, val) => {
+        if (!val && val !== 0 && val !== '0') return null;
+        if (!isNaN(val) && typeof val !== 'boolean') return parseInt(val);
+        const maps = {
+           // Basic Dropdowns
+          tipoDocumento: { "Cédula de ciudadanía": 1, "Cédula de extranjería": 2, "Pasaporte": 3, "Permiso Especial de Permanencia (PEP)": 4, "Permiso por Protección Temporal (PPT)": 5, "Otro": 6 },
+          sede: { "Cúcuta": 1, "Barranquilla": 2 },
+          facultad: { "Administración y Negocios": 1, "Ciencias Básicas y Biomédicas": 2, "Ciencias Jurídicas y Sociales": 3, "Ciencias de la Salud": 4, "Ingenierías": 5, "Facultad de Administración y Negocios": 1, "Facultad de Ciencias Básicas y Biomédicas": 2, "Facultad de Ciencias Jurídicas y Sociales": 3, "Facultad de Ciencias de la Salud": 4, "Facultad de Ingenierías": 5 },
+          programa: { "Administración de Empresas": 1, "Comercio y Negocios Internacionales": 2, "Contaduría Pública": 3, "Marketing y Negocios Digitales": 4, "Derecho": 5, "Psicología": 6, "Trabajo Social": 7, "Ingeniería de Sistemas": 8, "Ingeniería Multimedia": 9, "Ingeniería Industrial": 10, "Ingeniería Mecánica": 11, "Ingeniería de Datos e Inteligencia Artificial": 12, "Matemáticas y Ciencias de la Computación": 13, "Fisioterapia": 14, "Enfermería": 15 },
+          centroInvestigativo: { "Adaptia": 1, "AudacIA": 2, "MACONDOLAB": 3, "CICV": 4, "CIISO": 5, "CIEF": 6 },
+          tipoVinculacion: { "Tiempo Completo": 1, "Medio Tiempo": 2, "Planta tiempo completo": 3, "Planta medio tiempo": 4, "Catedratico": 5, "Catedrático": 5 },
+          nivelFormacion: { "Pregrado": 1, "Especialización": 2, "Maestría": 3, "Doctorado": 4, "Postdoctorado": 5 },
+          
+          // Arrays mappings
+          areasConocimiento: { "Agronomía, Veterinaria y afines": 1, "Bellas Artes": 2, "Ciencias de la Educación": 3, "Ciencias de la Salud": 4, "Ciencias Sociales y Humanas": 5, "Economía, Administración, Contaduría y afines": 6, "Ingeniería, Arquitectura, Urbanismo y afines": 7, "Matemáticas y Ciencias Naturales": 8 },
+          areasEspecialidad: { "Educación": 1, "Salud": 2, "Industria": 3, "TIC / Software": 4, "Emprendimiento": 5, "Finanzas / Contabilidad": 6, "Derecho / Normativo": 7, "Energía / Sostenibilidad": 8, "Agroindustria": 9, "Economía popular y comunitaria": 10, "Logística y comercio": 11 },
+          tiposProyecto: { "Innovación tecnológica": 1, "Emprendimiento": 2, "Extensión social o comunitaria": 3, "Investigación aplicada": 4, "Transferencia de conocimiento": 5 },
+          servicios: { "Consultoría técnica": 1, "Asesoría estratégica": 2, "Formación / Talleres / Docencia": 3, "Mentoría / Coaching": 4, "Desarrollo tecnológico": 5, "Investigación aplicada": 6, "Diagnósticos y estudios": 7, "Contenidos digitales": 8, "Auditoría": 9, "Gestión de proyectos": 10, "Comercial / Marketing": 11, "Logística / Operaciones": 12, "Legal / Normativo": 13 },
+          sectores: { "Público": 1, "Privado": 2, "Academia / Investigación": 3, "Internacional": 4, "Social / Comunitario": 5, "ONG / Sin fines de lucro": 6, "Cooperativismo / Economía Solidaria": 7 },
+          intereses: { "Ofertas comerciales para empresas": 1, "Formular y ejecutar proyectos I+D+i": 2, "Realizar mentorías": 3, "Desarrollar capacitaciones": 4, "Consultoría": 5, "Transferencia tecnológica": 6 },
+          
+          competenciasTecnicas: { "Gestión de proyectos": 1, "Análisis de datos": 2, "Marketing digital": 3, "Desarrollo tecnológico": 4, "Propiedad intelectual": 5, "Power BI / SPSS / Data Tools": 6 },
+          competenciasTransversales: { "Comunicación efectiva": 1, "Trabajo colaborativo": 2, "Adaptabilidad": 3, "Liderazgo": 4, "Orientación a resultados": 5 },
+          
+          idiomas: { "Español": 1, "Inglés": 2, "Portugués": 3, "Francés": 4 },
+          nivelesIdioma: { "A1": 0, "A2": 1, "B1": 3, "B2": 4, "C1": 5, "C2": 6, "Nativo": 7 }
+        };
+        const mapped = maps[mapName]?.[String(val).trim()];
+        return typeof mapped !== 'undefined' ? mapped : null;
+      };
+
+      const mapArrayIds = (mapName, arr) => {
+        const rawArray = getArray(arr);
+        return rawArray.map(item => mapId(mapName, item)).filter(i => i !== null);
+      };
+
       const formattedData = {
-        ...rest,
+        deseaVincularse: data.deseaVincularse === 'true' || data.deseaVincularse === true,
+        autorizaDatos: data.autorizaDatos === 'true' || data.autorizaDatos === true,
+
+        datosBasicos: {
+          nombre: data.nombre,
+          apellidos: data.apellidos,
+          tipoDocumentoId: mapId('tipoDocumento', data.tipoDocumento),
+          numeroIdentificacion: data.documento || null,
+          correo: data.correo || null,
+          facultadId: mapId('facultad', data.facultad),
+          programaId: mapId('programa', data.programa),
+          tipoVinculacionId: mapId('tipoVinculacion', data.tipoVinculacion),
+          sedeId: mapId('sede', data.sede),
+          centroInvestigacionId: (data.perteneceCentro === 'true' || data.perteneceCentro === true) ? mapId('centroInvestigativo', data.centroInvestigativo) : null
+        },
+
         perfilAcademico: {
-          certificacionesNombres: (certificacionesNombres || []).map(c => typeof c === 'object' ? (c.nombre || c.value) : c)
+          nivelFormacionId: mapId('nivelFormacion', data.formaciones?.[0]?.nivel),
+          tituloFormacion: data.formaciones?.[0]?.titulo || null,
+          areasIds: mapArrayIds('areasConocimiento', data.areas),
+          idiomas: (data.idiomas || [])
+            .map(i => ({ 
+              idiomaId: mapId('idiomas', typeof i === 'object' ? i.idioma : null), 
+              nivelId: mapId('nivelesIdioma', typeof i === 'object' ? i.nivel : null) 
+            }))
+            .filter(i => i.idiomaId !== null && i.nivelId !== null),
+          certificacionesNombres: getArray(data.certificacionesNombres)
+        },
+
+        experiencia: {
+          aniosExperiencia: data.aniosExperiencia != null ? data.aniosExperiencia : (data.aniosProf || 0),
+          tiposProyectoIds: mapArrayIds('tiposProyecto', data.proyectos),
+          descripcionProyectos: data.descripcionProyectos || '',
+          perfilProfesional: data.perfil || data.perfilProfesional || ''
+        },
+
+        competencias: {
+          tecnicas: (Array.isArray(data.competenciasTecnicas) ? data.competenciasTecnicas : [])
+            .map(c => ({
+              competenciaId: mapId('competenciasTecnicas', typeof c === 'object' ? (c.id || c.nombre) : c),
+              nivel: typeof c === 'object' && c.nivel ? parseInt(c.nivel) : 1
+            }))
+            .filter(c => c.competenciaId !== null),
+          transversales: (Array.isArray(data.competenciasTransversales) ? data.competenciasTransversales : [])
+            .map(c => ({
+              competenciaId: mapId('competenciasTransversales', typeof c === 'object' ? (c.id || c.nombre) : c),
+              nivel: typeof c === 'object' && c.nivel ? parseInt(c.nivel) : 1
+            }))
+            .filter(c => c.competenciaId !== null)
+        },
+
+        redes: {
+          linkedin: data.linkedin || '',
+          cvlac: data.cvlac || '',
+          googleScholar: data.googleScholar || '',
+          otraRed: data.otraRed || ''
+        },
+
+        intereses: {
+          serviciosIds: mapArrayIds('servicios', data.servicios),
+          experienciaServicios: data.experienciaServicios || '',
+          areasEspecialidadIds: mapArrayIds('areasEspecialidad', data.areasEspecialidad),
+          sectoresIds: mapArrayIds('sectores', data.sectores),
+          quiereParticipar: data.quiereParticipar === 'true' || data.quiereParticipar === true || data.colaborativos === 'true' || data.colaborativos === true,
+          quiereLiderar: data.quiereLiderar === 'true' || data.quiereLiderar === true || data.liderar === 'true' || data.liderar === true,
+          interesesIds: mapArrayIds('intereses', data.intereses),
+          objetivo: data.objetivo || ''
         }
       };
+
+      //imprimir el payload que sale al backend
+      console.log("🚀 PAYLOAD QUE SALE AL BACKEND:");
+      console.log(JSON.stringify(formattedData, null, 2));
 
       const response = await fetch(`${API_BASE_URL}/usuarios/perfil`, {
         method: 'POST',

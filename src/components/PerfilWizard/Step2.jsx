@@ -65,9 +65,9 @@ const Step2 = () => {
               <option value="Otro">Otro</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
-               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-               </svg>
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
             {errors.tipoDocumento && <span className="text-red-500 text-[11px] font-bold absolute -bottom-5 left-1 uppercase">{errors.tipoDocumento.message}</span>}
           </div>
@@ -117,9 +117,9 @@ const Step2 = () => {
               <option value="Barranquilla">Barranquilla</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
-               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-               </svg>
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
             {errors.sede && <span className="text-red-500 text-[11px] font-bold absolute -bottom-5 left-1 uppercase">{errors.sede.message}</span>}
           </div>
@@ -149,9 +149,9 @@ const Step2 = () => {
               <option value="Matemáticas y Ciencias de la Computación">Matemáticas y Ciencias de la Computación</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
-               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-               </svg>
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
             {errors.programa && <span className="text-red-500 text-[11px] font-bold absolute -bottom-5 left-1 uppercase">{errors.programa.message}</span>}
           </div>
@@ -166,16 +166,16 @@ const Step2 = () => {
               className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none appearance-none transition-all font-semibold text-slate-700 shadow-sm"
             >
               <option value="">Seleccione una facultad...</option>
-              <option value="Ingenierías">Facultad de Ingeniería</option>
-              <option value="Ciencias Basicas">Facultad de Ciencias Básicas</option>
-              <option value="Derecho">Facultad de Derecho</option>
-              <option value="Medicina">Facultad de Medicina</option>
-              <option value="Administracion">Facultad de Administración</option>
+              <option value="Administración y Negocios">Facultad de Administración y Negocios</option>
+              <option value="Ciencias Básicas y Biomédicas">Facultad de Ciencias Básicas y Biomédicas</option>
+              <option value="Ciencias Jurídicas y Sociales">Facultad de Ciencias Jurídicas y Sociales</option>
+              <option value="Ciencias de la Salud">Facultad de Ciencias de la Salud</option>
+              <option value="Ingenierías">Facultad de Ingenierías</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
-               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-               </svg>
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
             {errors.facultad && <span className="text-red-500 text-[11px] font-bold absolute -bottom-5 left-1 uppercase">{errors.facultad.message}</span>}
           </div>
@@ -198,9 +198,9 @@ const Step2 = () => {
               <option value="CIEF">CIEF</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
-               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-               </svg>
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
             {errors.centroInvestigativo && <span className="text-red-500 text-[11px] font-bold absolute -bottom-5 left-1 uppercase">{errors.centroInvestigativo.message}</span>}
           </div>
@@ -227,9 +227,9 @@ const Step2 = () => {
               <option value="Catedratico">Catedrático</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
-               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-               </svg>
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
           </div>
         </div>
