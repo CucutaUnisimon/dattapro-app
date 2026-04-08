@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 const Navbar = () => {
     const { logout, role, user } = useAuth();
     const navigate = useNavigate();
-    
+
     // Mapeo de roles para una vista más estética
     const roleLabels = {
         'ROLE_ADMIN': 'Administrador',
@@ -29,7 +29,7 @@ const Navbar = () => {
             {/* Logo y Marca */}
             <div className="flex items-center space-x-4">
                 <Link to="/" className="flex items-center space-x-4">
-                    <div className="size-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
+                    <div className="size-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-sky-500/20">
                         <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 2L2 7l10 5l10-5l-10-5zM2 17l10 5l10-5M2 12l10 5l10-5" />
                         </svg>
@@ -51,17 +51,17 @@ const Navbar = () => {
                 </div>
 
                 <div className="h-10 w-10 rounded-full border-2 border-slate-200 overflow-hidden bg-slate-100 flex-shrink-0">
-                    <img 
-                        src={`https://ui-avatars.com/api/?name=${displayName}&background=ec5b13&color=fff`} 
-                        alt="Avatar" 
+                    <img
+                        src={`https://ui-avatars.com/api/?name=${displayName}&background=3db4ed&color=fff`}
+                        alt="Avatar"
                         className="w-full h-full object-cover"
                     />
                 </div>
 
-                <button 
-                  onClick={handleLogout}
-                  className="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-                  title="Cerrar sesión"
+                <button
+                    onClick={handleLogout}
+                    className="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                    title="Cerrar sesión"
                 >
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

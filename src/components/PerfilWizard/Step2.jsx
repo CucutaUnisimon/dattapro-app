@@ -26,7 +26,10 @@ const Step2 = () => {
           <div className="relative group">
             <input
               type="text"
-              {...register('nombre', { required: 'El nombre es requerido' })}
+              {...register('nombre', { 
+                required: 'El nombre es requerido',
+                pattern: { value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, message: 'Solo se permiten letras' }
+              })}
               className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-semibold text-slate-700 placeholder:text-slate-400"
               placeholder="Ej. Juan"
             />
@@ -40,7 +43,10 @@ const Step2 = () => {
           <div className="relative group">
             <input
               type="text"
-              {...register('apellidos', { required: 'Los apellidos son requeridos' })}
+              {...register('apellidos', { 
+                required: 'Los apellidos son requeridos',
+                pattern: { value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, message: 'Solo se permiten letras' }
+              })}
               className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-semibold text-slate-700 placeholder:text-slate-400"
               placeholder="Ej. Pérez"
             />
@@ -79,7 +85,10 @@ const Step2 = () => {
           <div className="relative group">
             <input
               type="text"
-              {...register('documento', { required: 'El documento es requerido' })}
+              {...register('documento', { 
+                required: 'El documento es requerido',
+                pattern: { value: /^[0-9]+$/, message: 'Solo se permiten números' }
+              })}
               className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-semibold text-slate-700 placeholder:text-slate-400"
               placeholder="Ej. 1090123456"
             />
@@ -186,10 +195,11 @@ const Step2 = () => {
           <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Centro Investigativo</label>
           <div className="relative group">
             <select
-              {...register('centroInvestigativo', { required: 'El centro investigativo es requerido' })}
+              {...register('centroInvestigativo')}
               className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none appearance-none transition-all font-semibold text-slate-700 shadow-sm"
             >
-              <option value="">Seleccione un centro investigativo...</option>
+              <option value="" disabled hidden>Seleccione un centro investigativo</option>
+              <option value="No pertenece">No pertenece</option>
               <option value="Adaptia">Adaptia</option>
               <option value="AudacIA">AudacIA</option>
               <option value="MACONDOLAB">MACONDOLAB</option>
@@ -202,7 +212,6 @@ const Step2 = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
             </div>
-            {errors.centroInvestigativo && <span className="text-red-500 text-[11px] font-bold absolute -bottom-5 left-1 uppercase">{errors.centroInvestigativo.message}</span>}
           </div>
         </div>
       </div>

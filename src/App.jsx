@@ -6,6 +6,7 @@ import NetworkingSearch from './pages/NetworkingSearch';
 import ProfileDetail from './pages/ProfileDetail';
 import PerfilWizard from './components/PerfilWizard/PerfilWizard';
 import AdminUsers from './pages/AdminUsers';
+import Inicio from './pages/Inicio';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 
@@ -34,6 +35,10 @@ const AppLayout = ({ children }) => {
   );
 };
 
+const RootRoute = () => {
+  return localStorage.getItem('token') ? <Inicio /> : <Navigate to="/login" replace />;
+};
+
 function App() {
   return (
     <Router>
@@ -45,7 +50,7 @@ function App() {
           <Route path="/perfil/ver/:id" element={<ProfileDetail />} />
           <Route path="/perfil" element={<PerfilWizard />} />
           <Route path="/admin" element={<AdminUsers />} /> {/* Admin specific route */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<RootRoute />} />
         </Routes>
       </AppLayout>
     </Router>

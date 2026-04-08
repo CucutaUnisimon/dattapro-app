@@ -28,7 +28,6 @@ const PerfilWizard = () => {
       facultad: '',
       tipoVinculacion: '',
       sede: '',
-      perteneceCentro: 'false',
       centroInvestigativo: '',
       formaciones: [{ nivel: '', titulo: '' }],
       areas: [{ nombre: '' }],
@@ -92,7 +91,6 @@ const PerfilWizard = () => {
             facultad: rawData.facultad || '',
             tipoVinculacion: rawData.tipoVinculacion || '',
             sede: rawData.sede || '',
-            perteneceCentro: rawData.centroInvestigativo ? 'true' : 'false',
             centroInvestigativo: rawData.centroInvestigativo || '',
 
             formaciones: Array.isArray(rawData.formaciones) && rawData.formaciones.length > 0
@@ -193,7 +191,7 @@ const PerfilWizard = () => {
           sede: { "Cúcuta": 1, "Barranquilla": 2 },
           facultad: { "Administración y Negocios": 1, "Ciencias Básicas y Biomédicas": 2, "Ciencias Jurídicas y Sociales": 3, "Ciencias de la Salud": 4, "Ingenierías": 5, "Facultad de Administración y Negocios": 1, "Facultad de Ciencias Básicas y Biomédicas": 2, "Facultad de Ciencias Jurídicas y Sociales": 3, "Facultad de Ciencias de la Salud": 4, "Facultad de Ingenierías": 5 },
           programa: { "Administración de Empresas": 1, "Comercio y Negocios Internacionales": 2, "Contaduría Pública": 3, "Marketing y Negocios Digitales": 4, "Derecho": 5, "Psicología": 6, "Trabajo Social": 7, "Ingeniería de Sistemas": 8, "Ingeniería Multimedia": 9, "Ingeniería Industrial": 10, "Ingeniería Mecánica": 11, "Ingeniería de Datos e Inteligencia Artificial": 12, "Matemáticas y Ciencias de la Computación": 13, "Fisioterapia": 14, "Enfermería": 15 },
-          centroInvestigativo: { "Adaptia": 1, "AudacIA": 2, "MACONDOLAB": 3, "CICV": 4, "CIISO": 5, "CIEF": 6 },
+          centroInvestigativo: { "No pertenece": 1, "Adaptia": 2, "AudacIA": 3, "MACONDOLAB": 4, "CICV": 5, "CIISO": 6, "CIEF": 7 },
           tipoVinculacion: { "Tiempo Completo": 1, "Medio Tiempo": 2, "Planta tiempo completo": 3, "Planta medio tiempo": 4, "Catedratico": 5, "Catedrático": 5 },
           nivelFormacion: { "Pregrado": 1, "Especialización": 2, "Maestría": 3, "Doctorado": 4, "Postdoctorado": 5 },
 
@@ -234,7 +232,7 @@ const PerfilWizard = () => {
           programaId: mapId('programa', data.programa),
           tipoVinculacionId: mapId('tipoVinculacion', data.tipoVinculacion),
           sedeId: mapId('sede', data.sede),
-          centroInvestigacionId: (data.perteneceCentro === 'true' || data.perteneceCentro === true) ? mapId('centroInvestigativo', data.centroInvestigativo) : null
+          centroInvestigativo: mapId('centroInvestigativo', data.centroInvestigativo || 'No pertenece')
         },
 
         perfilAcademico: {
@@ -317,14 +315,14 @@ const PerfilWizard = () => {
     return (
       <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center p-6">
         <div className="max-w-xl w-full bg-white p-12 shadow-sm rounded-3xl border border-gray-100 text-center">
-          <div className="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-orange-50 mb-8">
+          <div className="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-sky-50 mb-8">
             <svg className="h-12 w-12 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
             </svg>
           </div>
           <h2 className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">¡Guardado!</h2>
           <p className="text-lg text-gray-500 mb-10">{submitResult.message}</p>
-          <button onClick={() => window.location.reload()} className="px-8 py-3.5 bg-primary text-white font-bold rounded-xl hover:bg-[#d84e10] transition-colors shadow-md text-lg">
+          <button onClick={() => window.location.reload()} className="px-8 py-3.5 bg-primary text-white font-bold rounded-xl hover:bg-[#1f4571] transition-colors shadow-md text-lg">
             Continuar
           </button>
         </div>
@@ -357,45 +355,43 @@ const PerfilWizard = () => {
 
   return (
     <div className="w-full px-4 py-8 sm:px-6 lg:px-8">
-      <div className="flex flex-col lg:flex-row gap-12">
-        {/* Wizard Progress - Local to this page */}
-        <aside className="w-full lg:w-64 shrink-0">
-          <div className="bg-white dark:bg-slate-950 rounded-[2rem] shadow-sm border border-slate-200 dark:border-slate-800 p-6 sticky top-28">
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6 px-2">Progreso del Perfil</p>
-            <nav className="space-y-2">
-              {steps.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => setStep(s.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all font-bold text-sm ${step === s.id
-                    ? 'bg-primary text-white shadow-lg shadow-orange-500/30'
-                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400'
-                    }`}
-                >
-                  <div className={`${step === s.id ? 'text-white' : 'text-slate-400'}`}>
-                    {s.icon}
-                  </div>
-                  <span>{s.label}</span>
-                </button>
-              ))}
-            </nav>
+      <div className="flex flex-col max-w-5xl mx-auto gap-8">
+
+        {/* Header */}
+        <div>
+          <h1 className="text-4xl font-black text-slate-900 mb-3 tracking-tight">Editar Perfil</h1>
+          <p className="text-lg font-medium text-slate-500 leading-relaxed">
+            Gestiona tu identidad profesional y tus credenciales en toda la red de datos.
+          </p>
+        </div>
+
+        {/* Wizard Progress - Horizontal Top Bar */}
+        <div>
+          <div className="bg-white dark:bg-slate-950 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-2 flex overflow-x-auto">
+            {steps.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => setStep(s.id)}
+                className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-all font-bold text-sm whitespace-nowrap min-w-fit ${step === s.id
+                  ? 'bg-primary text-white shadow-lg shadow-sky-500/30'
+                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400'
+                  }`}
+              >
+                <div className={`${step === s.id ? 'text-white' : 'text-slate-400'}`}>
+                  {s.icon}
+                </div>
+                <span>{s.label}</span>
+              </button>
+            ))}
           </div>
-        </aside>
+        </div>
 
         {/* MAIN FORM AREA */}
         <div className="flex-1">
 
-          {/* Header */}
-          <div className="mb-10">
-            <h1 className="text-4xl font-black text-slate-900 mb-3 tracking-tight">Editar Perfil</h1>
-            <p className="text-lg font-medium text-slate-500 leading-relaxed">
-              Gestiona tu identidad profesional y tus credenciales en toda la red de datos.
-            </p>
-          </div>
-
           {isLoadingData ? (
             <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-200 p-24 flex flex-col items-center justify-center space-y-6">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-sky-500"></div>
               <p className="text-xl text-slate-500 font-bold">Cargando información del perfil...</p>
             </div>
           ) : (
@@ -412,15 +408,15 @@ const PerfilWizard = () => {
 
                 {/* Actions Bar */}
                 <div className="flex items-center justify-end space-x-6">
-                  <button type="button" className="text-slate-500 font-bold hover:text-slate-900 transition-colors">
-                    Cancel
+                  <button type="button" onClick={() => setStep(1)} className="text-slate-500 font-bold hover:text-slate-900 transition-colors">
+                    Cancelar
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-10 py-4 bg-orange-500 text-white font-black rounded-2xl hover:bg-orange-600 active:scale-95 transition-all shadow-xl shadow-orange-500/30 disabled:opacity-50 text-lg"
+                    className="px-10 py-4 bg-sky-500 text-white font-black rounded-2xl hover:bg-sky-600 active:scale-95 transition-all shadow-xl shadow-sky-500/30 disabled:opacity-50 text-lg"
                   >
-                    {isSubmitting ? 'Saving...' : 'Save Changes'}
+                    {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
                   </button>
                 </div>
               </form>

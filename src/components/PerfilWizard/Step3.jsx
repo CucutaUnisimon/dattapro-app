@@ -339,10 +339,10 @@ const Step3 = () => {
             <button
               type="button"
               onClick={() => appendArea({ nombre: '' })}
-              className="text-xs font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1.5"
+              className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all font-bold text-sm"
             >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
               Agregar área
             </button>
@@ -389,10 +389,10 @@ const Step3 = () => {
             <button
               type="button"
               onClick={() => appendIdioma({ idioma: '', nivel: '' })}
-              className="text-xs font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1.5"
+              className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all font-bold text-sm"
             >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
               Agregar idioma
             </button>
@@ -460,9 +460,9 @@ const Step3 = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Servicios que Ofrece</label>
-            <button type="button" onClick={() => appendServicio({ nombre: '' })} className="text-[11px] font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-              Añadir
+            <button type="button" onClick={() => appendServicio({ nombre: '' })} className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all font-bold text-sm">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+              Agregar servicio
             </button>
           </div>
           <div className="space-y-3">
@@ -489,9 +489,9 @@ const Step3 = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Sectores de Experiencia</label>
-            <button type="button" onClick={() => appendSector({ nombre: '' })} className="text-[11px] font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-              Añadir
+            <button type="button" onClick={() => appendSector({ nombre: '' })} className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all font-bold text-sm">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+              Agregar sector
             </button>
           </div>
           <div className="space-y-3">

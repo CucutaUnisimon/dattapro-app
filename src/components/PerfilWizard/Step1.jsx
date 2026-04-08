@@ -73,7 +73,7 @@ const Step1 = () => {
         </div>
       </div>
 
-      <div className="p-6 bg-orange-50/50 border border-primary/20 rounded-[2rem]">
+      <div className="p-6 bg-sky-50/50 border border-primary/20 rounded-[2rem]">
         <p className="text-sm text-slate-600 leading-relaxed italic">
           <strong>Nota:</strong> Al vincularse a la red, su información profesional podrá ser consultada por otros miembros de la comunidad académica para fomentar la colaboración investigativa.
         </p>

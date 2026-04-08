@@ -75,7 +75,7 @@ const Login = () => {
                 <div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-24 bg-white dark:bg-background-dark">
                     <div className="sm:mx-auto sm:w-full sm:max-w-md">
                         <div className="flex items-center gap-3 mb-10">
-                            <div className="size-8 bg-primary rounded-md flex items-center justify-center p-1.5 shadow-lg shadow-orange-500/20">
+                            <div className="size-8 bg-primary rounded-md flex items-center justify-center p-1.5 shadow-lg shadow-sky-500/20">
                                 <svg viewBox="0 0 24 24" fill="none" className="text-white w-full h-full" stroke="currentColor" strokeWidth="2">
                                     <path d="M12 2L2 7l10 5l10-5l-10-5zM2 17l10 5l10-5M2 12l10 5l10-5" />
                                 </svg>
@@ -169,7 +169,7 @@ const Login = () => {
 
                             <div>
                                 <button
-                                    className="flex w-full justify-center rounded-2xl bg-primary px-3 py-4 text-sm font-bold leading-6 text-white shadow-xl shadow-orange-500/20 hover:shadow-orange-500/30 hover:-translate-y-0.5 active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:translate-y-0"
+                                    className="flex w-full justify-center rounded-2xl bg-primary px-3 py-4 text-sm font-bold leading-6 text-white shadow-xl shadow-sky-500/20 hover:shadow-sky-500/30 hover:-translate-y-0.5 active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:translate-y-0"
                                     type="submit"
                                     disabled={isLoading}
                                 >

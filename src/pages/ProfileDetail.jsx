@@ -106,7 +106,7 @@ const ProfileDetail = () => {
   if (isLoading) {
     return (
       <div className="flex-1 min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-sky-500"></div>
       </div>
     );
   }
@@ -122,7 +122,7 @@ const ProfileDetail = () => {
           <p className="text-slate-500 mb-8">{error || "Usuario no encontrado"}</p>
           <button 
             onClick={() => navigate('/network')} 
-            className="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-orange-600 transition-colors shadow-md"
+            className="px-8 py-3 bg-primary text-white font-bold rounded-xl hover:bg-sky-600 transition-colors shadow-md"
           >
             Volver al Directorio
           </button>
@@ -167,7 +167,7 @@ const ProfileDetail = () => {
               </h1>
               <p className="text-xl font-bold text-primary mt-2 flex items-center justify-center md:justify-start gap-2">
                  Profesor e Investigador
-                 {profileData.centroInvestigativo && <span className="text-sm px-3 py-1 bg-orange-100 text-orange-700 rounded-full font-semibold">{profileData.centroInvestigativo}</span>}
+                 {profileData.centroInvestigativo && <span className="text-sm px-3 py-1 bg-sky-100 text-sky-700 rounded-full font-semibold">{profileData.centroInvestigativo}</span>}
               </p>
               
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-4 text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -413,8 +413,8 @@ const ProfileDetail = () => {
                  </div>
 
                  {profileData.objetivo && (
-                   <div className="p-5 bg-orange-50 dark:bg-orange-900/10 rounded-2xl border border-orange-100 dark:border-orange-900/30">
-                     <h4 className="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-2">Objetivo</h4>
+                   <div className="p-5 bg-sky-50 dark:bg-sky-900/10 rounded-2xl border border-sky-100 dark:border-sky-900/30">
+                     <h4 className="text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider mb-2">Objetivo</h4>
                      <p className="text-sm text-slate-700 dark:text-slate-300 font-medium leading-relaxed italic">
                        "{profileData.objetivo}"
                      </p>
