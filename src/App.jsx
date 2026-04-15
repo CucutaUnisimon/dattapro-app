@@ -8,6 +8,8 @@ import PerfilWizard from './components/PerfilWizard/PerfilWizard';
 import AdminUsers from './pages/AdminUsers';
 import Inicio from './pages/Inicio';
 import Convocatorias from './pages/Convocatorias';
+import MisConvocatorias from './pages/MisConvocatorias';
+import ConvocatoriaForm from './pages/ConvocatoriaForm';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 
@@ -57,6 +59,9 @@ function App() {
           <Route path="/perfil" element={<PerfilWizard />} />
           <Route path="/admin" element={<AdminUsers />} />
           <Route path="/convocatorias" element={<Convocatorias />} />
+          <Route path="/mis-convocatorias" element={<MisConvocatorias />} />
+          <Route path="/convocatorias/crear" element={<ConvocatoriaForm />} />
+          <Route path="/convocatorias/editar/:id" element={<ConvocatoriaForm />} />
           <Route path="/" element={<RootRoute />} />
         </Routes>
       </AppLayout>
