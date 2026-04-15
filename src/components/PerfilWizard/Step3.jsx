@@ -62,6 +62,12 @@ const Step3 = () => {
     name: "sectores"
   });
 
+  // Field Array para Tipos de Proyecto
+  const { fields: proyectosFields, append: appendProyecto, remove: removeProyecto } = useFieldArray({
+    control,
+    name: "proyectos"
+  });
+
   const areasOpciones = [
     "Agronomía, Veterinaria y afines",
     "Bellas Artes",
@@ -119,6 +125,14 @@ const Step3 = () => {
     "Social / Comunitario",
     "ONG / Sin fines de lucro",
     "Cooperativismo / Economía Solidaria"
+  ];
+
+  const tiposProyectoOpciones = [
+    "Innovación tecnológica",
+    "Emprendimiento",
+    "Extensión social o comunitaria",
+    "Investigación aplicada",
+    "Transferencia de conocimiento"
   ];
 
   // Estilos personalizados para react-select
@@ -531,6 +545,22 @@ const Step3 = () => {
 
         {/* Formulario de Experiencia Servicios */}
         <div className="space-y-6">
+          {/*Años de Experiecia */}
+          <div className="space-y-2">
+            <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Años de Experiencia Profesional</label>
+            <input
+              type="number"
+              placeholder="Ej. 5"
+              {...register('aniosProf', {
+                required: 'Este campo es requerido',
+                valueAsNumber: true,
+                min: { value: 0, message: 'Mínimo 0 años' }
+              })}
+              className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-semibold text-slate-700 placeholder:text-slate-400 shadow-sm"
+            />
+            {errors.aniosProf && <span className="text-red-500 text-[11px] font-bold uppercase block ml-1">{errors.aniosProf.message}</span>}
+          </div>
+
           <div className="space-y-2">
             <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Resumen de Experiencia</label>
             <textarea
@@ -540,6 +570,55 @@ const Step3 = () => {
               className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400 resize-none leading-relaxed shadow-sm"
             ></textarea>
             {errors.experienciaServicios && <span className="text-red-500 text-[11px] font-bold uppercase block ml-1">{errors.experienciaServicios.message}</span>}
+          </div>
+
+          {/* Tipos de Proyecto */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Tipos de Proyecto</label>
+              <button
+                type="button"
+                onClick={() => appendProyecto({ nombre: '' })}
+                className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all font-bold text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Agregar tipo
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {proyectosFields.map((field, index) => (
+                <div key={field.id} className="relative group animate-in slide-in-from-left-2 duration-300">
+                  <select
+                    {...register(`proyectos.${index}.nombre`)}
+                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none appearance-none transition-all font-semibold text-slate-700 text-sm shadow-sm"
+                  >
+                    <option value="">Seleccione tipo de proyecto...</option>
+                    {tiposProyectoOpciones.map(op => (
+                      <option key={op} value={op}>{op}</option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-10 flex items-center px-2 text-slate-400">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                  {proyectosFields.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeProyecto(index)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-red-500 transition-colors p-1"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Descripción de Proyectos */}

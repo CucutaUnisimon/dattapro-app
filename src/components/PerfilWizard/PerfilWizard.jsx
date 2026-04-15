@@ -32,8 +32,9 @@ const PerfilWizard = () => {
       formaciones: [{ nivel: '', titulo: '' }],
       areas: [{ nombre: '' }],
       certificacionesNombres: [],
+      aniosProf: 0,
       experienciaServicios: '',
-      proyectos: '',
+      proyectos: [{ nombre: '' }],
       perfil: '',
       descripcionProyectos: '',
       competenciasTecnicas: [{ nombre: '', nivel: 1 }],
@@ -47,7 +48,10 @@ const PerfilWizard = () => {
       linkedin: '',
       googleScholar: '',
       otraRed: '',
-      idiomas: [{ idioma: '', nivel: '' }]
+      idiomas: [{ idioma: '', nivel: '' }],
+      foto: '',
+      colaborativos: '0',
+      liderar: '0'
     },
     mode: 'onChange',
   });
@@ -109,12 +113,14 @@ const PerfilWizard = () => {
               ? rawData.certificaciones.map(c => c.nombre || c)
               : [],
 
+            aniosProf: rawData.aniosProf ?? rawData.aniosProfesionales ?? 0,
+
             experienciaServicios: rawData.experienciaServicios || '',
 
-            // Corregido: En el JSON viene como "proyectos"
-            proyectos: Array.isArray(rawData.proyectos)
-              ? rawData.proyectos.map(p => p.nombre).join(', ')
-              : (rawData.proyectosDestacados || ''),
+            // proyectos viene como array de objetos {nombre} desde la API
+            proyectos: Array.isArray(rawData.proyectos) && rawData.proyectos.length > 0
+              ? rawData.proyectos.map(p => ({ nombre: p.nombre || p }))
+              : [{ nombre: '' }],
 
             perfil: rawData.perfilProfesional || '',
 
@@ -151,6 +157,11 @@ const PerfilWizard = () => {
               ? rawData.areasEspecialidad
               : [{ nombre: '' }],
 
+            // Convertir booleano → string para que el radio quede seleccionado
+            colaborativos: rawData.colaborativos === true || rawData.colaborativos === 1 ? '1' : '0',
+            liderar: rawData.liderar === true || rawData.liderar === 1 ? '1' : '0',
+
+            foto: rawData.foto || '',
             deseaVincularse: 'true',
             autorizaDatos: 'true'
           };
@@ -192,7 +203,7 @@ const PerfilWizard = () => {
           facultad: { "Administración y Negocios": 1, "Ciencias Básicas y Biomédicas": 2, "Ciencias Jurídicas y Sociales": 3, "Ciencias de la Salud": 4, "Ingenierías": 5, "Facultad de Administración y Negocios": 1, "Facultad de Ciencias Básicas y Biomédicas": 2, "Facultad de Ciencias Jurídicas y Sociales": 3, "Facultad de Ciencias de la Salud": 4, "Facultad de Ingenierías": 5 },
           programa: { "Administración de Empresas": 1, "Comercio y Negocios Internacionales": 2, "Contaduría Pública": 3, "Marketing y Negocios Digitales": 4, "Derecho": 5, "Psicología": 6, "Trabajo Social": 7, "Ingeniería de Sistemas": 8, "Ingeniería Multimedia": 9, "Ingeniería Industrial": 10, "Ingeniería Mecánica": 11, "Ingeniería de Datos e Inteligencia Artificial": 12, "Matemáticas y Ciencias de la Computación": 13, "Fisioterapia": 14, "Enfermería": 15 },
           centroInvestigativo: { "No pertenece": 1, "Adaptia": 2, "AudacIA": 3, "MACONDOLAB": 4, "CICV": 5, "CIISO": 6, "CIEF": 7 },
-          tipoVinculacion: { "Tiempo Completo": 1, "Medio Tiempo": 2, "Planta tiempo completo": 3, "Planta medio tiempo": 4, "Catedratico": 5, "Catedrático": 5 },
+          tipoVinculacion: { "Tiempo Completo": 1, "Medio Tiempo": 2, "Planta tiempo completo": 3, "Planta medio tiempo": 4, "Catedrático": 5 },
           nivelFormacion: { "Pregrado": 1, "Especialización": 2, "Maestría": 3, "Doctorado": 4, "Postdoctorado": 5 },
 
           // Arrays mappings
@@ -232,7 +243,8 @@ const PerfilWizard = () => {
           programaId: mapId('programa', data.programa),
           tipoVinculacionId: mapId('tipoVinculacion', data.tipoVinculacion),
           sedeId: mapId('sede', data.sede),
-          centroInvestigativo: mapId('centroInvestigativo', data.centroInvestigativo || 'No pertenece')
+          centroInvestigativo: mapId('centroInvestigativo', data.centroInvestigativo || 'No pertenece'),
+          foto: data.foto ? (data.foto.includes('base64,') ? data.foto.split('base64,')[1] : data.foto) : null
         },
 
         perfilAcademico: {
@@ -249,7 +261,7 @@ const PerfilWizard = () => {
         },
 
         experiencia: {
-          aniosExperiencia: data.aniosExperiencia != null ? data.aniosExperiencia : (data.aniosProf || 0),
+          aniosProf: parseInt(data.aniosProf) || 0,
           tiposProyectoIds: mapArrayIds('tiposProyecto', data.proyectos),
           descripcionProyectos: data.descripcionProyectos || '',
           perfilProfesional: data.perfil || data.perfilProfesional || ''
@@ -283,8 +295,8 @@ const PerfilWizard = () => {
           serviciosIds: mapArrayIds('servicios', data.servicios),
           experienciaServicios: data.experienciaServicios || '',
           sectoresIds: mapArrayIds('sectores', data.sectores),
-          quiereParticipar: data.quiereParticipar === 'true' || data.quiereParticipar === true || data.colaborativos === 'true' || data.colaborativos === true,
-          quiereLiderar: data.quiereLiderar === 'true' || data.quiereLiderar === true || data.liderar === 'true' || data.liderar === true,
+          quiereParticipar: parseInt(data.colaborativos) === 1,
+          quiereLiderar: parseInt(data.liderar) === 1,
           interesesIds: mapArrayIds('intereses', data.intereses),
           objetivo: data.objetivo || ''
         }

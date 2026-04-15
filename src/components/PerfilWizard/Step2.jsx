@@ -1,11 +1,39 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 const Step2 = () => {
-  const { register, formState: { errors } } = useFormContext();
+  const { register, setValue, watch, formState: { errors } } = useFormContext();
+  const fileInputRef = useRef(null);
+  const foto = watch('foto');
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validación de tipo
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!validTypes.includes(file.type)) {
+      alert('Solo se permiten imágenes (JPG, JPEG, PNG)');
+      return;
+    }
+
+    // Validación de tamaño (3MB)
+    if (file.size > 3 * 1024 * 1024) {
+      alert('El archivo es demasiado grande (Máximo 3MB)');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      // Guardar el string completo (data:image/...;base64,...) para mantener el tipo MIME
+      setValue('foto', reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* ... (rest of the component until line 245) ... */}
       {/* Header Sección */}
       <div className="flex items-center space-x-3">
         <div className="p-2.5 bg-primary/10 rounded-xl">
@@ -26,7 +54,7 @@ const Step2 = () => {
           <div className="relative group">
             <input
               type="text"
-              {...register('nombre', { 
+              {...register('nombre', {
                 required: 'El nombre es requerido',
                 pattern: { value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, message: 'Solo se permiten letras' }
               })}
@@ -43,7 +71,7 @@ const Step2 = () => {
           <div className="relative group">
             <input
               type="text"
-              {...register('apellidos', { 
+              {...register('apellidos', {
                 required: 'Los apellidos son requeridos',
                 pattern: { value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, message: 'Solo se permiten letras' }
               })}
@@ -85,7 +113,7 @@ const Step2 = () => {
           <div className="relative group">
             <input
               type="text"
-              {...register('documento', { 
+              {...register('documento', {
                 required: 'El documento es requerido',
                 pattern: { value: /^[0-9]+$/, message: 'Solo se permiten números' }
               })}
@@ -233,12 +261,78 @@ const Step2 = () => {
               <option value="Medio Tiempo">Medio Tiempo</option>
               <option value="Planta tiempo completo">Planta tiempo completo</option>
               <option value="Planta medio tiempo">Planta medio tiempo</option>
-              <option value="Catedratico">Catedrático</option>
+              <option value="Catedrático">Catedrático</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Sección de Foto de Perfil */}
+      <div className="mt-12 pt-12 border-t border-slate-100">
+        <div className="flex flex-col md:flex-row items-center gap-8">
+          <div className="relative group">
+            <div className="h-32 w-32 md:h-40 md:w-40 rounded-full bg-slate-100 border-4 border-white shadow-xl overflow-hidden flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
+              {foto ? (
+                <img
+                  src={foto.includes('base64,') ? foto : `data:image/jpeg;base64,${foto}`}
+                  alt="Vista previa"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+              ) : (
+                <div className="text-slate-300">
+                  <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+              )}
+            </div>
+            {foto && (
+              <button
+                type="button"
+                onClick={() => setValue('foto', '')}
+                className="absolute -top-1 -right-1 p-2 bg-white rounded-full shadow-lg border border-slate-100 text-red-500 hover:text-red-600 transition-colors active:scale-95"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          <div className="flex-1 space-y-4 text-center md:text-left">
+            <div>
+              <h3 className="text-lg font-black text-slate-800">Foto de Perfil</h3>
+              <p className="text-sm text-slate-500 font-medium">Sube una foto profesional para tu perfil (Opcional)</p>
+            </div>
+
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept=".jpg,.jpeg,.png"
+              className="hidden"
+            />
+
+            <div className="flex flex-wrap justify-center md:justify-start gap-4">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current.click()}
+                className="px-6 py-3 bg-[#3db4ed] text-white font-bold rounded-xl hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-[#3db4ed]/20 flex items-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                {foto ? 'Cambiar Foto' : 'Subir Foto'}
+              </button>
+
+              <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest w-full">
+                JPG, PNG • Máximo 3MB
+              </p>
             </div>
           </div>
         </div>

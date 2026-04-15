@@ -50,11 +50,10 @@ const Step4 = () => {
   ];
 
   const nivelesOpciones = [
-    { value: 1, label: "1" },
-    { value: 2, label: "2" },
-    { value: 3, label: "3" },
-    { value: 4, label: "4" },
-    { value: 5, label: "5" }
+    { value: 1, label: "Básico" },
+    { value: 2, label: "Medio" },
+    { value: 3, label: "Avanzado" },
+    { value: 4, label: "Experto" }
   ];
 
   return (
@@ -296,6 +295,63 @@ const Step4 = () => {
               className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400 resize-none leading-relaxed shadow-sm"
             ></textarea>
             {errors.objetivo && <span className="text-red-500 text-[11px] font-bold uppercase block ml-1">{errors.objetivo.message}</span>}
+          </div>
+
+          {/* Campos de Sí/No */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Colaborativos */}
+            <div className="space-y-3">
+              <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">
+                ¿Está interesado en proyectos colaborativos?
+              </label>
+              <div className="flex gap-4">
+                <label className="flex-1 flex items-center justify-center gap-3 px-5 py-4 rounded-2xl border-2 cursor-pointer transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5 border-slate-200 bg-slate-50 hover:border-primary/50">
+                  <input
+                    type="radio"
+                    value="1"
+                    {...register('colaborativos')}
+                    className="accent-primary w-4 h-4"
+                  />
+                  <span className="font-bold text-slate-700 text-sm">Sí</span>
+                </label>
+                <label className="flex-1 flex items-center justify-center gap-3 px-5 py-4 rounded-2xl border-2 cursor-pointer transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5 border-slate-200 bg-slate-50 hover:border-primary/50">
+                  <input
+                    type="radio"
+                    value="0"
+                    {...register('colaborativos')}
+                    className="accent-primary w-4 h-4"
+                  />
+                  <span className="font-bold text-slate-700 text-sm">No</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Liderar */}
+            <div className="space-y-3">
+              <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">
+                ¿Le interesa liderar proyectos?
+              </label>
+              <div className="flex gap-4">
+                <label className="flex-1 flex items-center justify-center gap-3 px-5 py-4 rounded-2xl border-2 cursor-pointer transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5 border-slate-200 bg-slate-50 hover:border-primary/50">
+                  <input
+                    type="radio"
+                    value="1"
+                    {...register('liderar')}
+                    className="accent-primary w-4 h-4"
+                  />
+                  <span className="font-bold text-slate-700 text-sm">Sí</span>
+                </label>
+                <label className="flex-1 flex items-center justify-center gap-3 px-5 py-4 rounded-2xl border-2 cursor-pointer transition-all has-[:checked]:border-primary has-[:checked]:bg-primary/5 border-slate-200 bg-slate-50 hover:border-primary/50">
+                  <input
+                    type="radio"
+                    value="0"
+                    {...register('liderar')}
+                    className="accent-primary w-4 h-4"
+                  />
+                  <span className="font-bold text-slate-700 text-sm">No</span>
+                </label>
+              </div>
+            </div>
           </div>
 
           {/* <div className="p-6 bg-slate-900 rounded-[2rem] text-white shadow-xl flex items-center justify-between overflow-hidden relative">
