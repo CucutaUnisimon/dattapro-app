@@ -40,11 +40,11 @@ export const AuthProvider = ({ children }) => {
         setRole(newRole);
         setUser(userData);
         setUserName(userData.name || null);
-        localStorage.setItem('token', newToken);
-        localStorage.setItem('role', newRole);
-        localStorage.setItem('userId', userData.id);
-        localStorage.setItem('userEmail', userData.email);
-        if (userData.name) localStorage.setItem('userName', userData.name);
+        if (newToken) localStorage.setItem('token', newToken);
+        if (newRole) localStorage.setItem('role', newRole);
+        if (userData?.id) localStorage.setItem('userId', userData.id);
+        if (userData?.email) localStorage.setItem('userEmail', userData.email);
+        if (userData?.name) localStorage.setItem('userName', userData.name);
     };
 
     const updateUser = (data) => {
