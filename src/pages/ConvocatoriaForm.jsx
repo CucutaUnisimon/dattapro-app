@@ -21,7 +21,7 @@ const ConvocatoriaForm = () => {
         fechaLimite: '',
         imagenFondo: '',
         enlace: '',
-        estado: true
+        visible: true
     });
 
     const [usuarioId, setUsuarioId] = useState(null);
@@ -72,7 +72,7 @@ const ConvocatoriaForm = () => {
                 fechaLimite: data.fechaLimite || '',
                 imagenFondo: data.imagenFondo || '',
                 enlace: data.enlace || '',
-                estado: data.estado ?? true
+                visible: data.visible ?? true
             });
         } catch (err) {
             setError('No se pudo cargar la información para editar');

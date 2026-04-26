@@ -20,7 +20,8 @@ const Convocatorias = () => {
             sector: "Tecnología",
             languages: ["Español", "Inglés"],
             deadline: "Oct 15, 2024",
-            funding: "$200M COP"
+            funding: "$200M COP",
+            visible: true
         },
         {
             id: 2,
@@ -32,7 +33,8 @@ const Convocatorias = () => {
             sector: "Academia",
             languages: ["Inglés C1"],
             deadline: "Nov 30, 2024",
-            funding: "Total Cover"
+            funding: "Total Cover",
+            visible: true
         },
         {
             id: 3,
@@ -44,7 +46,8 @@ const Convocatorias = () => {
             sector: "Gubernamental",
             languages: ["Inglés", "Español"],
             deadline: "Ene 12, 2025",
-            funding: "$50,000 USD"
+            funding: "$50,000 USD",
+            visible: true
         }
     ];
 

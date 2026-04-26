@@ -60,8 +60,8 @@ const MisConvocatorias = () => {
         if (!convocatoria) return;
 
         // Actualizamos localmente primero (optimistic update)
-        const updatedEstado = !convocatoria.estado;
-        const updatedConvocatoria = { ...convocatoria, estado: updatedEstado };
+        const updatedVisible = !convocatoria.visible;
+        const updatedConvocatoria = { ...convocatoria, visible: updatedVisible };
 
         try {
             const response = await fetch(`${API_BASE_URL}/convocatorias/${id}`, {
@@ -77,7 +77,7 @@ const MisConvocatorias = () => {
 
             // Si fue exitoso, actualizamos el estado local permanentemente
             setConvocatorias(prev => prev.map(c => 
-                c.id === id ? { ...c, estado: updatedEstado } : c
+                c.id === id ? { ...c, visible: updatedVisible } : c
             ));
         } catch (err) {
             alert('No se pudo actualizar el estado: ' + err.message);
@@ -141,7 +141,7 @@ const MisConvocatorias = () => {
                                 <th className="px-8 py-5">Convocatoria</th>
                                 <th className="px-8 py-5">Categoría</th>
                                 <th className="px-8 py-5">Fechas (Inicio / Fin)</th>
-                                <th className="px-8 py-5 text-center">Estado</th>
+                                <th className="px-8 py-5 text-center">Visibilidad</th>
                                 <th className="px-8 py-5 text-right">Acciones</th>
                             </tr>
                         </thead>
@@ -169,10 +169,10 @@ const MisConvocatorias = () => {
                                             <div className="flex justify-center">
                                                 <button 
                                                     onClick={() => toggleVisibility(convocatoria.id)}
-                                                    className={`p-2 rounded-xl transition-all ${convocatoria.estado ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}
-                                                    title={convocatoria.estado ? 'Visible' : 'Oculto'}
+                                                    className={`p-2 rounded-xl transition-all ${convocatoria.visible ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}
+                                                    title={convocatoria.visible ? 'Visible' : 'Oculto'}
                                                 >
-                                                    {convocatoria.estado ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+                                                    {convocatoria.visible ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                                                 </button>
                                             </div>
                                         </td>
