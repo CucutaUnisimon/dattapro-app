@@ -163,7 +163,7 @@ const ConvocatoriaForm = () => {
 
                 <form onSubmit={handleSubmit} className="p-10 space-y-10">
                     <input type="hidden" name="usuarioId" value={usuarioId || ''} />
-                    
+
                     {error && (
                         <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-2xl text-sm font-medium flex items-center gap-3">
                             <X className="w-5 h-5 shrink-0" />
@@ -202,11 +202,16 @@ const ConvocatoriaForm = () => {
                                     onChange={handleChange}
                                 >
                                     <option value="">Seleccionar categoría</option>
-                                    <option value="1">Arte y Cultura</option>
+                                    <option value="1">Educación</option>
                                     <option value="2">Ciencia y Tecnología</option>
-                                    <option value="3">Educación</option>
-                                    <option value="4">Emprendimiento</option>
+                                    <option value="3">Emprendimiento</option>
+                                    <option value="4">Arte y Cultura</option>
                                     <option value="5">Sostenibilidad</option>
+                                    <option value="6">Investigación</option>
+                                    <option value="7">Formación</option>
+                                    <option value="8">Movilidad</option>
+                                    <option value="9">Medio Ambiente</option>
+                                    <option value="10">Salud</option>
                                 </select>
                             </div>
 
