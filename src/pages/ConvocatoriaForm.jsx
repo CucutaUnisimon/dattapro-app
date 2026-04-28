@@ -1,9 +1,129 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Save, Info, Calendar, Link as LinkIcon, Image as ImageIcon, Briefcase, X } from 'lucide-react';
+import { ArrowLeft, Save, Info, Calendar, Link as LinkIcon, Image as ImageIcon, Briefcase, X, User, Mail, Layers, Tag, Cpu, Check, Search } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { API_BASE_URL } from '../config/api';
 import { useAuth } from '../context/AuthContext';
+
+// ─── Componentes auxiliares definidos FUERA del padre para evitar re-montaje ───
+
+const TagInput = ({ label, tags, setTags, placeholder }) => {
+    const labelClasses = "block text-sm font-black text-slate-800 mb-2 ml-1 uppercase tracking-wider";
+    const [input, setInput] = useState('');
+
+    const addTag = (e) => {
+        if (e.key === 'Enter' && input.trim()) {
+            e.preventDefault();
+            const safeTags = tags || [];
+            if (!safeTags.includes(input.trim())) {
+                setTags([...safeTags, input.trim()]);
+            }
+            setInput('');
+        }
+    };
+
+    const removeTag = (index) => {
+        setTags(tags.filter((_, i) => i !== index));
+    };
+
+    return (
+        <div className="space-y-2">
+            <label className={labelClasses}>{label}</label>
+            <div className="flex flex-wrap gap-2 p-3 bg-slate-50 border border-slate-200 rounded-2xl min-h-[56px]">
+                {(tags || []).map((tag, i) => (
+                    <span key={i} className="flex items-center gap-1 px-3 py-1 bg-[#3db4ed] text-white rounded-full text-sm font-bold animate-in zoom-in-95">
+                        {tag}
+                        <button type="button" onClick={() => removeTag(i)} className="hover:bg-white/20 rounded-full p-0.5">
+                            <X className="w-3 h-3" />
+                        </button>
+                    </span>
+                ))}
+                <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={addTag}
+                    placeholder={tags.length === 0 ? placeholder : "Presiona Enter para añadir..."}
+                    className="flex-1 bg-transparent border-none outline-none text-slate-700 font-medium min-w-[120px]"
+                />
+            </div>
+        </div>
+    );
+};
+
+const MultiSelect = ({ label, options, selectedIds, setSelectedIds }) => {
+    const labelClasses = "block text-sm font-black text-slate-800 mb-2 ml-1 uppercase tracking-wider";
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const toggleOption = (id) => {
+        if (selectedIds.includes(id)) {
+            setSelectedIds(selectedIds.filter(item => item !== id));
+        } else {
+            setSelectedIds([...selectedIds, id]);
+        }
+    };
+
+    const filteredOptions = options.filter(opt =>
+        opt.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return (
+        <div className="space-y-3">
+            <div className="flex items-center justify-between">
+                <label className={labelClasses}>{label}</label>
+                <span className="text-[10px] font-black text-[#3db4ed] bg-[#3db4ed]/10 px-2 py-0.5 rounded-full uppercase tracking-tighter">
+                    {selectedIds.length} seleccionados
+                </span>
+            </div>
+
+            <div className="relative group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#3db4ed] transition-colors" />
+                <input
+                    type="text"
+                    placeholder={`Buscar ${label.toLowerCase()}...`}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-[#3db4ed]/20 focus:border-[#3db4ed] transition-all"
+                />
+                {searchTerm && (
+                    <button
+                        type="button"
+                        onClick={() => setSearchTerm('')}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                        <X className="w-4 h-4" />
+                    </button>
+                )}
+            </div>
+
+            <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto p-4 bg-slate-50 border border-slate-200 rounded-2xl custom-scrollbar">
+                {filteredOptions.map((opt) => (
+                    <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => toggleOption(opt.id)}
+                        className={`flex items-center justify-between px-5 py-3 rounded-xl text-sm font-bold transition-all border text-left ${
+                            selectedIds.includes(opt.id)
+                                ? 'bg-[#3db4ed] text-white border-[#3db4ed]'
+                                : 'bg-white text-slate-600 border-slate-100 hover:border-[#3db4ed]/30 shadow-sm'
+                        }`}
+                    >
+                        <span>{opt.nombre}</span>
+                        {selectedIds.includes(opt.id) && <Check className="w-5 h-5 shrink-0 ml-3" />}
+                    </button>
+                ))}
+                {filteredOptions.length === 0 && (
+                    <div className="p-8 text-center space-y-2">
+                        <p className="text-slate-400 text-xs italic">No se encontraron resultados para "{searchTerm}"</p>
+                    </div>
+                )}
+                {options.length === 0 && <p className="text-slate-400 text-xs italic p-2 text-center">Cargando opciones...</p>}
+            </div>
+        </div>
+    );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 const ConvocatoriaForm = () => {
     const { id } = useParams();
@@ -13,15 +133,43 @@ const ConvocatoriaForm = () => {
 
     const [formData, setFormData] = useState({
         titulo: '',
+        subtipo: '',
         categoriaId: '',
+        entidadId: '',
         descripcion: '',
         criteriosParticipacion: '',
+        procesoEvaluacion: '',
+        resultadosEsperados: '',
         financiacion: '',
         fechaInicio: '',
         fechaLimite: '',
         imagenFondo: '',
         enlace: '',
-        visible: true
+        visible: true,
+        contactoNombre: '',
+        contactoCorreo: '',
+        contactoDependencia: '',
+        areasIds: [],
+        areasEspecialidadIds: [],
+        sectoresIds: [],
+        serviciosIds: [],
+        tiposProyectoIds: [],
+        competenciasTecnicasIds: [],
+        competenciasTransversalesIds: [],
+        keywords: [],
+        lineasInvestigacion: []
+    });
+
+    const [catalogos, setCatalogos] = useState({
+        categorias: [],
+        entidades: [],
+        areas: [],
+        areasEspecialidad: [],
+        sectores: [],
+        servicios: [],
+        tiposProyecto: [],
+        competenciasTecnicas: [],
+        competenciasTransversales: []
     });
 
     const [usuarioId, setUsuarioId] = useState(null);
@@ -30,10 +178,46 @@ const ConvocatoriaForm = () => {
 
     useEffect(() => {
         fetchUserProfile();
+        fetchCatalogos();
         if (isEdit) {
             fetchConvocatoria();
         }
     }, [isEdit, id]);
+
+    // Debug logger
+    useEffect(() => {
+        console.log('DEBUG: Current formData state:', formData);
+    }, [formData]);
+
+    const fetchCatalogos = async () => {
+        const endpoints = {
+            categorias: 'categorias',
+            entidades: 'entidades',
+            areas: 'areas-conocimiento',
+            areasEspecialidad: 'areas-conocimiento', // Usaremos las mismas para especialidad si no hay endpoint separado, pero el prompt pide áreas-conocimiento.
+            sectores: 'sectores-experiencia',
+            servicios: 'tipos-servicios',
+            tiposProyecto: 'tipos-proyecto',
+            competenciasTecnicas: 'competencias-tecnicas',
+            competenciasTransversales: 'competencias-transversales'
+        };
+
+        try {
+            const results = await Promise.all(
+                Object.entries(endpoints).map(async ([key, path]) => {
+                    const res = await fetch(`${API_BASE_URL}/${path}`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (!res.ok) return [key, []];
+                    const data = await res.json();
+                    return [key, data];
+                })
+            );
+            setCatalogos(Object.fromEntries(results));
+        } catch (err) {
+            console.error('Error loading catalogs:', err);
+        }
+    };
 
     const fetchUserProfile = async () => {
         try {
@@ -64,15 +248,31 @@ const ConvocatoriaForm = () => {
             const data = await response.json();
             setFormData({
                 titulo: data.titulo || '',
+                subtipo: data.subtipo || '',
                 categoriaId: data.categoriaId || '',
+                entidadId: data.entidadId || '',
                 descripcion: data.descripcion || '',
                 criteriosParticipacion: data.criteriosParticipacion || '',
+                procesoEvaluacion: data.procesoEvaluacion || '',
+                resultadosEsperados: data.resultadosEsperados || '',
                 financiacion: data.financiacion || '',
                 fechaInicio: data.fechaInicio || '',
                 fechaLimite: data.fechaLimite || '',
                 imagenFondo: data.imagenFondo || '',
                 enlace: data.enlace || '',
-                visible: data.visible ?? true
+                visible: data.visible ?? true,
+                contactoNombre: data.contactoNombre || '',
+                contactoCorreo: data.contactoCorreo || '',
+                contactoDependencia: data.contactoDependencia || '',
+                areasIds: data.areasIds || data.areas?.map(a => a.id) || [],
+                areasEspecialidadIds: data.areasEspecialidadIds || data.areasEspecialidad?.map(a => a.id) || [],
+                sectoresIds: data.sectoresIds || data.sectores?.map(s => s.id) || [],
+                serviciosIds: data.serviciosIds || data.servicios?.map(s => s.id) || [],
+                tiposProyectoIds: data.tiposProyectoIds || data.tiposProyecto?.map(t => t.id) || [],
+                competenciasTecnicasIds: data.competenciasTecnicasIds || data.competenciasTecnicas?.map(c => c.id) || [],
+                competenciasTransversalesIds: data.competenciasTransversalesIds || data.competenciasTransversales?.map(c => c.id) || [],
+                keywords: data.keywords || [],
+                lineasInvestigacion: data.lineasInvestigacion || []
             });
         } catch (err) {
             setError('No se pudo cargar la información para editar');
@@ -100,13 +300,14 @@ const ConvocatoriaForm = () => {
         const payload = {
             ...formData,
             usuarioId: currentUserId,
-            areasIds: [],
-            sectoresIds: [],
-            serviciosIds: [],
-            tiposProyectoIds: [],
-            competenciasTecnicasIds: [],
-            competenciasTransversalesIds: []
+            categoriaId: formData.categoriaId ? parseInt(formData.categoriaId) : null,
+            entidadId: formData.entidadId ? parseInt(formData.entidadId) : null,
+            // Asegurar que las listas siempre vayan como arrays
+            keywords: Array.isArray(formData.keywords) ? formData.keywords : [],
+            lineasInvestigacion: Array.isArray(formData.lineasInvestigacion) ? formData.lineasInvestigacion : []
         };
+
+        console.log('DEBUG: Enviando payload FINAL:', payload);
 
         try {
             const url = isEdit ? `${API_BASE_URL}/convocatorias/${id}` : `${API_BASE_URL}/convocatorias`;
@@ -202,17 +403,38 @@ const ConvocatoriaForm = () => {
                                     onChange={handleChange}
                                 >
                                     <option value="">Seleccionar categoría</option>
-                                    <option value="1">Educación</option>
-                                    <option value="2">Ciencia y Tecnología</option>
-                                    <option value="3">Emprendimiento</option>
-                                    <option value="4">Arte y Cultura</option>
-                                    <option value="5">Sostenibilidad</option>
-                                    <option value="6">Investigación</option>
-                                    <option value="7">Formación</option>
-                                    <option value="8">Movilidad</option>
-                                    <option value="9">Medio Ambiente</option>
-                                    <option value="10">Salud</option>
+                                    {catalogos.categorias.map(cat => (
+                                        <option key={cat.id} value={cat.id}>{cat.nombre}</option>
+                                    ))}
                                 </select>
+                            </div>
+
+                            <div>
+                                <label className={labelClasses}>Entidad *</label>
+                                <select
+                                    name="entidadId"
+                                    required
+                                    className={inputClasses}
+                                    value={formData.entidadId}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Seleccionar entidad</option>
+                                    {catalogos.entidades.map(ent => (
+                                        <option key={ent.id} value={ent.id}>{ent.nombre}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className={labelClasses}>Subtipo</label>
+                                <input
+                                    type="text"
+                                    name="subtipo"
+                                    className={inputClasses}
+                                    placeholder="Ej: Beca, Crédito, etc."
+                                    value={formData.subtipo}
+                                    onChange={handleChange}
+                                />
                             </div>
 
                             <div>
@@ -226,6 +448,59 @@ const ConvocatoriaForm = () => {
                                         className={`${inputClasses} pl-9`}
                                         placeholder="Ej: 200M COP"
                                         value={formData.financiacion}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Sección: Información de Contacto */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-3 text-emerald-500">
+                            <User className="w-5 h-5" />
+                            <h2 className="text-lg font-black uppercase tracking-widest text-slate-900">Información de Contacto</h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label className={labelClasses}>Nombre de Contacto</label>
+                                <div className="relative">
+                                    <User className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                    <input
+                                        type="text"
+                                        name="contactoNombre"
+                                        className={`${inputClasses} pl-14`}
+                                        placeholder="Nombre completo"
+                                        value={formData.contactoNombre}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className={labelClasses}>Correo de Contacto</label>
+                                <div className="relative">
+                                    <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                    <input
+                                        type="email"
+                                        name="contactoCorreo"
+                                        className={`${inputClasses} pl-14`}
+                                        placeholder="ejemplo@correo.com"
+                                        value={formData.contactoCorreo}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className={labelClasses}>Dependencia</label>
+                                <div className="relative">
+                                    <Briefcase className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                    <input
+                                        type="text"
+                                        name="contactoDependencia"
+                                        className={`${inputClasses} pl-14`}
+                                        placeholder="Ej: Facultad de Ingeniería"
+                                        value={formData.contactoDependencia}
                                         onChange={handleChange}
                                     />
                                 </div>
@@ -297,8 +572,8 @@ const ConvocatoriaForm = () => {
                     {/* Sección: Detalles */}
                     <div className="space-y-6">
                         <div className="flex items-center gap-3 text-indigo-500">
-                            <Save className="w-5 h-5" />
-                            <h2 className="text-lg font-black uppercase tracking-widest text-slate-900">Detalles de la Oferta</h2>
+                            <Layers className="w-5 h-5" />
+                            <h2 className="text-lg font-black uppercase tracking-widest text-slate-900">Detalles y Requisitos</h2>
                         </div>
 
                         <div>
@@ -313,17 +588,109 @@ const ConvocatoriaForm = () => {
                             />
                         </div>
 
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className={labelClasses}>Criterios de Participación *</label>
+                                <textarea
+                                    name="criteriosParticipacion"
+                                    required
+                                    rows="4"
+                                    className={`${inputClasses} resize-none`}
+                                    placeholder="¿Quiénes pueden aplicar?"
+                                    value={formData.criteriosParticipacion}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div>
+                                <label className={labelClasses}>Proceso de Evaluación</label>
+                                <textarea
+                                    name="procesoEvaluacion"
+                                    rows="4"
+                                    className={`${inputClasses} resize-none`}
+                                    placeholder="Describe cómo se evaluarán las propuestas..."
+                                    value={formData.procesoEvaluacion}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+
                         <div>
-                            <label className={labelClasses}>Criterios de Participación *</label>
+                            <label className={labelClasses}>Resultados Esperados</label>
                             <textarea
-                                name="criteriosParticipacion"
-                                required
+                                name="resultadosEsperados"
                                 rows="4"
                                 className={`${inputClasses} resize-none`}
-                                placeholder="¿Quiénes pueden aplicar?"
-                                value={formData.criteriosParticipacion}
+                                placeholder="¿Qué se espera obtener con esta convocatoria?"
+                                value={formData.resultadosEsperados}
                                 onChange={handleChange}
                             />
+                        </div>
+                    </div>
+
+                    {/* Sección: Áreas y Sectores (M:M) */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-3 text-purple-500">
+                            <Cpu className="w-5 h-5" />
+                            <h2 className="text-lg font-black uppercase tracking-widest text-slate-900">Categorización y Perfiles</h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <MultiSelect
+                                label="Áreas de Conocimiento"
+                                options={catalogos.areas}
+                                selectedIds={formData.areasIds}
+                                setSelectedIds={(ids) => setFormData(prev => ({ ...prev, areasIds: ids }))}
+                            />
+                            <MultiSelect
+                                label="Áreas de Especialidad"
+                                options={catalogos.areasEspecialidad}
+                                selectedIds={formData.areasEspecialidadIds}
+                                setSelectedIds={(ids) => setFormData(prev => ({ ...prev, areasEspecialidadIds: ids }))}
+                            />
+                            <MultiSelect
+                                label="Sectores de Experiencia"
+                                options={catalogos.sectores}
+                                selectedIds={formData.sectoresIds}
+                                setSelectedIds={(ids) => setFormData(prev => ({ ...prev, sectoresIds: ids }))}
+                            />
+                            <MultiSelect
+                                label="Tipos de Servicios"
+                                options={catalogos.servicios}
+                                selectedIds={formData.serviciosIds}
+                                setSelectedIds={(ids) => setFormData(prev => ({ ...prev, serviciosIds: ids }))}
+                            />
+                            <MultiSelect
+                                label="Tipos de Proyecto"
+                                options={catalogos.tiposProyecto}
+                                selectedIds={formData.tiposProyectoIds}
+                                setSelectedIds={(ids) => setFormData(prev => ({ ...prev, tiposProyectoIds: ids }))}
+                            />
+                            <MultiSelect
+                                label="Competencias Técnicas"
+                                options={catalogos.competenciasTecnicas}
+                                selectedIds={formData.competenciasTecnicasIds}
+                                setSelectedIds={(ids) => setFormData(prev => ({ ...prev, competenciasTecnicasIds: ids }))}
+                            />
+                            <MultiSelect
+                                label="Competencias Transversales"
+                                options={catalogos.competenciasTransversales}
+                                selectedIds={formData.competenciasTransversalesIds}
+                                setSelectedIds={(ids) => setFormData(prev => ({ ...prev, competenciasTransversalesIds: ids }))}
+                            />
+                            <div className="space-y-6">
+                                <TagInput
+                                    label="Palabras Clave (Keywords)"
+                                    tags={formData.keywords}
+                                    setTags={(tags) => setFormData(prev => ({ ...prev, keywords: tags }))}
+                                    placeholder="Ej: Innovación, Rural, Salud"
+                                />
+                                <TagInput
+                                    label="Líneas de Investigación"
+                                    tags={formData.lineasInvestigacion}
+                                    setTags={(tags) => setFormData(prev => ({ ...prev, lineasInvestigacion: tags }))}
+                                    placeholder="Ej: Biotecnología, IA"
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -348,6 +715,20 @@ const ConvocatoriaForm = () => {
                             {isEdit ? 'Actualizar Convocatoria' : 'Publicar Convocatoria'}
                         </button>
                     </div>
+
+                    {/* Debug Section (Only visible in development) */}
+                    {process.env.NODE_ENV === 'development' && (
+                        <div className="mt-10 p-6 bg-slate-900 rounded-3xl text-[10px] font-mono text-emerald-400 overflow-auto max-h-60 border border-emerald-500/20 shadow-2xl">
+                            <h3 className="text-white font-bold mb-2 uppercase tracking-widest text-xs border-b border-emerald-500/30 pb-2">Debug State Monitor</h3>
+                            <pre>{JSON.stringify({
+                                keywords: formData.keywords,
+                                lineasInvestigacion: formData.lineasInvestigacion,
+                                areasIds: formData.areasIds,
+                                isEdit: isEdit,
+                                usuarioId: usuarioId
+                            }, null, 2)}</pre>
+                        </div>
+                    )}
                 </form>
             </div>
         </div>

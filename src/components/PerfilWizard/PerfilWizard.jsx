@@ -29,20 +29,20 @@ const PerfilWizard = () => {
       tipoVinculacion: '',
       sede: '',
       centroInvestigativo: '',
-      formaciones: [{ nivel: '', titulo: '' }],
-      areas: [{ nombre: '' }],
+      formaciones: [],
+      areas: [],
       certificacionesNombres: [],
       aniosProf: 0,
       experienciaServicios: '',
-      proyectos: [{ nombre: '' }],
+      proyectos: [],
       perfil: '',
       descripcionProyectos: '',
-      competenciasTecnicas: [{ nombre: '', nivel: 1 }],
-      competenciasTransversales: [{ nombre: '', nivel: 1 }],
-      servicios: [{ nombre: '' }],
-      sectores: [{ nombre: '' }],
-      intereses: [{ nombre: '' }],
-      areasEspecialidad: [{ nombre: '' }],
+      competenciasTecnicas: [],
+      competenciasTransversales: [],
+      servicios: [],
+      sectores: [],
+      intereses: [],
+      areasEspecialidad: [],
       objetivo: '',
       cvlac: '',
       linkedin: '',
@@ -102,15 +102,15 @@ const PerfilWizard = () => {
 
             formaciones: Array.isArray(rawData.formaciones) && rawData.formaciones.length > 0
               ? rawData.formaciones
-              : [{ nivel: '', titulo: '' }],
+              : [],
 
             areas: Array.isArray(rawData.areas) && rawData.areas.length > 0
               ? rawData.areas
-              : [{ nombre: '' }],
+              : [],
 
             idiomas: Array.isArray(rawData.idiomas) && rawData.idiomas.length > 0
               ? rawData.idiomas
-              : [{ idioma: '', nivel: '' }],
+              : [],
 
             certificacionesNombres: Array.isArray(rawData.certificaciones)
               ? rawData.certificaciones.map(c => c.nombre || c)
@@ -120,10 +120,9 @@ const PerfilWizard = () => {
 
             experienciaServicios: rawData.experienciaServicios || '',
 
-            // proyectos viene como array de objetos {nombre} desde la API
             proyectos: Array.isArray(rawData.proyectos) && rawData.proyectos.length > 0
               ? rawData.proyectos.map(p => ({ nombre: p.nombre || p }))
-              : [{ nombre: '' }],
+              : [],
 
             perfil: rawData.perfilProfesional || '',
 
@@ -131,24 +130,23 @@ const PerfilWizard = () => {
 
             competenciasTecnicas: Array.isArray(rawData.competenciasTecnicas) && rawData.competenciasTecnicas.length > 0
               ? rawData.competenciasTecnicas
-              : [{ nombre: '', nivel: 1 }],
+              : [],
 
             competenciasTransversales: Array.isArray(rawData.competenciasTransversales) && rawData.competenciasTransversales.length > 0
               ? rawData.competenciasTransversales
-              : [{ nombre: '', nivel: 1 }],
+              : [],
 
             servicios: Array.isArray(rawData.servicios) && rawData.servicios.length > 0
               ? rawData.servicios
-              : [{ nombre: '' }],
+              : [],
 
-            // Corregido: En el JSON viene como "sectoresExperiencia"
             sectores: Array.isArray(rawData.sectoresExperiencia) && rawData.sectoresExperiencia.length > 0
               ? rawData.sectoresExperiencia
-              : [{ nombre: '' }],
+              : [],
 
             intereses: Array.isArray(rawData.intereses) && rawData.intereses.length > 0
               ? rawData.intereses
-              : [{ nombre: '' }],
+              : [],
 
             objetivo: rawData.objetivo || '',
             cvlac: rawData.cvlac || '',
@@ -158,7 +156,7 @@ const PerfilWizard = () => {
 
             areasEspecialidad: Array.isArray(rawData.areasEspecialidad) && rawData.areasEspecialidad.length > 0
               ? rawData.areasEspecialidad
-              : [{ nombre: '' }],
+              : [],
 
             // Convertir booleano → string para que el radio quede seleccionado
             colaborativos: rawData.colaborativos === true || rawData.colaborativos === 1 ? '1' : '0',
@@ -412,7 +410,7 @@ const PerfilWizard = () => {
             </div>
           ) : (
             <FormProvider {...methods}>
-              <form onSubmit={methods.handleSubmit(submitFinal)}>
+              <form onSubmit={methods.handleSubmit(submitFinal, (errors) => console.log("❌ Errores de validación:", errors))}>
                 <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden mb-12">
                   <div className="p-8 md:p-12 min-h-[400px]">
                     {step === 1 && <Step1 />}
