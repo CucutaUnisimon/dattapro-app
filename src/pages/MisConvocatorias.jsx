@@ -120,10 +120,12 @@ const MisConvocatorias = () => {
         }
     };
 
-    const filteredConvocatorias = convocatorias.filter(c =>
-        c.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.categoria?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredConvocatorias = [...convocatorias]
+        .filter(c =>
+            c.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            c.categoria?.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .sort((a, b) => b.id - a.id);
 
     if (isLoading) {
         return (
@@ -137,8 +139,8 @@ const MisConvocatorias = () => {
         <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Mis Convocatorias</h1>
-                    <p className="text-slate-500 font-medium">Gestiona y publica tus oportunidades de investigación.</p>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Historial de Convocatorias</h1>
+                    <p className="text-slate-500 font-medium">Gestiona y publica las oportunidades de investigación.</p>
                 </div>
 
                 <button
@@ -211,8 +213,6 @@ const MisConvocatorias = () => {
                                                 >
                                                     <option value="Abierta">Abierta</option>
                                                     <option value="Cerrada">Cerrada</option>
-                                                    <option value="Evaluando">Evaluando</option>
-                                                    <option value="Finalizada">Finalizada</option>
                                                 </select>
                                             </div>
                                         </td>

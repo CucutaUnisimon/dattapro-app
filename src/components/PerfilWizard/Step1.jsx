@@ -43,34 +43,6 @@ const Step1 = () => {
           </div>
           {errors.deseaVincularse && <span className="text-red-500 text-xs font-bold mt-3 block ml-2">{errors.deseaVincularse.message}</span>}
         </div>
-
-        {/* Pregunta 2 */}
-        <div className="p-6 bg-slate-50 border border-slate-200 rounded-[2rem] transition-all hover:border-primary/30">
-          <label className="block text-base font-bold text-slate-700 mb-6 leading-relaxed">
-            ¿Autoriza el tratamiento de sus datos personales bajo las políticas institucionales?
-          </label>
-          <div className="flex flex-wrap gap-4">
-            <label className="flex-1 min-w-[120px] relative">
-              <input type="radio" value="true" {...register('autorizaDatos', { required: 'Este campo es requerido' })} className="peer sr-only" />
-              <div className="px-6 py-4 bg-white border-2 border-slate-100 rounded-2xl cursor-pointer peer-checked:border-primary peer-checked:bg-primary/5 transition-all flex items-center justify-between group">
-                <span className="font-bold text-slate-600 peer-checked:text-primary">Sí, autorizo</span>
-                <div className="w-5 h-5 rounded-full border-2 border-slate-200 peer-checked:border-primary flex items-center justify-center">
-                  <div className="w-2.5 h-2.5 bg-primary rounded-full scale-0 peer-checked:scale-100 transition-transform"></div>
-                </div>
-              </div>
-            </label>
-            <label className="flex-1 min-w-[120px] relative">
-              <input type="radio" value="false" {...register('autorizaDatos', { required: 'Este campo es requerido' })} className="peer sr-only" />
-              <div className="px-6 py-4 bg-white border-2 border-slate-100 rounded-2xl cursor-pointer peer-checked:border-primary peer-checked:bg-primary/5 transition-all flex items-center justify-between group">
-                <span className="font-bold text-slate-600 peer-checked:text-primary">No autorizo</span>
-                <div className="w-5 h-5 rounded-full border-2 border-slate-200 peer-checked:border-primary flex items-center justify-center">
-                  <div className="w-2.5 h-2.5 bg-primary rounded-full scale-0 peer-checked:scale-100 transition-transform"></div>
-                </div>
-              </div>
-            </label>
-          </div>
-          {errors.autorizaDatos && <span className="text-red-500 text-xs font-bold mt-3 block ml-2">{errors.autorizaDatos.message}</span>}
-        </div>
       </div>
 
       <div className="p-6 bg-sky-50/50 border border-primary/20 rounded-[2rem]">

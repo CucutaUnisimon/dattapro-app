@@ -4,13 +4,15 @@ import { API_BASE_URL } from '../config/api';
 
 const Register = () => {
     const [formData, setFormData] = useState({
-        nombres: '',      // Antes era nombre
-        apellidos: '',    // Antes era apellido
+        nombres: '',
+        apellidos: '',
         correoInstitucional: '',
-        password: ''
+        password: '',
+        autorizaDatos: '' // Nuevo campo
     });
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -144,16 +146,74 @@ const Register = () => {
                                             </svg>
                                         </div>
                                         <input
-                                            className="w-full pl-12 pr-5 py-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-slate-400"
+                                            className="w-full pl-12 pr-12 py-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-slate-400"
                                             placeholder="Crea una contraseña segura"
-                                            type="password"
+                                            type={showPassword ? 'text' : 'password'}
                                             name="password"
                                             value={formData.password}
                                             onChange={handleChange}
                                             required
                                         />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors focus:outline-none"
+                                        >
+                                            {showPassword ? (
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                                                    <line x1="1" y1="1" x2="23" y2="23" />
+                                                </svg>
+                                            ) : (
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                    <circle cx="12" cy="12" r="3" />
+                                                </svg>
+                                            )}
+                                        </button>
                                     </div>
                                     <p className="text-xs text-slate-400 ml-1 mt-1">Al menos 8 caracteres, incluyendo números y símbolos.</p>
+                                </div>
+
+                                {/* Autorización de Datos (Pregunta 2) */}
+                                <div className="p-6 bg-slate-50 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800 rounded-[2rem] transition-all hover:border-primary/30">
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-6 leading-relaxed">
+                                        ¿Autoriza el tratamiento de sus datos personales bajo las políticas institucionales?
+                                    </label>
+                                    <div className="flex flex-wrap gap-4">
+                                        <label className="flex-1 min-w-[120px] relative cursor-pointer">
+                                            <input 
+                                                type="radio" 
+                                                name="autorizaDatos" 
+                                                value="true" 
+                                                checked={formData.autorizaDatos === 'true'}
+                                                onChange={handleChange}
+                                                className="peer sr-only" 
+                                            />
+                                            <div className="px-5 py-4 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all flex items-center justify-between group">
+                                                <span className="font-bold text-sm text-slate-600 dark:text-slate-400 peer-checked:text-primary">Sí, autorizo</span>
+                                                <div className="w-5 h-5 rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:border-primary flex items-center justify-center">
+                                                    <div className="w-2.5 h-2.5 bg-primary rounded-full scale-0 peer-checked:scale-100 transition-transform"></div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <label className="flex-1 min-w-[120px] relative cursor-pointer">
+                                            <input 
+                                                type="radio" 
+                                                name="autorizaDatos" 
+                                                value="false" 
+                                                checked={formData.autorizaDatos === 'false'}
+                                                onChange={handleChange}
+                                                className="peer sr-only" 
+                                            />
+                                            <div className="px-5 py-4 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all flex items-center justify-between group">
+                                                <span className="font-bold text-sm text-slate-600 dark:text-slate-400 peer-checked:text-primary">No autorizo</span>
+                                                <div className="w-5 h-5 rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:border-primary flex items-center justify-center">
+                                                    <div className="w-2.5 h-2.5 bg-primary rounded-full scale-0 peer-checked:scale-100 transition-transform"></div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
                                 <div className="pt-8 border-t border-slate-50 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
                                     <p className="text-sm text-slate-500 font-medium order-2 sm:order-1">
@@ -163,7 +223,7 @@ const Register = () => {
                                     <button
                                         className="w-full sm:w-auto bg-primary hover:bg-primary/90 disabled:bg-primary/50 disabled:cursor-not-allowed text-white font-bold py-4 px-10 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-xl shadow-primary/20 hover:shadow-primary/30 hover:-translate-y-0.5 active:scale-[0.98] order-1 sm:order-2"
                                         type="submit"
-                                        disabled={isLoading}
+                                        disabled={isLoading || formData.autorizaDatos !== 'true'}
                                     >
                                         {isLoading ? 'Registrando...' : 'Crear Cuenta'}
                                         {!isLoading && (

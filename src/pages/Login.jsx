@@ -37,7 +37,7 @@ const Login = () => {
             }
 
             const data = await response.json();
-            
+
             if (data.token) {
                 const decoded = jwtDecode(data.token);
                 const exactRole = decoded.rol || decoded.role || decoded.roles || data.rol;
@@ -48,7 +48,7 @@ const Login = () => {
 
                 // Guardar token y datos en el contexto usando el rol del token
                 login(data.token, { id: data.userId, email: data.email }, roleToSave);
-                
+
                 // Redirección condicional según el rol (insensible a mayúsculas/minúsculas)
                 if (roleToSave === 'ROLE_ADMIN' || roleToSave === 'ADMIN') {
                     navigate('/admin');
@@ -108,10 +108,10 @@ const Login = () => {
                         )}
 
                         <h1 className="text-4xl font-black leading-tight tracking-tight text-slate-900 dark:text-slate-100 mb-2">
-                            Welcome back
+                            Bienvenido
                         </h1>
                         <p className="text-base text-slate-500 dark:text-slate-400">
-                            Connect with researchers worldwide and accelerate your discoveries.
+                            Conéctate con investigadores de todo el mundo y acelera tus descubrimientos.
                         </p>
                     </div>
 
@@ -159,9 +159,9 @@ const Login = () => {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
-                                    <button 
+                                    <button
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-slate-600 transition-colors" 
+                                        className="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-slate-600 transition-colors"
                                         type="button"
                                     >
                                         {showPassword ? (
@@ -210,7 +210,7 @@ const Login = () => {
                     </div>
 
                     <div className="mt-auto pt-10 text-center text-xs text-slate-400">
-                        © 2024 dattapro Inc. Secure, encrypted research collaboration.
+                        © 2026 dattapro Inc. Colaboración investigativa segura y encriptada.
                     </div>
                 </div>
 
@@ -230,9 +230,9 @@ const Login = () => {
                                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L8 14v1c0 1.1.9 2 2 2v2.93zM18 17c-.11-.34-.11-.66 0-1 1.05-3.08 1-6 .11-8.91C17.15 4.54 14.82 3 12 3c-1.03 0-2 .16-2.91.46C7.38 4.38 5 6.9 4 10c-.11.34-.11.66 0 1 .11 1.76.11 3.24 0 5 .11.34.11.66 0 1 .49 1.5 1.5 2.5 3 3 .34.11.66.11 1 0 1.76-.11 3.24-.11 5 0 .34.11.66.11 1 0 1.5-.49 2.5-1.5 3-3z" />
                                     </svg>
                                 </div>
-                                <h3 className="text-3xl font-bold text-white mb-3">Connecting Minds, Accelerating Science</h3>
+                                <h3 className="text-3xl font-bold text-white mb-3">Conectando mentes, acelerando la ciencia</h3>
                                 <p className="text-white/80 text-lg leading-relaxed mb-8">
-                                    Join over 50,000 PhDs and researchers matching for cross-disciplinary projects every day.
+                                    Únete a más de 50,000 doctorados e investigadores que se unen todos los días para proyectos interdisciplinarios.
                                 </p>
                                 <div className="flex items-center gap-4">
                                     <div className="flex -space-x-3">
