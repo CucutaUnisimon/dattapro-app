@@ -56,7 +56,7 @@ const ConvocatoriasDetalles = () => {
     const renderList = (title, items, icon) => {
         if (!items || items.length === 0) return null;
         return (
-            <div className="mb-6">
+            <div>
                 <h3 className="text-sm font-black text-slate-800 mb-3 uppercase tracking-wider flex items-center gap-2">
                     {icon}
                     {title}
@@ -168,16 +168,18 @@ const ConvocatoriasDetalles = () => {
                         )}
 
                         {/* Etiquetas y Categorías (Badges) */}
-                        <section className="space-y-4 pt-4 border-t border-slate-100">
-                            {renderList("Palabras Clave", convocatoria.keywords, <Target className="w-4 h-4 text-sky-500" />)}
-                            {renderList("Líneas de Investigación", convocatoria.lineasInvestigacion, <FileText className="w-4 h-4 text-indigo-500" />)}
-                            {renderList("Áreas de Conocimiento", convocatoria.areas, <Info className="w-4 h-4 text-emerald-500" />)}
-                            {renderList("Áreas de Especialidad", convocatoria.areasEspecialidad, <Info className="w-4 h-4 text-emerald-400" />)}
-                            {renderList("Sectores de Experiencia", convocatoria.sectores, <Briefcase className="w-4 h-4 text-orange-500" />)}
-                            {renderList("Tipos de Servicios", convocatoria.servicios, <Info className="w-4 h-4 text-purple-500" />)}
-                            {renderList("Tipos de Proyecto", convocatoria.tiposProyecto, <Target className="w-4 h-4 text-red-500" />)}
-                            {renderList("Competencias Técnicas", convocatoria.competenciasTecnicas, <Info className="w-4 h-4 text-blue-500" />)}
-                            {renderList("Competencias Transversales", convocatoria.competenciasTransversales, <Users className="w-4 h-4 text-pink-500" />)}
+                        <section className="space-y-10 pt-8 border-t border-slate-100">
+                            {renderList("Líneas de Investigación", convocatoria.lineasInvestigacion, <FileText className="w-5 h-5 text-indigo-500" />)}
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                {renderList("Tipos de Servicios", convocatoria.servicios, <Info className="w-5 h-5 text-purple-500" />)}
+                                {renderList("Tipos de Proyecto", convocatoria.tiposProyecto, <Target className="w-5 h-5 text-red-500" />)}
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                {renderList("Competencias Técnicas", convocatoria.competenciasTecnicas, <Info className="w-5 h-5 text-blue-500" />)}
+                                {renderList("Competencias Transversales", convocatoria.competenciasTransversales, <Users className="w-5 h-5 text-pink-500" />)}
+                            </div>
                         </section>
                     </div>
 
@@ -231,7 +233,7 @@ const ConvocatoriasDetalles = () => {
                                 </a>
                             )}
                         </div>
-
+                        
                         {/* Contact Card */}
                         {(convocatoria.contactoNombre || convocatoria.contactoCorreo || convocatoria.contactoDependencia) && (
                             <div className="p-6 bg-indigo-50 rounded-3xl border border-indigo-100 space-y-5">
@@ -261,6 +263,14 @@ const ConvocatoriasDetalles = () => {
                                 )}
                             </div>
                         )}
+
+                        {/* Categorización Card */}
+                        <div className="p-8 bg-slate-50 rounded-3xl border border-slate-200 space-y-8">
+                            {renderList("Palabras Clave", convocatoria.keywords, <Target className="w-5 h-5 text-sky-500" />)}
+                            {renderList("Áreas de Conocimiento", convocatoria.areas, <Info className="w-5 h-5 text-emerald-500" />)}
+                            {renderList("Áreas de Especialidad", convocatoria.areasEspecialidad, <Info className="w-5 h-5 text-emerald-400" />)}
+                            {renderList("Sectores de Experiencia", convocatoria.sectores, <Briefcase className="w-5 h-5 text-orange-500" />)}
+                        </div>
                     </div>
                 </div>
             </div>

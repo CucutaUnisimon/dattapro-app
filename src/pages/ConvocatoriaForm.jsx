@@ -459,21 +459,23 @@ const ConvocatoriaForm = () => {
                                 />
                             </div>
 
-                            <div>
-                                <label className={labelClasses}>Financiación *</label>
-                                <div className="relative">
-                                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
-                                    <input
-                                        type="text"
-                                        name="financiacion"
-                                        required
-                                        className={`${inputClasses} pl-9`}
-                                        placeholder="Ej: 200M COP"
-                                        value={formData.financiacion}
-                                        onChange={handleChange}
-                                    />
+                                <div>
+                                    <label className={labelClasses}>Financiación *</label>
+                                    <div className="relative">
+                                        <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                                        <input
+                                            type="number"
+                                            name="financiacion"
+                                            required
+                                            min="0"
+                                            onKeyDown={(e) => ["e", "E", "+", "-", ".", ","].includes(e.key) && e.preventDefault()}
+                                            className={`${inputClasses} pl-9`}
+                                            placeholder="Ej: 200000000"
+                                            value={formData.financiacion}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
 
                             <TagInput
                                 label="Palabras Clave (Keywords)"
