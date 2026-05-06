@@ -17,6 +17,23 @@ const MisConvocatorias = () => {
         fetchConvocatorias();
     }, []);
 
+    const calculateStatus = (inicio, limite) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const dateLimite = new Date(limite);
+        dateLimite.setHours(0, 0, 0, 0);
+
+        if (inicio) {
+            const dateInicio = new Date(inicio);
+            dateInicio.setHours(0, 0, 0, 0);
+            if (today >= dateInicio && today <= dateLimite) return 'Abierta';
+        } else if (today <= dateLimite) {
+            return 'Abierta';
+        }
+        return 'Cerrada';
+    };
+
     const fetchConvocatorias = async () => {
         setIsLoading(true);
         try {
@@ -27,12 +44,40 @@ const MisConvocatorias = () => {
             });
             if (!response.ok) throw new Error('Error al cargar convocatorias');
             const data = await response.json();
-            setConvocatorias(data);
+            
+            // Calcular y sincronizar estados
+            const updatedData = data.map(convocatoria => {
+                const calculatedStatus = calculateStatus(convocatoria.fechaInicio, convocatoria.fechaLimite);
+                
+                // Si el estado calculado es diferente al de la BD, sincronizamos
+                if (calculatedStatus !== convocatoria.estado) {
+                    syncStatusWithDB(convocatoria.id, { ...convocatoria, estado: calculatedStatus });
+                    return { ...convocatoria, estado: calculatedStatus };
+                }
+                return convocatoria;
+            });
+
+            setConvocatorias(updatedData);
         } catch (err) {
             console.error(err);
             setError(err.message);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const syncStatusWithDB = async (id, updatedConvocatoria) => {
+        try {
+            await fetch(`${API_BASE_URL}/convocatorias/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(updatedConvocatoria)
+            });
+        } catch (err) {
+            console.error(`Error sincronizando estado de convocatoria ${id}:`, err);
         }
     };
 
@@ -208,8 +253,8 @@ const MisConvocatorias = () => {
                                             <div className="flex justify-center">
                                                 <select
                                                     value={convocatoria.estado || 'Abierta'}
-                                                    onChange={(e) => handleStatusChange(convocatoria.id, e.target.value)}
-                                                    className={`px-3 py-1.5 border rounded-xl text-[11px] font-black uppercase tracking-wider outline-none focus:ring-4 transition-all cursor-pointer ${getStatusStyles(convocatoria.estado)}`}
+                                                    disabled
+                                                    className={`px-3 py-1.5 border rounded-xl text-[11px] font-black uppercase tracking-wider outline-none focus:ring-4 transition-all cursor-not-allowed opacity-80 ${getStatusStyles(convocatoria.estado)}`}
                                                 >
                                                     <option value="Abierta">Abierta</option>
                                                     <option value="Cerrada">Cerrada</option>

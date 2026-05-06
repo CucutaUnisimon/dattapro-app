@@ -10,6 +10,7 @@ import Inicio from './pages/Inicio';
 import Convocatorias from './pages/Convocatorias';
 import MisConvocatorias from './pages/MisConvocatorias';
 import ConvocatoriaForm from './pages/ConvocatoriaForm';
+import CambioPasswordView from './pages/CambioPasswordView';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 
@@ -62,6 +63,7 @@ function App() {
           <Route path="/mis-convocatorias" element={<MisConvocatorias />} />
           <Route path="/convocatorias/crear" element={<ConvocatoriaForm />} />
           <Route path="/convocatorias/editar/:id" element={<ConvocatoriaForm />} />
+          <Route path="/seguridad" element={<CambioPasswordView />} />
           <Route path="/" element={<RootRoute />} />
         </Routes>
       </AppLayout>

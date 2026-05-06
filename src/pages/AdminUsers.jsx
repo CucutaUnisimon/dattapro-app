@@ -5,7 +5,7 @@ import { API_BASE_URL } from '../config/api';
 
 const AdminUsers = () => {
     const navigate = useNavigate();
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
     const [usuarios, setUsuarios] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -237,12 +237,13 @@ const AdminUsers = () => {
                                             <select
                                                 id={`rol-${usuario.id}`}
                                                 value={usuario.rol || 'profesor'}
-                                                disabled={updatingId === usuario.id}
+                                                disabled={updatingId === usuario.id || usuario.rol === 'admin'}
                                                 onChange={(e) => handleRoleChange(usuario, e.target.value)}
-                                                className="block w-full pl-3 pr-10 py-2 text-sm border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg focus:ring-red-500 focus:border-red-500 transition-colors appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-wait"
+                                                className="block w-full pl-3 pr-10 py-2 text-sm border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg focus:ring-red-500 focus:border-red-500 transition-colors appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
                                                 <option value="profesor">Profesor</option>
                                                 <option value="directivo">Directivo</option>
+                                                {usuario.rol === 'admin' && <option value="admin">Admin</option>}
                                             </select>
                                             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
                                                 {updatingId === usuario.id ? (
@@ -254,6 +255,14 @@ const AdminUsers = () => {
                                                 )}
                                             </div>
                                         </div>
+                                        {usuario.rol === 'admin' && (
+                                            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 flex items-center gap-1">
+                                                <svg className="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                </svg>
+                                                El rol de administrador no se puede modificar
+                                            </p>
+                                        )}
                                     </div>
                                     <button
                                         onClick={() => navigate(`/perfil/ver/${usuario.id}`)}

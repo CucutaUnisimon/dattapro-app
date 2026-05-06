@@ -7,9 +7,14 @@ import { useAuth } from '../context/AuthContext';
 
 // ─── Componentes auxiliares definidos FUERA del padre para evitar re-montaje ───
 
-const TagInput = ({ label, tags, setTags, placeholder }) => {
+const TagInput = ({ label, tags, setTags, placeholder, suggestions = [] }) => {
     const labelClasses = "block text-sm font-black text-slate-800 mb-2 ml-1 uppercase tracking-wider";
     const [input, setInput] = useState('');
+    const [showSuggestions, setShowSuggestions] = useState(false);
+
+    const filteredSuggestions = suggestions.filter(s =>
+        s.toLowerCase().includes(input.toLowerCase()) && !(tags || []).includes(s)
+    );
 
     const addTag = (e) => {
         if (e.key === 'Enter' && input.trim()) {
@@ -19,7 +24,17 @@ const TagInput = ({ label, tags, setTags, placeholder }) => {
                 setTags([...safeTags, input.trim()]);
             }
             setInput('');
+            setShowSuggestions(false);
         }
+    };
+
+    const addSuggestion = (suggestion) => {
+        const safeTags = tags || [];
+        if (!safeTags.includes(suggestion)) {
+            setTags([...safeTags, suggestion]);
+        }
+        setInput('');
+        setShowSuggestions(false);
     };
 
     const removeTag = (index) => {
@@ -27,9 +42,9 @@ const TagInput = ({ label, tags, setTags, placeholder }) => {
     };
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-2 relative">
             <label className={labelClasses}>{label}</label>
-            <div className="flex flex-wrap gap-2 p-3 bg-slate-50 border border-slate-200 rounded-2xl min-h-[56px]">
+            <div className="flex flex-wrap gap-2 p-3 bg-slate-50 border border-slate-200 rounded-2xl min-h-[56px] focus-within:ring-2 focus-within:ring-[#3db4ed]/20 focus-within:border-[#3db4ed] transition-all">
                 {(tags || []).map((tag, i) => (
                     <span key={i} className="flex items-center gap-1 px-3 py-1 bg-[#3db4ed] text-white rounded-full text-sm font-bold animate-in zoom-in-95">
                         {tag}
@@ -38,14 +53,35 @@ const TagInput = ({ label, tags, setTags, placeholder }) => {
                         </button>
                     </span>
                 ))}
-                <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={addTag}
-                    placeholder={tags.length === 0 ? placeholder : "Presiona Enter para añadir..."}
-                    className="flex-1 bg-transparent border-none outline-none text-slate-700 font-medium min-w-[120px]"
-                />
+                <div className="flex-1 relative min-w-[120px]">
+                    <input
+                        type="text"
+                        value={input}
+                        onChange={(e) => {
+                            setInput(e.target.value);
+                            setShowSuggestions(true);
+                        }}
+                        onFocus={() => setShowSuggestions(true)}
+                        onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                        onKeyDown={addTag}
+                        placeholder={tags.length === 0 ? placeholder : "Presiona Enter para añadir..."}
+                        className="w-full bg-transparent border-none outline-none text-slate-700 font-medium"
+                    />
+                    {showSuggestions && input.length > 0 && filteredSuggestions.length > 0 && (
+                        <div className="absolute top-full left-0 mt-1 w-full max-w-xs bg-white border border-slate-200 rounded-xl shadow-lg z-50 max-h-48 overflow-y-auto custom-scrollbar">
+                            {filteredSuggestions.map((suggestion, idx) => (
+                                <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={() => addSuggestion(suggestion)}
+                                    className="w-full text-left px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-[#3db4ed] transition-colors border-b border-slate-100 last:border-0"
+                                >
+                                    {suggestion}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
@@ -169,7 +205,8 @@ const ConvocatoriaForm = () => {
         servicios: [],
         tiposProyecto: [],
         competenciasTecnicas: [],
-        competenciasTransversales: []
+        competenciasTransversales: [],
+        keywords: []
     });
 
     const [usuarioId, setUsuarioId] = useState(null);
@@ -194,12 +231,13 @@ const ConvocatoriaForm = () => {
             categorias: 'categorias',
             entidades: 'entidades',
             areas: 'areas-conocimiento',
-            areasEspecialidad: 'areas-conocimiento', // Usaremos las mismas para especialidad si no hay endpoint separado, pero el prompt pide áreas-conocimiento.
+            areasEspecialidad: 'areas-especialidad',
             sectores: 'sectores-experiencia',
             servicios: 'tipos-servicios',
             tiposProyecto: 'tipos-proyecto',
             competenciasTecnicas: 'competencias-tecnicas',
-            competenciasTransversales: 'competencias-transversales'
+            competenciasTransversales: 'competencias-transversales',
+            keywords: 'keywords'
         };
 
         try {
@@ -410,22 +448,6 @@ const ConvocatoriaForm = () => {
                             </div>
 
                             <div>
-                                <label className={labelClasses}>Entidad *</label>
-                                <select
-                                    name="entidadId"
-                                    required
-                                    className={inputClasses}
-                                    value={formData.entidadId}
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Seleccionar entidad</option>
-                                    {catalogos.entidades.map(ent => (
-                                        <option key={ent.id} value={ent.id}>{ent.nombre}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div>
                                 <label className={labelClasses}>Subtipo</label>
                                 <input
                                     type="text"
@@ -452,6 +474,42 @@ const ConvocatoriaForm = () => {
                                     />
                                 </div>
                             </div>
+
+                            <TagInput
+                                label="Palabras Clave (Keywords)"
+                                tags={formData.keywords}
+                                setTags={(tags) => setFormData(prev => ({ ...prev, keywords: tags }))}
+                                placeholder="Ej: Innovación, Rural, Salud"
+                                suggestions={catalogos.keywords.map(k => k.nombre)}
+                            />
+
+                            <div className="md:col-span-2">
+                                <TagInput
+                                    label="Líneas de Investigación"
+                                    tags={formData.lineasInvestigacion}
+                                    setTags={(tags) => setFormData(prev => ({ ...prev, lineasInvestigacion: tags }))}
+                                    placeholder="Ej: Biotecnología, IA"
+                                />
+                            </div>
+
+                            {/* Campo Entidad oculto por ahora */}
+                            {/* 
+                            <div>
+                                <label className={labelClasses}>Entidad *</label>
+                                <select
+                                    name="entidadId"
+                                    required
+                                    className={inputClasses}
+                                    value={formData.entidadId}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Seleccionar entidad</option>
+                                    {catalogos.entidades.map(ent => (
+                                        <option key={ent.id} value={ent.id}>{ent.nombre}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            */}
                         </div>
                     </div>
 
@@ -677,20 +735,7 @@ const ConvocatoriaForm = () => {
                                 selectedIds={formData.competenciasTransversalesIds}
                                 setSelectedIds={(ids) => setFormData(prev => ({ ...prev, competenciasTransversalesIds: ids }))}
                             />
-                            <div className="space-y-6">
-                                <TagInput
-                                    label="Palabras Clave (Keywords)"
-                                    tags={formData.keywords}
-                                    setTags={(tags) => setFormData(prev => ({ ...prev, keywords: tags }))}
-                                    placeholder="Ej: Innovación, Rural, Salud"
-                                />
-                                <TagInput
-                                    label="Líneas de Investigación"
-                                    tags={formData.lineasInvestigacion}
-                                    setTags={(tags) => setFormData(prev => ({ ...prev, lineasInvestigacion: tags }))}
-                                    placeholder="Ej: Biotecnología, IA"
-                                />
-                            </div>
+
                         </div>
                     </div>
 

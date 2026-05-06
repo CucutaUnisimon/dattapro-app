@@ -137,7 +137,7 @@ const ProfileDetail = () => {
 
   return (
     <div className="flex-1 bg-slate-50 dark:bg-slate-900 font-display py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-6xl mx-auto space-y-8">
 
         {/* Botón Volver */}
         <div>
@@ -228,9 +228,9 @@ const ProfileDetail = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-3 space-y-8">
             {/* Experiencia */}
             <div className="bg-white dark:bg-slate-950 rounded-[2rem] shadow-sm border border-slate-200 dark:border-slate-800 p-8 sm:p-10 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
               <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-8 flex items-center">
@@ -348,12 +348,32 @@ const ProfileDetail = () => {
             </div>
           </div>
 
-          <div className="space-y-8">
+          <div className="lg:col-span-2 space-y-8">
             {/* Competencias */}
             <div className="bg-white dark:bg-slate-950 rounded-[2rem] shadow-sm border border-slate-200 dark:border-slate-800 p-8 animate-in fade-in slide-in-from-right-8 duration-700 delay-300">
-              <h3 className="text-xl font-black text-slate-800 dark:text-white mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
+              <h3 className="text-xl font-black text-slate-800 dark:text-white mb-3 pb-3 border-b border-slate-100 dark:border-slate-800">
                 Competencias
               </h3>
+
+              {/* Leyenda de niveles */}
+              <div className="mb-6">
+                {/* Fila 1: labels */}
+                <div className="grid grid-cols-4 mb-1">
+                  {['Básico', 'Medio', 'Avanzado', 'Experto'].map(label => (
+                    <span key={label} className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide text-center">{label}</span>
+                  ))}
+                </div>
+                {/* Fila 2: barras representativas */}
+                <div className="grid grid-cols-4">
+                  {[1, 2, 3, 4].map(bars => (
+                    <div key={bars} className="flex justify-center items-center gap-0.5">
+                      {[1, 2, 3, 4].map(n => (
+                        <div key={n} className={`h-1.5 w-3 rounded-full ${n <= bars ? 'bg-primary' : 'bg-slate-200 dark:bg-slate-700'}`} />
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
 
               <div className="space-y-6">
                 <div>
