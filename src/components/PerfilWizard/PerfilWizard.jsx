@@ -3,7 +3,6 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config/api';
-import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
 import Step4 from './Step4';
@@ -346,22 +345,17 @@ const PerfilWizard = () => {
 
   const steps = [
     {
-      id: 1, label: 'Consentimiento', title: 'Paso 1', icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-      )
-    },
-    {
-      id: 2, label: 'Datos Generales', title: 'Paso 2', icon: (
+      id: 1, label: 'Datos Generales', title: 'Paso 1', icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
       )
     },
     {
-      id: 3, label: 'Experiencia', title: 'Paso 3', icon: (
+      id: 2, label: 'Experiencia', title: 'Paso 2', icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
       )
     },
     {
-      id: 4, label: 'Redes e Intereses', title: 'Paso 4', icon: (
+      id: 3, label: 'Redes e Intereses', title: 'Paso 3', icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.172 13.828a4 4 0 015.656 0l4 4a4 4 0 11-5.656 5.656l-1.102-1.101" /></svg>
       )
     }
@@ -413,10 +407,9 @@ const PerfilWizard = () => {
               <form onSubmit={methods.handleSubmit(submitFinal, (errors) => console.log("❌ Errores de validación:", errors))}>
                 <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden mb-12">
                   <div className="p-8 md:p-12 min-h-[400px]">
-                    {step === 1 && <Step1 />}
-                    {step === 2 && <Step2 />}
-                    {step === 3 && <Step3 />}
-                    {step === 4 && <Step4 />}
+                    {step === 1 && <Step2 />}
+                    {step === 2 && <Step3 />}
+                    {step === 3 && <Step4 />}
                   </div>
                 </div>
 
