@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../config/api';
 import techImg from '../assets/convocatorias/tech.png';
 
 const Convocatorias = () => {
+    const navigate = useNavigate();
     const [convocatorias, setConvocatorias] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -202,7 +204,7 @@ const Convocatorias = () => {
                                     {/* Actions */}
                                     <div className="mt-auto flex items-center gap-3">
                                         <button 
-                                            onClick={() => window.open(item.enlace, '_blank')}
+                                            onClick={() => navigate(`/convocatorias/detalles/${item.id}`)}
                                             className="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-[#3db4ed] transition-all shadow-xl shadow-slate-200 hover:shadow-sky-500/40 active:scale-95"
                                         >
                                             Ver Detalles
