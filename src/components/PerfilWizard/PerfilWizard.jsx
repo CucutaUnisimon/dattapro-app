@@ -14,6 +14,7 @@ const PerfilWizard = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [submitResult, setSubmitResult] = useState(null);
+  const [completionPercentage, setCompletionPercentage] = useState(0);
 
 
   const methods = useForm({
@@ -167,6 +168,10 @@ const PerfilWizard = () => {
             usuarioId: rawData.id || null
           };
 
+
+          if (rawData.porcentajeCompletitud !== undefined) {
+            setCompletionPercentage(rawData.porcentajeCompletitud);
+          }
           reset(mappedData);
         }
       } catch (error) {
@@ -315,33 +320,34 @@ const PerfilWizard = () => {
         },
         body: JSON.stringify(formattedData)
       });
+
       if (!response.ok) throw new Error('Error al enviar los datos');
+
+      // Manejar respuesta dinámica (JSON o Texto)
+      const contentType = response.headers.get("content-type");
+      let updatedData = {};
+      
+      if (contentType && contentType.includes("application/json")) {
+        updatedData = await response.json();
+        console.log("✅ RESPUESTA JSON DEL SERVIDOR:", updatedData);
+      } else {
+        const textData = await response.text();
+        console.log("📝 RESPUESTA TEXTO DEL SERVIDOR:", textData);
+      }
+
+      // Actualizar progreso si viene en la respuesta
+      if (updatedData.porcentajeCompletitud !== undefined) {
+        setCompletionPercentage(updatedData.porcentajeCompletitud);
+      }
+
       setSubmitResult({ success: true, message: 'Perfil actualizado exitosamente.' });
     } catch (error) {
-      setSubmitResult({ success: false, message: 'Ocurrió un error al guardar cambios.' });
+      console.error("❌ ERROR EN SUBMIT:", error);
+      setSubmitResult({ success: false, message: error.message || 'Ocurrió un error al guardar cambios.' });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  if (submitResult?.success) {
-    return (
-      <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center p-6">
-        <div className="max-w-xl w-full bg-white p-12 shadow-sm rounded-3xl border border-gray-100 text-center">
-          <div className="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-sky-50 mb-8">
-            <svg className="h-12 w-12 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h2 className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">¡Guardado!</h2>
-          <p className="text-lg text-gray-500 mb-10">{submitResult.message}</p>
-          <button onClick={() => window.location.reload()} className="px-8 py-3.5 bg-primary text-white font-bold rounded-xl hover:bg-[#1f4571] transition-colors shadow-md text-lg">
-            Continuar
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   const steps = [
     {
@@ -361,77 +367,140 @@ const PerfilWizard = () => {
     }
   ];
 
+  console.log("Estado de éxito:", submitResult);
+
   return (
-    <div className="w-full px-4 py-8 sm:px-6 lg:px-8">
-      <div className="flex flex-col max-w-5xl mx-auto gap-8">
-
-        {/* Header */}
-        <div>
-          <h1 className="text-4xl font-black text-slate-900 mb-3 tracking-tight">Editar Perfil</h1>
-          <p className="text-lg font-medium text-slate-500 leading-relaxed">
-            Gestiona tu identidad profesional y tus credenciales en toda la red de datos.
-          </p>
-        </div>
-
-        {/* Wizard Progress - Horizontal Top Bar */}
-        <div>
-          <div className="bg-white dark:bg-slate-950 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-2 flex overflow-x-auto">
-            {steps.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => setStep(s.id)}
-                className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-all font-bold text-sm whitespace-nowrap min-w-fit ${step === s.id
-                  ? 'bg-primary text-white shadow-lg shadow-sky-500/30'
-                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400'
-                  }`}
-              >
-                <div className={`${step === s.id ? 'text-white' : 'text-slate-400'}`}>
-                  {s.icon}
-                </div>
-                <span>{s.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* MAIN FORM AREA */}
-        <div className="flex-1">
-
-          {isLoadingData ? (
-            <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-200 p-24 flex flex-col items-center justify-center space-y-6">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-sky-500"></div>
-              <p className="text-xl text-slate-500 font-bold">Cargando información del perfil...</p>
-            </div>
-          ) : (
-            <FormProvider {...methods}>
-              <form onSubmit={methods.handleSubmit(submitFinal, (errors) => console.log("❌ Errores de validación:", errors))}>
-                <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden mb-12">
-                  <div className="p-8 md:p-12 min-h-[400px]">
-                    {step === 1 && <Step2 />}
-                    {step === 2 && <Step3 />}
-                    {step === 3 && <Step4 />}
-                  </div>
-                </div>
-
-                {/* Actions Bar */}
-                <div className="flex items-center justify-end space-x-6">
-                  <button type="button" onClick={() => setStep(1)} className="text-slate-500 font-bold hover:text-slate-900 transition-colors">
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="px-10 py-4 bg-sky-500 text-white font-black rounded-2xl hover:bg-sky-600 active:scale-95 transition-all shadow-xl shadow-sky-500/30 disabled:opacity-50 text-lg"
-                  >
-                    {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
-                  </button>
-                </div>
-              </form>
-            </FormProvider>
-          )}
+    <>
+      {/* Progress Bar Sticky at Top of content */}
+      <div className="sticky top-0 left-0 w-full z-50 h-2 bg-slate-100 dark:bg-slate-800 overflow-hidden shadow-sm">
+        <div 
+          className={`h-full transition-all duration-1000 ease-out ${
+            completionPercentage < 40 ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 
+            completionPercentage < 80 ? 'bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.5)]' : 
+            'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]'
+          }`}
+          style={{ width: `${completionPercentage}%` }}
+        >
+          {/* Subtle glow effect */}
+          <div className="w-full h-full opacity-30 bg-white/30 animate-pulse"></div>
         </div>
       </div>
-    </div>
+
+      {submitResult?.success ? (
+        <div className="flex-1 flex items-center justify-center p-6 bg-slate-50 dark:bg-slate-900 min-h-[70vh]">
+          <div className="max-w-xl w-full bg-white dark:bg-slate-950 p-12 shadow-2xl shadow-slate-200/50 rounded-[3rem] border border-slate-100 dark:border-slate-800 text-center animate-in fade-in zoom-in duration-500">
+            <div className="mx-auto flex items-center justify-center h-28 w-28 rounded-full bg-emerald-50 dark:bg-emerald-500/10 mb-8">
+              <svg className="h-14 w-14 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">¡Perfil Actualizado!</h2>
+            <p className="text-xl text-slate-500 dark:text-slate-400 mb-8 font-medium">
+              {submitResult.message}
+            </p>
+            
+            <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-6 mb-10 border border-slate-100 dark:border-slate-800">
+              <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Progreso del Perfil</p>
+              <div className="text-3xl font-black text-primary flex items-center justify-center gap-2">
+                <span>{completionPercentage}%</span>
+                <span className="text-slate-300 dark:text-slate-700">/</span>
+                <span className="text-slate-400">100%</span>
+              </div>
+              <p className="text-sm text-slate-500 mt-2">
+                Has alcanzado el <span className="font-bold text-slate-700 dark:text-slate-300">{completionPercentage}%</span> de completitud de tu perfil.
+              </p>
+            </div>
+
+            <button 
+              onClick={() => window.location.reload()} 
+              className="w-full py-4 bg-primary text-white font-black rounded-2xl hover:bg-[#1f4571] active:scale-[0.98] transition-all shadow-xl shadow-sky-500/30 text-lg"
+            >
+              Continuar
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="w-full px-4 py-8 sm:px-6 lg:px-8">
+          <div className="flex flex-col max-w-5xl mx-auto gap-8 pt-4">
+            {/* Header */}
+            <div>
+              <h1 className="text-4xl font-black text-slate-900 mb-3 tracking-tight">Editar Perfil</h1>
+              <p className="text-lg font-medium text-slate-500 leading-relaxed">
+                Gestiona tu identidad profesional y tus credenciales en toda la red de datos.
+              </p>
+            </div>
+
+            {/* Wizard Progress - Horizontal Top Bar */}
+            <div>
+              <div className="bg-white dark:bg-slate-950 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-2 flex overflow-x-auto">
+                {steps.map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setStep(s.id)}
+                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-all font-bold text-sm whitespace-nowrap min-w-fit ${step === s.id
+                      ? 'bg-primary text-white shadow-lg shadow-sky-500/30'
+                      : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400'
+                      }`}
+                  >
+                    <div className={`${step === s.id ? 'text-white' : 'text-slate-400'}`}>
+                      {s.icon}
+                    </div>
+                    <span>{s.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* MAIN FORM AREA */}
+            <div className="flex-1">
+
+              {isLoadingData ? (
+                <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-200 p-24 flex flex-col items-center justify-center space-y-6">
+                  <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-sky-500"></div>
+                  <p className="text-xl text-slate-500 font-bold">Cargando información del perfil...</p>
+                </div>
+              ) : (
+                <FormProvider {...methods}>
+                  <form onSubmit={methods.handleSubmit(submitFinal, (errors) => console.log("❌ Errores de validación:", errors))}>
+                    <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden mb-12">
+                      <div className="p-8 md:p-12 min-h-[400px]">
+                        {step === 1 && <Step2 />}
+                        {step === 2 && <Step3 />}
+                        {step === 3 && <Step4 />}
+                      </div>
+                    </div>
+
+                    {/* Error Banner */}
+                    {submitResult?.success === false && (
+                      <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+                        <svg className="w-6 h-6 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p className="text-red-700 font-bold">{submitResult.message}</p>
+                      </div>
+                    )}
+
+                    {/* Actions Bar */}
+                    <div className="flex items-center justify-end space-x-6">
+                      <button type="button" onClick={() => setStep(1)} className="text-slate-500 font-bold hover:text-slate-900 transition-colors">
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="px-10 py-4 bg-sky-500 text-white font-black rounded-2xl hover:bg-sky-600 active:scale-95 transition-all shadow-xl shadow-sky-500/30 disabled:opacity-50 text-lg"
+                      >
+                        {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
+                      </button>
+                    </div>
+                  </form>
+                </FormProvider>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
