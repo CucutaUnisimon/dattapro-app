@@ -56,7 +56,8 @@ export const useUserManagement = () => {
                     nombres: usuario.nombres,
                     apellidos: usuario.apellidos,
                     correoInstitucional: usuario.correoInstitucional,
-                    rol: nuevoRol
+                    rol: nuevoRol,
+                    estadoFormulario: usuario.estadoFormulario
                 })
             });
 
@@ -78,7 +79,7 @@ export const useUserManagement = () => {
     };
 
     const handleStatusChange = async (usuario, nuevoEstado) => {
-        if (usuario.estado === nuevoEstado) return;
+        if (usuario.estadoFormulario === nuevoEstado) return;
 
         const userId = usuario.id;
         if (!userId) return;
@@ -98,7 +99,7 @@ export const useUserManagement = () => {
                     apellidos: usuario.apellidos,
                     correoInstitucional: usuario.correoInstitucional,
                     rol: usuario.rol,
-                    estado: nuevoEstado
+                    estadoFormulario: nuevoEstado
                 })
             });
 
@@ -107,7 +108,7 @@ export const useUserManagement = () => {
             }
 
             setUsuarios(prevUsuarios =>
-                prevUsuarios.map(u => u.id === userId ? { ...u, estado: nuevoEstado } : u)
+                prevUsuarios.map(u => u.id === userId ? { ...u, estadoFormulario: nuevoEstado } : u)
             );
 
             alert("Estado actualizado exitosamente");

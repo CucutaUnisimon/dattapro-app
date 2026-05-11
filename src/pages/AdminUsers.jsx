@@ -25,7 +25,7 @@ const AdminUsers = () => {
 
     const RoleBadge = ({ rol }) => {
         const styles = {
-            admin: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+            admin: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
             directivo: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
             profesor: 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400',
             default: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
@@ -82,13 +82,14 @@ const AdminUsers = () => {
         <div className="relative min-w-[120px] max-w-[140px]">
             <select
                 id={`status-${usuario.id}`}
-                value={usuario.estado || 'pendiente'}
+                value={usuario.estadoFormulario || 'pendiente'}
                 disabled={updatingId === usuario.id}
                 onChange={(e) => handleStatusChange(usuario, e.target.value)}
                 className="block w-full pl-3 pr-10 py-2 text-sm border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg focus:ring-red-500 focus:border-red-500 transition-colors appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
                 <option value="pendiente">Pendiente</option>
                 <option value="completo">Completo</option>
+                <option value="rechazado">Rechazado</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
                 {updatingId === usuario.id ? (
@@ -101,6 +102,20 @@ const AdminUsers = () => {
             </div>
         </div>
     );
+
+    const StatusBadge = ({ estado }) => {
+        const styles = {
+            completo: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
+            rechazado: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
+            pendiente: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+            default: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+        };
+        return (
+            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${styles[estado] || styles.default}`}>
+                {estado || 'pendiente'}
+            </span>
+        );
+    };
 
     return (
         <div className="flex-1 bg-slate-50 dark:bg-slate-900 font-display text-slate-900 dark:text-slate-100">
@@ -187,6 +202,7 @@ const AdminUsers = () => {
                                     <tr>
                                         <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Usuario</th>
                                         <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Rol</th>
+                                        <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Progreso</th>
                                         <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Asignar Rol</th>
                                         <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Estado</th>
                                         <th scope="col" className="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Acciones</th>
@@ -209,7 +225,29 @@ const AdminUsers = () => {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <RoleBadge rol={usuario.rol} />
+                                                <div className="flex flex-col gap-1">
+                                                    <RoleBadge rol={usuario.rol} />
+                                                    <StatusBadge estado={usuario.estadoFormulario} />
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex flex-col w-32 gap-1.5">
+                                                    <div className="flex justify-between items-center text-[10px] font-bold">
+                                                        <span className={usuario.porcentajeCompletitud >= 80 ? 'text-emerald-600' : usuario.porcentajeCompletitud >= 40 ? 'text-amber-600' : 'text-red-600'}>
+                                                            {usuario.porcentajeCompletitud || 0}%
+                                                        </span>
+                                                        <span className="text-slate-400">100%</span>
+                                                    </div>
+                                                    <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
+                                                        <div
+                                                            className={`h-full transition-all duration-500 ${usuario.porcentajeCompletitud >= 80 ? 'bg-emerald-500' :
+                                                                    usuario.porcentajeCompletitud >= 40 ? 'bg-amber-400' :
+                                                                        'bg-red-500'
+                                                                }`}
+                                                            style={{ width: `${usuario.porcentajeCompletitud || 0}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <RoleSelect usuario={usuario} />
@@ -261,6 +299,7 @@ const AdminUsers = () => {
                                             </p>
                                             <div className="flex flex-wrap items-center gap-2 mt-1">
                                                 <RoleBadge rol={usuario.rol} />
+                                                <StatusBadge estado={usuario.estadoFormulario} />
                                                 <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
                                                     ID: {usuario.id || 'N/A'}
                                                 </span>
@@ -273,6 +312,25 @@ const AdminUsers = () => {
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                             </svg>
                                             <span className="truncate">{usuario.correoInstitucional}</span>
+                                        </div>
+
+                                        {/* Progress Indicator */}
+                                        <div className="mt-3">
+                                            <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider mb-1.5">
+                                                <span className="text-slate-400">Completitud del Perfil</span>
+                                                <span className={usuario.porcentajeCompletitud >= 80 ? 'text-emerald-600' : usuario.porcentajeCompletitud >= 40 ? 'text-amber-600' : 'text-red-600'}>
+                                                    {usuario.porcentajeCompletitud || 0}%
+                                                </span>
+                                            </div>
+                                            <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700/50 shadow-inner p-[1px]">
+                                                <div
+                                                    className={`h-full rounded-full transition-all duration-700 ease-out ${usuario.porcentajeCompletitud >= 80 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]' :
+                                                            usuario.porcentajeCompletitud >= 40 ? 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.3)]' :
+                                                                'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                                        }`}
+                                                    style={{ width: `${usuario.porcentajeCompletitud || 0}%` }}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
