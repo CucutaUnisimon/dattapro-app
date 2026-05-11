@@ -371,21 +371,6 @@ const PerfilWizard = () => {
 
   return (
     <>
-      {/* Progress Bar Sticky at Top of content */}
-      <div className="sticky top-0 left-0 w-full z-50 h-2 bg-slate-100 dark:bg-slate-800 overflow-hidden shadow-sm">
-        <div 
-          className={`h-full transition-all duration-1000 ease-out ${
-            completionPercentage < 40 ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 
-            completionPercentage < 80 ? 'bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.5)]' : 
-            'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]'
-          }`}
-          style={{ width: `${completionPercentage}%` }}
-        >
-          {/* Subtle glow effect */}
-          <div className="w-full h-full opacity-30 bg-white/30 animate-pulse"></div>
-        </div>
-      </div>
-
       {submitResult?.success ? (
         <div className="flex-1 flex items-center justify-center p-6 bg-slate-50 dark:bg-slate-900 min-h-[70vh]">
           <div className="max-w-xl w-full bg-white dark:bg-slate-950 p-12 shadow-2xl shadow-slate-200/50 rounded-[3rem] border border-slate-100 dark:border-slate-800 text-center animate-in fade-in zoom-in duration-500">
@@ -395,21 +380,9 @@ const PerfilWizard = () => {
               </svg>
             </div>
             <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">¡Perfil Actualizado!</h2>
-            <p className="text-xl text-slate-500 dark:text-slate-400 mb-8 font-medium">
+            <p className="text-xl text-slate-500 dark:text-slate-400 mb-10 font-medium">
               {submitResult.message}
             </p>
-            
-            <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-6 mb-10 border border-slate-100 dark:border-slate-800">
-              <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Progreso del Perfil</p>
-              <div className="text-3xl font-black text-primary flex items-center justify-center gap-2">
-                <span>{completionPercentage}%</span>
-                <span className="text-slate-300 dark:text-slate-700">/</span>
-                <span className="text-slate-400">100%</span>
-              </div>
-              <p className="text-sm text-slate-500 mt-2">
-                Has alcanzado el <span className="font-bold text-slate-700 dark:text-slate-300">{completionPercentage}%</span> de completitud de tu perfil.
-              </p>
-            </div>
 
             <button 
               onClick={() => window.location.reload()} 

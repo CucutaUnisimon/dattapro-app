@@ -89,7 +89,6 @@ const AdminUsers = () => {
             >
                 <option value="pendiente">Pendiente</option>
                 <option value="completo">Completo</option>
-                <option value="rechazado">Rechazado</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
                 {updatingId === usuario.id ? (

@@ -43,8 +43,9 @@ const NetworkingSearch = () => {
         // Y que explícitamente desean vincularse a la red
         const autoriza = usuario.autorizaDatos === true || usuario.autorizadatos === true;
         const desea = usuario.deseaVincularse === true || usuario.deseavincularse === true;
+        const esPendiente = usuario.estadoFormulario === 'pendiente';
         
-        if (!autoriza || !desea) return false;
+        if (!autoriza || !desea || esPendiente) return false;
 
         const fullName = `${usuario.nombres} ${usuario.apellidos}`.toLowerCase();
         return fullName.includes(searchTerm.toLowerCase()) ||

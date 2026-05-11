@@ -79,7 +79,7 @@ const Step4 = () => {
               <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Competencias Técnicas</label>
               <button
                 type="button"
-                onClick={() => appendTecnica({ nombre: '', nivel: 1 })}
+                onClick={() => appendTecnica({ nombre: '', nivel: '' })}
                 className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all font-bold text-sm"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -102,6 +102,7 @@ const Step4 = () => {
                     {...register(`competenciasTecnicas.${index}.nivel`, { required: 'Requerido', valueAsNumber: true })}
                     className="w-32 px-3 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none appearance-none transition-all font-bold text-slate-500 text-[10px] uppercase"
                   >
+                    <option value="">Seleccione...</option>
                     {nivelesOpciones.map(n => <option key={n.value} value={n.value}>{n.label}</option>)}
                   </select>
                   {tecnicasFields.length > 1 && (
@@ -120,7 +121,7 @@ const Step4 = () => {
               <label className="text-[13px] font-bold text-slate-500 uppercase tracking-wider ml-1">Competencias Transversales</label>
               <button
                 type="button"
-                onClick={() => appendTransversal({ nombre: '', nivel: 1 })}
+                onClick={() => appendTransversal({ nombre: '', nivel: '' })}
                 className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all font-bold text-sm"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -143,6 +144,7 @@ const Step4 = () => {
                     {...register(`competenciasTransversales.${index}.nivel`, { required: 'Requerido', valueAsNumber: true })}
                     className="w-32 px-3 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none appearance-none transition-all font-bold text-slate-500 text-[10px] uppercase"
                   >
+                    <option value="">Seleccione...</option>
                     {nivelesOpciones.map(n => <option key={n.value} value={n.value}>{n.label}</option>)}
                   </select>
                   {transversalesFields.length > 1 && (
