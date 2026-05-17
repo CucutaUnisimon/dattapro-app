@@ -23,19 +23,7 @@ const AdminUsers = () => {
             (usuario.correoInstitucional && usuario.correoInstitucional.toLowerCase().includes(searchTerm.toLowerCase()));
     });
 
-    const RoleBadge = ({ rol }) => {
-        const styles = {
-            admin: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
-            directivo: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
-            profesor: 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400',
-            default: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
-        };
-        return (
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${styles[rol] || styles.default}`}>
-                {rol || 'No asignado'}
-            </span>
-        );
-    };
+
 
     const UserAvatar = ({ usuario, size = "h-14 w-14" }) => (
         <div className={`${size} rounded-full bg-gradient-to-br from-blue-500 to-sky-500 flex items-center justify-center text-white font-bold font-display shadow-inner overflow-hidden flex-shrink-0`}>
@@ -53,66 +41,72 @@ const AdminUsers = () => {
         </div>
     );
 
-    const RoleSelect = ({ usuario }) => (
-        <div className="relative min-w-[120px] max-w-[140px]">
-            <select
-                id={`rol-${usuario.id}`}
-                value={usuario.rol || 'profesor'}
-                disabled={updatingId === usuario.id || usuario.rol === 'admin'}
-                onChange={(e) => handleRoleChange(usuario, e.target.value)}
-                className="block w-full pl-3 pr-10 py-2 text-sm border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg focus:ring-red-500 focus:border-red-500 transition-colors appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-                <option value="profesor">Profesor</option>
-                <option value="directivo">Directivo</option>
-                {usuario.rol === 'admin' && <option value="admin">Admin</option>}
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
-                {updatingId === usuario.id ? (
-                    <div className="animate-spin h-4 w-4 border-2 border-red-500 border-t-transparent rounded-full"></div>
-                ) : (
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                )}
-            </div>
-        </div>
-    );
-
-    const StatusSelect = ({ usuario }) => (
-        <div className="relative min-w-[120px] max-w-[140px]">
-            <select
-                id={`status-${usuario.id}`}
-                value={usuario.estadoFormulario || 'pendiente'}
-                disabled={updatingId === usuario.id}
-                onChange={(e) => handleStatusChange(usuario, e.target.value)}
-                className="block w-full pl-3 pr-10 py-2 text-sm border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg focus:ring-red-500 focus:border-red-500 transition-colors appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-                <option value="pendiente">Pendiente</option>
-                <option value="completo">Completo</option>
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
-                {updatingId === usuario.id ? (
-                    <div className="animate-spin h-4 w-4 border-2 border-red-500 border-t-transparent rounded-full"></div>
-                ) : (
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                )}
-            </div>
-        </div>
-    );
-
-    const StatusBadge = ({ estado }) => {
+    const RoleSelect = ({ usuario }) => {
         const styles = {
-            completo: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
-            rechazado: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
-            pendiente: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-            default: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+            admin: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/30',
+            directivo: 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800/30',
+            profesor: 'bg-sky-100 text-sky-800 border-sky-200 dark:bg-sky-900/30 dark:text-sky-400 dark:border-sky-800/30',
+            default: 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
         };
+        const currentStyle = styles[usuario.rol] || styles.default;
+
         return (
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${styles[estado] || styles.default}`}>
-                {estado || 'pendiente'}
-            </span>
+            <div className="relative min-w-[120px] max-w-[140px]">
+                <select
+                    id={`rol-${usuario.id}`}
+                    value={usuario.rol || 'profesor'}
+                    disabled={updatingId === usuario.id || usuario.rol === 'admin'}
+                    onChange={(e) => handleRoleChange(usuario, e.target.value)}
+                    className={`block w-full pl-3 pr-10 py-2 text-sm font-medium border ${currentStyle} rounded-lg focus:ring-red-500 focus:border-red-500 transition-colors appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                    <option value="profesor" className="bg-white text-slate-900 dark:bg-slate-800 dark:text-white">Profesor</option>
+                    <option value="directivo" className="bg-white text-slate-900 dark:bg-slate-800 dark:text-white">Directivo</option>
+                    {usuario.rol === 'admin' && <option value="admin" className="bg-white text-slate-900 dark:bg-slate-800 dark:text-white">Admin</option>}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-current opacity-70">
+                    {updatingId === usuario.id ? (
+                        <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
+                    ) : (
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    const StatusSelect = ({ usuario }) => {
+        const styles = {
+            completo: 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/30',
+            rechazado: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/30',
+            pendiente: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800/30',
+            default: 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
+        };
+        const currentStyle = styles[usuario.estadoFormulario] || styles.default;
+
+        return (
+            <div className="relative min-w-[120px] max-w-[140px]">
+                <select
+                    id={`status-${usuario.id}`}
+                    value={usuario.estadoFormulario || 'pendiente'}
+                    disabled={updatingId === usuario.id}
+                    onChange={(e) => handleStatusChange(usuario, e.target.value)}
+                    className={`block w-full pl-3 pr-10 py-2 text-sm font-medium border ${currentStyle} rounded-lg focus:ring-red-500 focus:border-red-500 transition-colors appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                    <option value="pendiente" className="bg-white text-slate-900 dark:bg-slate-800 dark:text-white">Pendiente</option>
+                    <option value="completo" className="bg-white text-slate-900 dark:bg-slate-800 dark:text-white">Completo</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-current opacity-70">
+                    {updatingId === usuario.id ? (
+                        <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
+                    ) : (
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    )}
+                </div>
+            </div>
         );
     };
 
@@ -200,9 +194,8 @@ const AdminUsers = () => {
                                 <thead className="bg-slate-50 dark:bg-slate-900/50">
                                     <tr>
                                         <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Usuario</th>
-                                        <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Rol</th>
                                         <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Progreso</th>
-                                        <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Asignar Rol</th>
+                                        <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Rol</th>
                                         <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Estado</th>
                                         <th scope="col" className="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Acciones</th>
                                     </tr>
@@ -223,12 +216,7 @@ const AdminUsers = () => {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex flex-col gap-1">
-                                                    <RoleBadge rol={usuario.rol} />
-                                                    <StatusBadge estado={usuario.estadoFormulario} />
-                                                </div>
-                                            </td>
+
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex flex-col w-32 gap-1.5">
                                                     <div className="flex justify-between items-center text-[10px] font-bold">
@@ -297,8 +285,6 @@ const AdminUsers = () => {
                                                 {usuario.nombres} {usuario.apellidos}
                                             </p>
                                             <div className="flex flex-wrap items-center gap-2 mt-1">
-                                                <RoleBadge rol={usuario.rol} />
-                                                <StatusBadge estado={usuario.estadoFormulario} />
                                                 <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
                                                     ID: {usuario.id || 'N/A'}
                                                 </span>

@@ -127,7 +127,7 @@ const Convocatorias = () => {
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
 
-                                    {/* Badges */}
+                                    {/* Badges comentados temporalmente
                                     <div className="absolute top-4 left-4 flex flex-col gap-2">
                                         <div className="backdrop-blur-md bg-sky-500/80 text-white px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest flex items-center gap-1.5 shadow-lg">
                                             <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
@@ -139,6 +139,7 @@ const Convocatorias = () => {
                                             {item.entidad?.nombre || 'AGENCIA'}
                                         </div>
                                     </div>
+                                    */}
 
                                     {/* Status Badge */}
                                     <div className={`absolute top-4 right-4 px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest shadow-lg border backdrop-blur-md ${getStatusStyles(status)}`}>
@@ -209,7 +210,15 @@ const Convocatorias = () => {
                                         >
                                             Ver Detalles
                                         </button>
-                                        <button className="w-14 h-14 bg-orange-50 flex items-center justify-center rounded-2xl text-orange-600 hover:bg-orange-600 hover:text-white transition-all active:scale-90 border border-orange-100">
+                                        <button 
+                                            onClick={() => {
+                                                if (item.enlace) {
+                                                    window.open(item.enlace, '_blank', 'noopener,noreferrer');
+                                                }
+                                            }}
+                                            className="w-14 h-14 bg-orange-50 flex items-center justify-center rounded-2xl text-orange-600 hover:bg-orange-600 hover:text-white transition-all active:scale-90 border border-orange-100"
+                                            title="Ir al enlace de la convocatoria"
+                                        >
                                             <svg className="w-6 h-6 rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                                             </svg>

@@ -68,7 +68,83 @@ const Step4 = () => {
           </div>
           <div>
             <h2 className="text-2xl font-black text-slate-800 tracking-tight">Competencias y Sectores</h2>
-            <p className="text-sm text-slate-500 font-medium leading-none mt-1">Habilidades clave y áreas de impacto</p>
+            <p className="text-sm text-slate-500 font-medium leading-none mt-1">Habilidades clave y áreas de impacto:</p>
+          </div>
+        </div>
+
+        {/* Guía de Competencias y Niveles */}
+        <div className="bg-slate-50/50 border border-slate-200/60 rounded-[2rem] p-7 md:p-9 space-y-8 animate-in fade-in zoom-in-95 duration-700 delay-100">
+          {/* Niveles de Dominio */}
+          <div className="space-y-5">
+            <div className="flex items-center gap-2">
+              <div className="h-1 w-8 bg-primary rounded-full"></div>
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">Guía de Niveles de Dominio</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+              <div className="flex gap-4">
+                <div className="flex flex-col items-center shrink-0">
+                  <span className="h-7 w-7 rounded-lg bg-white border border-slate-200 shadow-sm text-slate-600 flex items-center justify-center text-[11px] font-black">1</span>
+                  <div className="w-px h-full bg-slate-200 mt-2"></div>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-bold text-slate-800 uppercase tracking-tight">Básico</p>
+                  <p className="text-[11px] text-slate-500 font-medium leading-relaxed">Conozco el concepto y lo he aplicado de forma puntual o con acompañamiento.</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex flex-col items-center shrink-0">
+                  <span className="h-7 w-7 rounded-lg bg-white border border-slate-200 shadow-sm text-slate-600 flex items-center justify-center text-[11px] font-black">2</span>
+                  <div className="w-px h-full bg-slate-200 mt-2"></div>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-bold text-slate-800 uppercase tracking-tight">Medio</p>
+                  <p className="text-[11px] text-slate-500 font-medium leading-relaxed">Lo aplico con regularidad en mi trabajo o proyectos, con autonomía en la mayoría de situaciones.</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex flex-col items-center shrink-0">
+                  <span className="h-7 w-7 rounded-lg bg-primary/10 border border-primary/20 shadow-sm text-primary flex items-center justify-center text-[11px] font-black">3</span>
+                  <div className="w-px h-full bg-slate-200 mt-2"></div>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-bold text-primary uppercase tracking-tight">Avanzado</p>
+                  <p className="text-[11px] text-slate-500 font-medium leading-relaxed">Lo domino con profundidad, puedo orientar a otros y resolver situaciones complejas.</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex flex-col items-center shrink-0">
+                  <span className="h-7 w-7 rounded-lg bg-primary shadow-lg shadow-primary/20 text-white flex items-center justify-center text-[11px] font-black">4</span>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-bold text-slate-900 uppercase tracking-tight">Experto</p>
+                  <p className="text-[11px] text-slate-500 font-medium leading-relaxed">Es una de mis áreas de mayor fortaleza; he liderado iniciativas relevantes y puedo diseñar metodologías al respecto.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Definición de Competencias */}
+          <div className="pt-8 border-t border-slate-200/60">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="bg-white/50 p-5 rounded-2xl border border-slate-100">
+                <h4 className="text-[11px] font-black text-primary uppercase tracking-widest mb-2 flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-primary"></div>
+                  Competencias Técnicas
+                </h4>
+                <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
+                  Conocimientos especializados y habilidades técnicas asociadas a su campo de estudio o práctica profesional específica.
+                </p>
+              </div>
+              <div className="bg-white/50 p-5 rounded-2xl border border-slate-100">
+                <h4 className="text-[11px] font-black text-emerald-600 uppercase tracking-widest mb-2 flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
+                  Competencias Transversales
+                </h4>
+                <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
+                  Habilidades sociales y cognitivas transferibles a diferentes contextos, enfocadas en la interacción y efectividad laboral.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 

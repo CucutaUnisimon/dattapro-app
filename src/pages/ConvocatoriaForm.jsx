@@ -461,20 +461,15 @@ const ConvocatoriaForm = () => {
 
                                 <div>
                                     <label className={labelClasses}>Financiación *</label>
-                                    <div className="relative">
-                                        <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
-                                        <input
-                                            type="number"
-                                            name="financiacion"
-                                            required
-                                            min="0"
-                                            onKeyDown={(e) => ["e", "E", "+", "-", ".", ","].includes(e.key) && e.preventDefault()}
-                                            className={`${inputClasses} pl-9`}
-                                            placeholder="Ej: 200000000"
-                                            value={formData.financiacion}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
+                                    <input
+                                        type="text"
+                                        name="financiacion"
+                                        required
+                                        className={inputClasses}
+                                        placeholder="Ej: $200.000.000 o Financiación externa"
+                                        value={formData.financiacion}
+                                        onChange={handleChange}
+                                    />
                                 </div>
 
                             <TagInput
@@ -485,6 +480,7 @@ const ConvocatoriaForm = () => {
                                 suggestions={catalogos.keywords.map(k => k.nombre)}
                             />
 
+                            {/* Oculto por ahora
                             <div className="md:col-span-2">
                                 <TagInput
                                     label="Líneas de Investigación"
@@ -493,6 +489,7 @@ const ConvocatoriaForm = () => {
                                     placeholder="Ej: Biotecnología, IA"
                                 />
                             </div>
+                            */}
 
                             {/* Campo Entidad oculto por ahora */}
                             {/* 
