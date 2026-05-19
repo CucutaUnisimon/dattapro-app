@@ -53,7 +53,7 @@ const Login = () => {
                 if (roleToSave === 'ROLE_ADMIN' || roleToSave === 'ADMIN') {
                     navigate('/admin');
                 } else if (roleToSave === 'ROLE_PROFESOR' || roleToSave === 'PROFESOR') {
-                    navigate('/perfil');
+                    navigate('/');
                 } else {
                     // Redirección por defecto para otros roles
                     navigate('/network');

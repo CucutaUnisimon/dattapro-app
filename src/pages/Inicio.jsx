@@ -1,13 +1,79 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Map, UserPlus, GraduationCap, Megaphone, Lightbulb } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 
 const Inicio = () => {
+  const [stats, setStats] = useState({ profiles: '...', convocatorias: '...' });
+  const [recentProfiles, setRecentProfiles] = useState([]);
+  const [recentConvocatorias, setRecentConvocatorias] = useState([]);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const cleanToken = (localStorage.getItem('token') || '').replace(/[\n\r"'\s]/g, '');
+        
+        // Fetch usuarios
+        let profilesCount = '...';
+        try {
+          const resUsuarios = await fetch(`${API_BASE_URL}/usuarios`, {
+            headers: { 'Authorization': 'Bearer ' + cleanToken }
+          });
+          if (resUsuarios.ok) {
+            const dataUsuarios = await resUsuarios.json();
+            profilesCount = dataUsuarios.length;
+            
+            // Últimos 3 usuarios con el ID más alto
+            const sorted = [...dataUsuarios].sort((a, b) => b.id - a.id).slice(0, 3);
+            setRecentProfiles(sorted);
+          }
+        } catch (e) {
+          console.error('Error fetching users for stats:', e);
+        }
+
+        // Fetch convocatorias
+        let convocatoriasCount = '...';
+        try {
+          const resConvocatorias = await fetch(`${API_BASE_URL}/convocatorias`);
+          if (resConvocatorias.ok) {
+            const dataConvocatorias = await resConvocatorias.json();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const abiertas = dataConvocatorias.filter(c => {
+                if (c.visible === false) return false;
+                const dateLimite = new Date(c.fechaLimite);
+                dateLimite.setHours(0, 0, 0, 0);
+                if (c.fechaInicio) {
+                    const dateInicio = new Date(c.fechaInicio);
+                    dateInicio.setHours(0, 0, 0, 0);
+                    return (today >= dateInicio && today <= dateLimite);
+                }
+                return today <= dateLimite;
+            });
+            convocatoriasCount = abiertas.length;
+            
+            const sortedConvocatorias = [...abiertas].sort((a, b) => b.id - a.id).slice(0, 2);
+            setRecentConvocatorias(sortedConvocatorias);
+          }
+        } catch (e) {
+          console.error('Error fetching convocatorias for stats:', e);
+        }
+
+        setStats({ profiles: profilesCount, convocatorias: convocatoriasCount });
+      } catch (err) {
+        console.error('General error fetching stats:', err);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
       {/* Header section */}
       <div className="relative bg-[#002f5b] text-white pt-10 pb-24 px-8 overflow-hidden">
-        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-screen pointer-events-none"></div>
+        <div className="absolute inset-0 opacity-40 bg-[url('/bg-inicio.png')] bg-cover bg-center mix-blend-screen pointer-events-none"></div>
         <div className="max-w-6xl mx-auto relative z-10 flex justify-between items-start">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-2">Hola,</h1>
@@ -27,7 +93,7 @@ const Inicio = () => {
                <GraduationCap className="w-10 h-10 text-[#002f5b]" />
             </div>
             <div>
-              <div className="text-3xl font-bold text-slate-800">4,500+</div>
+              <div className="text-3xl font-bold text-slate-800">{stats.profiles}</div>
               <div className="text-sm font-medium text-slate-500">Perfiles Registrados</div>
             </div>
           </div>
@@ -37,7 +103,7 @@ const Inicio = () => {
                <Megaphone className="w-10 h-10 text-yellow-500" />
             </div>
             <div>
-              <div className="text-3xl font-bold text-slate-800">250+</div>
+              <div className="text-3xl font-bold text-slate-800">{stats.convocatorias}</div>
               <div className="text-sm font-medium text-slate-500">Convocatorias Abiertas</div>
             </div>
           </div>
@@ -77,45 +143,43 @@ const Inicio = () => {
         {/* Últimos Perfiles & Nuevas Convocatorias */}
         <div className="mb-10">
           <h3 className="text-xl font-bold text-[#002f5b] mb-4">Últimos Perfiles Registrados</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
-              <img src="https://i.pravatar.cc/150?img=47" alt="Dra. Elena Ruiz" className="w-14 h-14 rounded-full object-cover" />
-              <div>
-                <h4 className="font-bold text-slate-800">Dra. Elena Ruiz</h4>
-                <p className="text-sm text-slate-500">Biotecnología, IA</p>
-              </div>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
-              <img src="https://i.pravatar.cc/150?img=53" alt="Dr. Carlos Gómez" className="w-14 h-14 rounded-full object-cover" />
-              <div>
-                <h4 className="font-bold text-slate-800">Dr. Carlos Gómez</h4>
-                <p className="text-sm text-slate-500">Biotecnología, IA</p>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {recentProfiles.map((usuario) => (
+              <Link to={`/perfil/ver/${usuario.id}`} key={usuario.id} className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 flex items-center gap-4 hover:shadow-md transition-shadow group">
+                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-[#002f5b] to-[#004e8a] flex items-center justify-center text-white text-lg font-bold shadow-inner overflow-hidden flex-shrink-0">
+                    {usuario.foto ? (
+                        <img
+                            src={`data:image/jpeg;base64,${usuario.foto}`}
+                            alt="Foto"
+                            className="h-full w-full object-cover rounded-full"
+                        />
+                    ) : (
+                        <span>{usuario.nombres?.charAt(0)}{usuario.apellidos?.charAt(0)}</span>
+                    )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-slate-800 truncate group-hover:text-primary transition-colors">{usuario.nombres} {usuario.apellidos}</h4>
+                  <p className="text-sm text-slate-500 truncate">Investigador / Profesor</p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
 
         <div className="mb-10">
           <h3 className="text-xl font-bold text-[#002f5b] mb-4">Nuevas Convocatorias</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
-              <div className="p-3 bg-blue-50 rounded-lg text-[#002f5b]">
-                <Lightbulb className="w-6 h-6" />
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-800">Fondo de Innovación Académica</h4>
-                <p className="text-sm text-slate-500 mt-1">25 de mayo de 2026</p>
-              </div>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
-              <div className="p-3 bg-blue-50 rounded-lg text-[#002f5b]">
-                <GraduationCap className="w-6 h-6" />
-              </div>
-              <div>
-                <h4 className="font-bold text-slate-800">Becas Doctorado</h4>
-                <p className="text-sm text-slate-500 mt-1">10 de mayo de 2026</p>
-              </div>
-            </div>
+            {recentConvocatorias.map((convocatoria) => (
+              <Link to={`/convocatorias/detalles/${convocatoria.id}`} key={convocatoria.id} className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 flex items-center gap-4 hover:shadow-md transition-shadow group">
+                <div className="p-3 bg-blue-50 rounded-lg text-[#002f5b] group-hover:scale-110 transition-transform">
+                  <Lightbulb className="w-6 h-6" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-slate-800 truncate group-hover:text-primary transition-colors" title={convocatoria.titulo}>{convocatoria.titulo}</h4>
+                  <p className="text-sm text-slate-500 mt-1 truncate">{convocatoria.fechaLimite}</p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
 
