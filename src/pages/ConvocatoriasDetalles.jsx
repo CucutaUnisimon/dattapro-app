@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { API_BASE_URL } from '../config/api';
 import { ArrowLeft, Calendar, Link as LinkIcon, DollarSign, Info, FileText, CheckCircle, Target, Users, Mail, Building, Briefcase } from 'lucide-react';
 import techImg from '../assets/convocatorias/tech.png';
@@ -10,6 +10,8 @@ const ConvocatoriasDetalles = () => {
     const [convocatoria, setConvocatoria] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [matchingProfiles, setMatchingProfiles] = useState([]);
+    const [loadingProfiles, setLoadingProfiles] = useState(false);
 
     useEffect(() => {
         fetchConvocatoria();
@@ -30,6 +32,81 @@ const ConvocatoriasDetalles = () => {
             setIsLoading(false);
         }
     };
+
+    // Fetch matching profiles when convocatoria is loaded
+    useEffect(() => {
+        const hasSectores = convocatoria?.sectores?.length > 0;
+        const hasCompTec = convocatoria?.competenciasTecnicas?.length > 0;
+        const hasCompTrans = convocatoria?.competenciasTransversales?.length > 0;
+
+        if (!hasSectores && !hasCompTec && !hasCompTrans) return;
+
+        const fetchMatchingProfiles = async () => {
+            setLoadingProfiles(true);
+            try {
+                const cleanToken = (localStorage.getItem('token') || '').replace(/[\n\r"'\s]/g, '');
+                
+                // 1. Get all users
+                const resUsuarios = await fetch(`${API_BASE_URL}/usuarios`, {
+                    headers: { 'Authorization': 'Bearer ' + cleanToken }
+                });
+                if (!resUsuarios.ok) throw new Error('Error al cargar usuarios');
+                const usuarios = await resUsuarios.json();
+
+                const normalizeList = (list) => {
+                    if (!Array.isArray(list)) return [];
+                    return list.map(item => (typeof item === 'string' ? item : item.nombre).trim().toLowerCase());
+                };
+
+                const convSectores = normalizeList(convocatoria.sectores);
+                const convCompTec = normalizeList(convocatoria.competenciasTecnicas);
+                const convCompTrans = normalizeList(convocatoria.competenciasTransversales);
+
+                // 2. For each user, fetch profile and check matches
+                const matches = [];
+                for (const usuario of usuarios) {
+                    try {
+                        const resPerfil = await fetch(`${API_BASE_URL}/usuarios/perfil/${usuario.id}`, {
+                            headers: { 'Authorization': 'Bearer ' + cleanToken }
+                        });
+                        if (!resPerfil.ok) continue;
+                        const perfil = await resPerfil.json();
+
+                        const userSectores = Array.isArray(perfil.sectoresExperiencia) ? perfil.sectoresExperiencia : [];
+                        const userCompTec = Array.isArray(perfil.competenciasTecnicas) ? perfil.competenciasTecnicas : [];
+                        const userCompTrans = Array.isArray(perfil.competenciasTransversales) ? perfil.competenciasTransversales : [];
+
+                        const matchedSectors = userSectores.filter(s => convSectores.includes((s.nombre || '').trim().toLowerCase()));
+                        const matchedCompTec = userCompTec.filter(c => convCompTec.includes((c.nombre || '').trim().toLowerCase()));
+                        const matchedCompTrans = userCompTrans.filter(c => convCompTrans.includes((c.nombre || '').trim().toLowerCase()));
+
+                        if (matchedSectors.length > 0 || matchedCompTec.length > 0 || matchedCompTrans.length > 0) {
+                            matches.push({
+                                id: usuario.id,
+                                nombres: perfil.nombres || usuario.nombres || '',
+                                apellidos: perfil.apellidos || usuario.apellidos || '',
+                                foto: perfil.foto || null,
+                                facultad: perfil.facultad || '',
+                                matchedSectors: matchedSectors.map(s => s.nombre),
+                                matchedCompTec: matchedCompTec.map(c => c.nombre),
+                                matchedCompTrans: matchedCompTrans.map(c => c.nombre),
+                            });
+                        }
+                    } catch (e) {
+                        // Skip users whose profile can't be fetched
+                        continue;
+                    }
+                }
+                setMatchingProfiles(matches);
+            } catch (err) {
+                console.error('Error fetching matching profiles:', err);
+            } finally {
+                setLoadingProfiles(false);
+            }
+        };
+
+        fetchMatchingProfiles();
+    }, [convocatoria]);
 
     if (isLoading) {
         return (
@@ -274,6 +351,90 @@ const ConvocatoriasDetalles = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Talento Relacionado */}
+            {((convocatoria.sectores && convocatoria.sectores.length > 0) || 
+              (convocatoria.competenciasTecnicas && convocatoria.competenciasTecnicas.length > 0) || 
+              (convocatoria.competenciasTransversales && convocatoria.competenciasTransversales.length > 0)) && (
+                <div className="bg-white rounded-[40px] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden p-8 md:p-10">
+                    <h2 className="text-xl font-black text-slate-900 mb-2 flex items-center gap-2">
+                        <Users className="w-6 h-6 text-[#3db4ed]" />
+                        Talento Relacionado
+                    </h2>
+                    <p className="text-sm text-slate-500 font-medium mb-6">
+                        Usuarios con experiencia, competencias técnicas o transversales afines a esta convocatoria.
+                    </p>
+
+                    {loadingProfiles ? (
+                        <div className="flex items-center justify-center py-12">
+                            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#3db4ed]"></div>
+                        </div>
+                    ) : matchingProfiles.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {matchingProfiles.map((user) => (
+                                <Link
+                                    to={`/perfil/ver/${user.id}`}
+                                    key={user.id}
+                                    className="bg-slate-50 hover:bg-white border border-slate-100 hover:border-primary/30 rounded-2xl p-5 flex items-start gap-4 transition-all hover:shadow-lg group"
+                                >
+                                    <div className="h-14 w-14 rounded-full bg-gradient-to-br from-[#002f5b] to-[#004e8a] flex items-center justify-center text-white text-lg font-bold shadow-inner overflow-hidden flex-shrink-0">
+                                        {user.foto ? (
+                                            <img
+                                                src={`data:image/jpeg;base64,${user.foto}`}
+                                                alt="Foto"
+                                                className="h-full w-full object-cover rounded-full"
+                                            />
+                                        ) : (
+                                            <span>{user.nombres?.charAt(0)}{user.apellidos?.charAt(0)}</span>
+                                        )}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <h4 className="font-bold text-slate-800 truncate group-hover:text-primary transition-colors">
+                                            {user.nombres} {user.apellidos}
+                                        </h4>
+                                        {user.facultad && (
+                                            <p className="text-xs text-slate-400 font-medium truncate mt-0.5">{user.facultad}</p>
+                                        )}
+                                        <div className="flex flex-col gap-1.5 mt-3">
+                                            {user.matchedSectors && user.matchedSectors.length > 0 && (
+                                                <div className="flex flex-wrap gap-1">
+                                                    {user.matchedSectors.map((sector, idx) => (
+                                                        <span key={`sec-${idx}`} className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md border border-orange-100 uppercase">
+                                                            {sector}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            {user.matchedCompTec && user.matchedCompTec.length > 0 && (
+                                                <div className="flex flex-wrap gap-1">
+                                                    {user.matchedCompTec.map((comp, idx) => (
+                                                        <span key={`ct-${idx}`} className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 uppercase">
+                                                            {comp}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            {user.matchedCompTrans && user.matchedCompTrans.length > 0 && (
+                                                <div className="flex flex-wrap gap-1">
+                                                    {user.matchedCompTrans.map((comp, idx) => (
+                                                        <span key={`ctr-${idx}`} className="text-[10px] font-bold text-pink-600 bg-pink-50 px-2 py-0.5 rounded-md border border-pink-100 uppercase">
+                                                            {comp}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12">
+                            <p className="text-slate-400 font-medium italic">No se encontraron perfiles con características coincidentes.</p>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../config/api';
+import { Calendar, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import techImg from '../assets/convocatorias/tech.png';
 
 const Convocatorias = () => {
@@ -9,10 +10,30 @@ const Convocatorias = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const [selectedYearMonth, setSelectedYearMonth] = useState('');
+    const [showClosed, setShowClosed] = useState(false);
+    
+    // Custom picker states
+    const [isPickerOpen, setIsPickerOpen] = useState(false);
+    const [pickerYear, setPickerYear] = useState(new Date().getFullYear());
+    const pickerRef = useRef(null);
+
+    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+    // Close picker when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (pickerRef.current && !pickerRef.current.contains(event.target)) {
+                setIsPickerOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
     const filterOptions = [
         { label: 'Áreas de Conocimiento', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
-        { label: 'Financiación', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.407 2.73 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.407-2.73-1M12 16v-1m4-4V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z' },
-        { label: 'Fecha Límite', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z' }
+        { label: 'Financiación', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.407 2.73 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.407-2.73-1M12 16v-1m4-4V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z' }
     ];
 
     useEffect(() => {
@@ -68,6 +89,23 @@ const Convocatorias = () => {
         );
     }
 
+    const currentYear = new Date().getFullYear();
+
+    const filteredConvocatorias = convocatorias.filter(item => {
+        const status = calculateStatus(item.fechaInicio, item.fechaLimite);
+        
+        if (!showClosed && status === 'Cerrada') return false;
+
+        if (selectedYearMonth) {
+            if (!item.fechaLimite) return false;
+            // The item.fechaLimite is assumed YYYY-MM-DD
+            const prefix = item.fechaLimite.substring(0, 7); // "YYYY-MM"
+            if (prefix !== selectedYearMonth) return false;
+        }
+
+        return true;
+    });
+
     return (
         <div className="p-8 max-w-7xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header */}
@@ -79,39 +117,100 @@ const Convocatorias = () => {
             </div>
 
             {/* Filters Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex flex-wrap items-center gap-3">
-                    {filterOptions.map((opt, i) => (
-                        <button
-                            key={i}
-                            className="flex items-center gap-2.5 px-5 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:border-primary hover:text-primary transition-all shadow-sm hover:shadow-md active:scale-95"
-                        >
-                            <svg className="w-5 h-5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={opt.icon} />
-                            </svg>
-                            {opt.label}
-                            <svg className="w-4 h-4 ml-1 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                    ))}
-                </div>
+            <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-3xl shadow-sm border border-slate-100">
+                <div className="flex flex-wrap items-center gap-4">
+                    <div className="flex flex-col relative" ref={pickerRef}>
+                        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1 px-1">Fecha Límite</label>
+                        <div className="flex items-center">
+                            <button
+                                onClick={() => setIsPickerOpen(!isPickerOpen)}
+                                className={`flex items-center justify-between gap-3 bg-slate-50 border ${isPickerOpen ? 'border-primary ring-1 ring-primary' : 'border-slate-200'} hover:border-primary/50 text-slate-700 text-sm rounded-2xl px-4 py-2.5 font-bold transition-all w-48`}
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Calendar className="w-4 h-4 text-slate-400" />
+                                    <span>
+                                        {selectedYearMonth 
+                                            ? `${months[parseInt(selectedYearMonth.split('-')[1]) - 1]} ${selectedYearMonth.split('-')[0]}` 
+                                            : 'Seleccionar mes'}
+                                    </span>
+                                </div>
+                            </button>
+                            {selectedYearMonth && (
+                                <button 
+                                    onClick={() => setSelectedYearMonth('')}
+                                    className="ml-2 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors"
+                                    title="Limpiar filtro"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            )}
+                        </div>
 
-                <div className="flex items-center gap-3 text-sm">
-                    <span className="text-slate-400 font-medium">Ordenar por:</span>
-                    <button className="flex items-center gap-2 font-bold text-slate-900 hover:text-primary transition-colors">
-                        Más Relevantes
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
+                        {/* Dropdown Calendar */}
+                        {isPickerOpen && (
+                            <div className="absolute top-[110%] left-0 z-50 w-64 bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                                <div className="flex items-center justify-between mb-4 px-2">
+                                    <button 
+                                        onClick={() => setPickerYear(y => y - 1)}
+                                        className="p-1.5 hover:bg-slate-100 text-slate-600 rounded-lg transition-colors"
+                                    >
+                                        <ChevronLeft className="w-5 h-5" />
+                                    </button>
+                                    <span className="font-black text-slate-800 text-lg">{pickerYear}</span>
+                                    <button 
+                                        onClick={() => setPickerYear(y => y + 1)}
+                                        className="p-1.5 hover:bg-slate-100 text-slate-600 rounded-lg transition-colors"
+                                    >
+                                        <ChevronRight className="w-5 h-5" />
+                                    </button>
+                                </div>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {months.map((month, idx) => {
+                                        const monthNum = (idx + 1).toString().padStart(2, '0');
+                                        const value = `${pickerYear}-${monthNum}`;
+                                        const isSelected = selectedYearMonth === value;
+                                        
+                                        return (
+                                            <button
+                                                key={month}
+                                                onClick={() => {
+                                                    setSelectedYearMonth(value);
+                                                    setIsPickerOpen(false);
+                                                }}
+                                                className={`py-2 rounded-xl text-sm font-bold transition-all ${
+                                                    isSelected 
+                                                        ? 'bg-primary text-white shadow-md shadow-primary/30' 
+                                                        : 'text-slate-600 hover:bg-slate-100'
+                                                }`}
+                                            >
+                                                {month}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex flex-col justify-end h-full mt-5">
+                        <label className="flex items-center cursor-pointer gap-2 bg-slate-50 border border-slate-200 px-4 py-2.5 rounded-2xl hover:border-primary/50 transition-colors">
+                            <input 
+                                type="checkbox" 
+                                className="sr-only peer"
+                                checked={showClosed}
+                                onChange={(e) => setShowClosed(e.target.checked)}
+                            />
+                            <div className="relative w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+                            <span className="text-sm font-semibold text-slate-700">Mostrar Cerradas</span>
+                        </label>
+                    </div>
                 </div>
             </div>
 
             {/* Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {convocatorias.length > 0 ? (
-                    convocatorias.map((item) => {
+                {filteredConvocatorias.length > 0 ? (
+                    filteredConvocatorias.map((item) => {
                         const status = calculateStatus(item.fechaInicio, item.fechaLimite);
                         return (
                             <div

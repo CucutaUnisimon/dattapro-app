@@ -8,11 +8,13 @@ const Register = () => {
         apellidos: '',
         correoInstitucional: '',
         password: '',
+        confirmPassword: '',
         autorizaDatos: '' // Nuevo campo
     });
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -27,13 +29,26 @@ const Register = () => {
         setIsLoading(true);
         setErrorMessage('');
 
+        if (!formData.correoInstitucional.endsWith('@unisimon.edu.co')) {
+            setErrorMessage('El correo debe pertenecer al dominio @unisimon.edu.co');
+            setIsLoading(false);
+            return;
+        }
+
+        if (formData.password !== formData.confirmPassword) {
+            setErrorMessage('Las contraseñas no coinciden.');
+            setIsLoading(false);
+            return;
+        }
+
         try {
+            const { confirmPassword, ...dataToSend } = formData;
             const response = await fetch(`${API_BASE_URL}/usuarios/registro`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(dataToSend)
             });
 
             if (response.status === 201) {
@@ -127,11 +142,13 @@ const Register = () => {
                                         </div>
                                         <input
                                             className="w-full pl-12 pr-5 py-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-slate-400"
-                                            placeholder="nombre@universidad.edu"
+                                            placeholder="nombre@unisimon.edu.co"
                                             type="email"
                                             name="correoInstitucional"
                                             value={formData.correoInstitucional}
                                             onChange={handleChange}
+                                            pattern=".+@unisimon\.edu\.co"
+                                            title="El correo debe terminar en @unisimon.edu.co"
                                             required
                                         />
                                     </div>
@@ -173,6 +190,43 @@ const Register = () => {
                                         </button>
                                     </div>
                                     <p className="text-xs text-slate-400 ml-1 mt-1">Al menos 8 caracteres, incluyendo números y símbolos.</p>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1">Confirmar Contraseña</label>
+                                    <div className="relative group">
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                            </svg>
+                                        </div>
+                                        <input
+                                            className="w-full pl-12 pr-12 py-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-slate-400"
+                                            placeholder="Confirma tu contraseña"
+                                            type={showConfirmPassword ? 'text' : 'password'}
+                                            name="confirmPassword"
+                                            value={formData.confirmPassword}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors focus:outline-none"
+                                        >
+                                            {showConfirmPassword ? (
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                                                    <line x1="1" y1="1" x2="23" y2="23" />
+                                                </svg>
+                                            ) : (
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                    <circle cx="12" cy="12" r="3" />
+                                                </svg>
+                                            )}
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {/* Autorización de Datos (Pregunta 2) */}
