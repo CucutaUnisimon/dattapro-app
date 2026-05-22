@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../config/api';
 import { jwtDecode } from 'jwt-decode';
+import fotoLogin from '../../temporal/fotoLogin.jpeg';
+import logoUnisimon from '../../temporal/logo-unisimon recortado.png';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -81,7 +83,7 @@ const Login = () => {
                                     <path d="M12 2L2 7l10 5l10-5l-10-5zM2 17l10 5l10-5M2 12l10 5l10-5" />
                                 </svg>
                             </div>
-                            <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">dattapro</h2>
+                            <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Dattapro</h2>
                         </div>
 
                         {/* MENSAJE DE ÉXITO O ERROR DINÁMICO */}
@@ -181,7 +183,7 @@ const Login = () => {
 
                             <div>
                                 <button
-                                    className="flex w-full justify-center rounded-2xl bg-primary px-3 py-4 text-sm font-bold leading-6 text-white shadow-xl shadow-sky-500/20 hover:shadow-sky-500/30 hover:-translate-y-0.5 active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:translate-y-0"
+                                    className="flex w-full justify-center rounded-2xl bg-primary px-3 py-4 text-sm font-bold leading-6 text-white shadow-xl shadow-sky-500/20 hover:shadow-sky-500/30 hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                                     type="submit"
                                     disabled={isLoading}
                                 >
@@ -210,7 +212,13 @@ const Login = () => {
                     </div>
 
                     <div className="mt-auto pt-10 text-center text-xs text-slate-400">
-                        © 2026 dattapro Inc. Colaboración investigativa segura y encriptada.
+                        <p className="mb-1">© 2026 dattapro Inc. Colaboración investigativa segura y encriptada.</p>
+                        <p>
+                            Elaborado por:{' '}
+                            <a href="https://github.com/JorgeOrVerMur" className="hover:text-primary transition-colors">Jorge Vera</a>,{' '}
+                            <a href="https://wa.me/573014800948" className="hover:text-primary transition-colors">Lorieth Duarte</a> y{' '}
+                            <a href="https://wa.me/573105371617" className="hover:text-primary transition-colors">Angel Neira</a>
+                        </p>
                     </div>
                 </div>
 
@@ -220,22 +228,20 @@ const Login = () => {
                         <img
                             alt="Researcher working in a modern high-tech laboratory"
                             className="absolute inset-0 h-full w-full object-cover"
-                            src="https://images.unsplash.com/photo-1579154341098-e4e158cc7f55?q=80&w=1974&auto=format&fit=crop"
+                            src={fotoLogin}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent"></div>
-                        <div className="absolute bottom-12 left-12 right-12">
-                            <div className="bg-white/10 backdrop-blur-2xl rounded-[2rem] p-10 border border-white/20 shadow-2xl">
-                                <div className="flex gap-2 mb-6 text-primary">
-                                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-12 h-12">
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L8 14v1c0 1.1.9 2 2 2v2.93zM18 17c-.11-.34-.11-.66 0-1 1.05-3.08 1-6 .11-8.91C17.15 4.54 14.82 3 12 3c-1.03 0-2 .16-2.91.46C7.38 4.38 5 6.9 4 10c-.11.34-.11.66 0 1 .11 1.76.11 3.24 0 5 .11.34.11.66 0 1 .49 1.5 1.5 2.5 3 3 .34.11.66.11 1 0 1.76-.11 3.24-.11 5 0 .34.11.66.11 1 0 1.5-.49 2.5-1.5 3-3z" />
-                                    </svg>
+                        <div className="absolute bottom-6 left-8 right-8 max-w-lg">
+                            <div className="bg-white/10 backdrop-blur-2xl rounded-[1.5rem] p-6 border border-white/20 shadow-2xl">
+                                <div className="flex gap-2 mb-4 text-primary">
+                                    <img src={logoUnisimon} alt="Logo Unisimón" className="h-16 object-contain" />
                                 </div>
-                                <h3 className="text-3xl font-bold text-white mb-3">Conectando mentes, acelerando la ciencia</h3>
-                                <p className="text-white/80 text-lg leading-relaxed mb-8">
-                                    Únete a más de 50,000 doctorados e investigadores que se unen todos los días para proyectos interdisciplinarios.
+                                <h3 className="text-2xl font-bold text-white mb-2">El conocimiento de la Unisimón, al servicio de todos</h3>
+                                <p className="text-white/80 text-base leading-relaxed mb-4">
+                                    Una plataforma que reúne el perfil y la experiencia de nuestro talento para conectarlos con las oportunidades que necesitan su saber.
                                 </p>
                                 <div className="flex items-center gap-4">
-                                    <div className="flex -space-x-3">
+                                    {/* <div className="flex -space-x-3">
                                         {[
                                             'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100',
                                             'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100',
@@ -251,7 +257,7 @@ const Login = () => {
                                         <div className="flex size-12 items-center justify-center rounded-full border-2 border-white/20 bg-primary text-xs font-bold text-white shadow-lg">
                                             +12k
                                         </div>
-                                    </div>
+                                    </div>*/}
                                 </div>
                             </div>
                         </div>

@@ -102,12 +102,13 @@ const Sidebar = () => {
                 ))}
             </div>
 
-            <div className="p-4 border-t border-slate-100 dark:border-slate-900">
+            {/*<div className="p-4 border-t border-slate-100 dark:border-slate-900">
                 <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-4">
                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Dattapro</p>
                     <p className="text-xs text-slate-500 leading-relaxed font-medium">Red de investigadores y profesores.</p>
                 </div>
-            </div>
+            </div>*/}
+
         </aside>
     );
 };

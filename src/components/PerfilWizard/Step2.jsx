@@ -130,11 +130,12 @@ const Step2 = () => {
           <div className="relative group">
             <input
               type="email"
+              readOnly
               {...register('correo', {
                 required: 'El correo es requerido',
                 pattern: { value: /^\S+@\S+$/i, message: 'Correo inválido' }
               })}
-              className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-semibold text-slate-700 placeholder:text-slate-400"
+              className="w-full px-5 py-4 bg-slate-100 border border-slate-200 rounded-2xl outline-none transition-all font-semibold text-slate-500 cursor-not-allowed opacity-80"
               placeholder="usuario@unisimon.edu.co"
             />
             {errors.correo && <span className="text-red-500 text-[11px] font-bold absolute -bottom-5 left-1 uppercase">{errors.correo.message}</span>}

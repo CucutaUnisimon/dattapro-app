@@ -333,18 +333,6 @@ const Convocatorias = () => {
                     </div>
                 )}
             </div>
-
-            {/* Float Action Button */}
-            <div className="fixed bottom-10 left-12 z-50">
-                <button className="flex items-center gap-3 px-8 py-4 bg-[#3db4ed] text-white rounded-full font-black text-sm tracking-widest uppercase shadow-2xl shadow-sky-500/40 group hover:scale-105 transition-all active:scale-95">
-                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center group-hover:rotate-90 transition-transform">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 4v16m8-8H4" />
-                        </svg>
-                    </div>
-                    Nueva Búsqueda
-                </button>
-            </div>
         </div>
     );
 };
