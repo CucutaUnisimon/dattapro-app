@@ -231,18 +231,22 @@ const Register = () => {
 
                                 {/* Autorización de Datos (Pregunta 2) */}
                                 <div className="p-6 bg-slate-50 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800 rounded-[2rem] transition-all hover:border-primary/30">
-                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-6 leading-relaxed">
+                                    <label className="block text-sm text-slate-700 dark:text-slate-300 mb-6 leading-relaxed">
+                                        Al realizar el registro, autorizo de manera previa, expresa e informada a la Universidad Simón Bolívar para el tratamiento de mis datos personales, conforme a la Política de Tratamiento de Datos Personales institucional, la cual he leído y acepto. Declaro conocer mis derechos como titular de la información, de conformidad con la Ley 1581 de 2012 y demás normas concordantes. Consulte la política{' '}
+                                        <a href="https://barranquillas.unisimon.edu.co/web/index.php/showimagen/showpdf/centrodocumentos/20230428113507_0.pdf?utm_source=chatgpt.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">aquí</a>.
+                                    </label>
+                                    <label className="block text-sm text-slate-700 dark:text-slate-300 mb-6 leading-relaxed">
                                         ¿Autoriza el tratamiento de sus datos personales bajo las políticas institucionales?
                                     </label>
                                     <div className="flex flex-wrap gap-4">
                                         <label className="flex-1 min-w-[120px] relative cursor-pointer">
-                                            <input 
-                                                type="radio" 
-                                                name="autorizaDatos" 
-                                                value="true" 
+                                            <input
+                                                type="radio"
+                                                name="autorizaDatos"
+                                                value="true"
                                                 checked={formData.autorizaDatos === 'true'}
                                                 onChange={handleChange}
-                                                className="peer sr-only" 
+                                                className="peer sr-only"
                                             />
                                             <div className="px-5 py-4 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all flex items-center justify-between group">
                                                 <span className="font-bold text-sm text-slate-600 dark:text-slate-400 peer-checked:text-primary">Sí, autorizo</span>
@@ -252,13 +256,13 @@ const Register = () => {
                                             </div>
                                         </label>
                                         <label className="flex-1 min-w-[120px] relative cursor-pointer">
-                                            <input 
-                                                type="radio" 
-                                                name="autorizaDatos" 
-                                                value="false" 
+                                            <input
+                                                type="radio"
+                                                name="autorizaDatos"
+                                                value="false"
                                                 checked={formData.autorizaDatos === 'false'}
                                                 onChange={handleChange}
-                                                className="peer sr-only" 
+                                                className="peer sr-only"
                                             />
                                             <div className="px-5 py-4 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all flex items-center justify-between group">
                                                 <span className="font-bold text-sm text-slate-600 dark:text-slate-400 peer-checked:text-primary">No autorizo</span>
