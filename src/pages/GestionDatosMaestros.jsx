@@ -7,20 +7,20 @@ import Toast from '../components/masterData/Toast';
 // hasSubtitulo: true  → shows the Subtítulo column and field (centros only)
 // ─────────────────────────────────────────────────────────────────────────────
 const CATALOGS = [
-    { key: 'tipos-vinculacion',          label: 'Tipos de Vinculación',       endpoint: 'tipos-vinculacion',          hasSubtitulo: false },
-    { key: 'tipos-servicios',            label: 'Tipos de Servicios',         endpoint: 'tipos-servicios',            hasSubtitulo: false },
-    { key: 'tipos-proyecto',             label: 'Tipos de Proyecto',          endpoint: 'tipos-proyecto',             hasSubtitulo: false },
-    { key: 'sedes',                      label: 'Sedes',                      endpoint: 'sedes',                      hasSubtitulo: false },
-    { key: 'sectores-experiencia',       label: 'Sectores de Experiencia',    endpoint: 'sectores-experiencia',       hasSubtitulo: false },
-    { key: 'programas-academicos',       label: 'Programas Académicos',       endpoint: 'programas-academicos',       hasSubtitulo: false },
-    { key: 'intereses',                  label: 'Intereses',                  endpoint: 'intereses',                  hasSubtitulo: false },
-    { key: 'idiomas',                    label: 'Idiomas',                    endpoint: 'idiomas',                    hasSubtitulo: false },
-    { key: 'facultades',                 label: 'Facultades',                 endpoint: 'facultades',                 hasSubtitulo: false },
+    { key: 'tipos-vinculacion', label: 'Tipos de Vinculación', endpoint: 'tipos-vinculacion', hasSubtitulo: false },
+    { key: 'tipos-servicios', label: 'Tipos de Servicios', endpoint: 'tipos-servicios', hasSubtitulo: false },
+    { key: 'tipos-proyecto', label: 'Tipos de Proyecto', endpoint: 'tipos-proyecto', hasSubtitulo: false },
+    { key: 'sedes', label: 'Sedes', endpoint: 'sedes', hasSubtitulo: false },
+    { key: 'sectores-experiencia', label: 'Sectores de Experiencia', endpoint: 'sectores-experiencia', hasSubtitulo: false },
+    { key: 'programas-academicos', label: 'Programas Académicos', endpoint: 'programas-academicos', hasSubtitulo: false },
+    { key: 'intereses', label: 'Intereses', endpoint: 'intereses', hasSubtitulo: false },
+    { key: 'idiomas', label: 'Idiomas', endpoint: 'idiomas', hasSubtitulo: false },
+    { key: 'facultades', label: 'Facultades', endpoint: 'facultades', hasSubtitulo: false },
     { key: 'competencias-transversales', label: 'Competencias Transversales', endpoint: 'competencias-transversales', hasSubtitulo: false },
-    { key: 'competencias-tecnicas',      label: 'Competencias Técnicas',      endpoint: 'competencias-tecnicas',      hasSubtitulo: false },
-    { key: 'centros-investigativos',     label: 'Centros Investigativos',     endpoint: 'centros-investigativos',     hasSubtitulo: true  },
-    { key: 'areas-especialidad',         label: 'Áreas de Especialidad',      endpoint: 'areas-especialidad',         hasSubtitulo: false },
-    { key: 'areas-conocimiento',         label: 'Áreas de Conocimiento',      endpoint: 'areas-conocimiento',         hasSubtitulo: false },
+    { key: 'competencias-tecnicas', label: 'Competencias Técnicas', endpoint: 'competencias-tecnicas', hasSubtitulo: false },
+    { key: 'centros-investigativos', label: 'Centros Investigativos', endpoint: 'centros-investigativos', hasSubtitulo: true },
+    { key: 'areas-especialidad', label: 'Áreas de Especialidad', endpoint: 'areas-especialidad', hasSubtitulo: false },
+    { key: 'areas-conocimiento', label: 'Áreas de Conocimiento', endpoint: 'areas-conocimiento', hasSubtitulo: false },
 ];
 
 const GestionDatosMaestros = () => {
@@ -59,10 +59,10 @@ const GestionDatosMaestros = () => {
                             <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
                             {CATALOGS.length} catálogos disponibles
                         </div>
-                        <div className="flex items-center gap-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-sm">
+                        {/*<div className="flex items-center gap-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-sm">
                             <span className="w-2 h-2 rounded-full bg-blue-400 inline-block" />
                             Solo GET · POST · PUT
-                        </div>
+                        </div>*/}
                     </div>
                 </div>
 

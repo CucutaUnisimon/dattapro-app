@@ -43,9 +43,9 @@ const AdminUsers = () => {
 
     const RoleSelect = ({ usuario }) => {
         const styles = {
-            admin: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/30',
-            directivo: 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800/30',
-            profesor: 'bg-sky-100 text-sky-800 border-sky-200 dark:bg-sky-900/30 dark:text-sky-400 dark:border-sky-800/30',
+            admin: 'bg-[#23B845]/10 text-[#23B845] border-[#23B845]/20 dark:bg-[#23B845]/20 dark:text-[#23B845] dark:border-[#23B845]/30',
+            directivo: 'bg-[#D9801A]/10 text-[#D9801A] border-[#D9801A]/20 dark:bg-[#D9801A]/20 dark:text-[#D9801A] dark:border-[#D9801A]/30',
+            profesor: 'bg-[#1D3ECF]/10 text-[#1D3ECF] border-[#1D3ECF]/20 dark:bg-[#1D3ECF]/20 dark:text-[#1D3ECF] dark:border-[#1D3ECF]/30',
             default: 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
         };
         const currentStyle = styles[usuario.rol] || styles.default;
@@ -59,9 +59,9 @@ const AdminUsers = () => {
                     onChange={(e) => handleRoleChange(usuario, e.target.value)}
                     className={`block w-full pl-3 pr-10 py-2 text-sm font-medium border ${currentStyle} rounded-lg focus:ring-red-500 focus:border-red-500 transition-colors appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                    <option value="profesor" className="bg-white text-slate-900 dark:bg-slate-800 dark:text-white">Profesor</option>
-                    <option value="directivo" className="bg-white text-slate-900 dark:bg-slate-800 dark:text-white">Directivo</option>
-                    {usuario.rol === 'admin' && <option value="admin" className="bg-white text-slate-900 dark:bg-slate-800 dark:text-white">Admin</option>}
+                    <option value="profesor" className="bg-white text-[#1D3ECF] dark:bg-slate-800 dark:text-[#1D3ECF]">Profesor</option>
+                    <option value="directivo" className="bg-white text-[#D9801A] dark:bg-slate-800 dark:text-[#D9801A]">Directivo</option>
+                    {usuario.rol === 'admin' && <option value="admin" className="bg-white text-[#23B845] dark:bg-slate-800 dark:text-[#23B845]">Admin</option>}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-current opacity-70">
                     {updatingId === usuario.id ? (
