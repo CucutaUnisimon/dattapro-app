@@ -100,7 +100,8 @@ const Sidebar = () => {
     }
 
     return (
-        <aside className="w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 hidden md:flex flex-col shrink-0 z-20">
+        //<aside className="w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 hidden md:flex flex-col shrink-0 z-20">
+        <aside className="w-64 bg-white dark:bg-[#072B3B] border-r border-slate-200 dark:border-slate-800 hidden md:flex flex-col shrink-0 z-20">
             <div className="flex-1 overflow-y-auto py-8 px-4 space-y-2">
                 {navItems.map((item) => (
                     <Link
