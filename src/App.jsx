@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import Login from './pages/Login';
 import Register from './pages/Register';
 import NetworkingSearch from './pages/NetworkingSearch';
+import NetworkingSearchDirectivo from './pages/NetworkingSearchDirectivo';
 import ProfileDetail from './pages/ProfileDetail';
 import PerfilWizard from './components/PerfilWizard/PerfilWizard';
 import AdminUsers from './pages/AdminUsers';
@@ -58,6 +59,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/network" element={<NetworkingSearch />} />
+          <Route path="/inteligencia-academica" element={<NetworkingSearchDirectivo />} />
           <Route path="/perfil/ver/:id" element={<ProfileDetail />} />
           <Route path="/perfil" element={<PerfilWizard />} />
           <Route path="/admin" element={<AdminUsers />} />

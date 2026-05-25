@@ -228,8 +228,8 @@ const AdminUsers = () => {
                                                     <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
                                                         <div
                                                             className={`h-full transition-all duration-500 ${usuario.porcentajeCompletitud >= 80 ? 'bg-emerald-500' :
-                                                                    usuario.porcentajeCompletitud >= 40 ? 'bg-amber-400' :
-                                                                        'bg-red-500'
+                                                                usuario.porcentajeCompletitud >= 40 ? 'bg-amber-400' :
+                                                                    'bg-red-500'
                                                                 }`}
                                                             style={{ width: `${usuario.porcentajeCompletitud || 0}%` }}
                                                         />
@@ -302,7 +302,7 @@ const AdminUsers = () => {
                                         {/* Progress Indicator */}
                                         <div className="mt-3">
                                             <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider mb-1.5">
-                                                <span className="text-slate-400">Completitud del Perfil</span>
+                                                <span className="text-slate-400">Progreso del Perfil</span>
                                                 <span className={usuario.porcentajeCompletitud >= 80 ? 'text-emerald-600' : usuario.porcentajeCompletitud >= 40 ? 'text-amber-600' : 'text-red-600'}>
                                                     {usuario.porcentajeCompletitud || 0}%
                                                 </span>
@@ -310,8 +310,8 @@ const AdminUsers = () => {
                                             <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700/50 shadow-inner p-[1px]">
                                                 <div
                                                     className={`h-full rounded-full transition-all duration-700 ease-out ${usuario.porcentajeCompletitud >= 80 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]' :
-                                                            usuario.porcentajeCompletitud >= 40 ? 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.3)]' :
-                                                                'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+                                                        usuario.porcentajeCompletitud >= 40 ? 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.3)]' :
+                                                            'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
                                                         }`}
                                                     style={{ width: `${usuario.porcentajeCompletitud || 0}%` }}
                                                 />

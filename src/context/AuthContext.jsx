@@ -70,9 +70,10 @@ export const AuthProvider = ({ children }) => {
 
     const isAdmin = () => role && (String(role).toUpperCase() === 'ROLE_ADMIN' || String(role).toUpperCase() === 'ADMIN');
     const isProfesor = () => role && (String(role).toUpperCase() === 'ROLE_PROFESOR' || String(role).toUpperCase() === 'PROFESOR');
+    const isDirectivo = () => role && (String(role).toUpperCase() === 'ROLE_DIRECTIVO' || String(role).toUpperCase() === 'DIRECTIVO');
 
     return (
-        <AuthContext.Provider value={{ user, token, role, login, logout, isAdmin, isProfesor, updateUser }}>
+        <AuthContext.Provider value={{ user, token, role, login, logout, isAdmin, isProfesor, isDirectivo, updateUser }}>
             {children}
         </AuthContext.Provider>
     );

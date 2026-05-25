@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { API_BASE_URL } from '../config/api';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
+import { useNetworkingData } from '../hooks/useNetworkingData';
+import { extractUniqueFilterOptions, filterUsersAdvanced } from '../utils/networkingHelpers';
 
 const NetworkingSearch = () => {
     const navigate = useNavigate();
-    const { logout } = useAuth();
-    const [usuarios, setUsuarios] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const { usuariosRaw: usuarios, isLoading, error } = useNetworkingData();
     const [searchTerm, setSearchTerm] = useState('');
 
     // Filter states
@@ -18,108 +15,24 @@ const NetworkingSearch = () => {
     const [selectedCompTecnica, setSelectedCompTecnica] = useState('');
     const [selectedCompTransversal, setSelectedCompTransversal] = useState('');
 
-    useEffect(() => {
-        const fetchUsuarios = async () => {
-            try {
-                const cleanToken = (localStorage.getItem('token') || '').replace(/[\n\r"'\s]/g, '');
+    // ── Extraer opciones únicas dinámicamente usando el helper ───────────────────────────────
+    // Usamos el helper pero lo mapeamos para que coincida exactamente con la UI anterior
+    const filterOptions = extractUniqueFilterOptions(usuarios);
+    
+    const programas = filterOptions.programaAcademico || [];
+    const sectores = filterOptions.sectoresExperiencia || [];
+    const compTecnicas = filterOptions.competenciasTecnicas || [];
+    const compTransversales = filterOptions.competenciasTransversales || [];
 
-                const response = await fetch(`${API_BASE_URL}/usuarios`, {
-                    headers: {
-                        'Authorization': 'Bearer ' + cleanToken
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error('Error al obtener la lista de usuarios.');
-                }
-                const data = await response.json();
-                setUsuarios(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    // ── Lógica de filtrado usando el helper ──────────────────────────────────────────────────
+    const filters = {
+        programaAcademico: selectedPrograma,
+        sectoresExperiencia: selectedSector,
+        competenciasTecnicas: selectedCompTecnica,
+        competenciasTransversales: selectedCompTransversal
+    };
 
-        fetchUsuarios();
-    }, []);
-
-    // ── Extraer opciones únicas dinámicamente ───────────────────────────────
-
-    const programas = [...new Set(
-        usuarios.map(u => u.programaAcademico).filter(Boolean)
-    )].sort();
-
-    const sectores = Array.from(
-        new Map(
-            usuarios.flatMap(u => (u.sectoresExperiencia || []).map(sec =>
-                typeof sec === 'object' ? [sec.nombre, sec.nombre] : [sec, sec]
-            ))
-        ).values()
-    ).sort();
-
-    const compTecnicas = Array.from(
-        new Map(
-            usuarios.flatMap(u => (u.competenciasTecnicas || []).map(c =>
-                typeof c === 'object' ? [c.nombre, c.nombre] : [c, c]
-            ))
-        ).values()
-    ).sort();
-
-    const compTransversales = Array.from(
-        new Map(
-            usuarios.flatMap(u => (u.competenciasTransversales || []).map(c =>
-                typeof c === 'object' ? [c.nombre, c.nombre] : [c, c]
-            ))
-        ).values()
-    ).sort();
-
-    // ── Lógica de filtrado ──────────────────────────────────────────────────
-
-    const filteredUsuarios = usuarios.filter((usuario) => {
-        // Solo mostrar usuarios que autorizaron el tratamiento de datos
-        // Y que explícitamente desean vincularse a la red
-        const autoriza = usuario.autorizaDatos === true || usuario.autorizadatos === true;
-        const desea = usuario.deseaVincularse === true || usuario.deseavincularse === true;
-        const esPendiente = usuario.estadoFormulario === 'pendiente';
-
-        if (!autoriza || !desea || esPendiente) return false;
-
-        // Búsqueda por nombre/correo
-        const fullName = `${usuario.nombres} ${usuario.apellidos}`.toLowerCase();
-        const matchesSearch =
-            fullName.includes(searchTerm.toLowerCase()) ||
-            (usuario.correoInstitucional && usuario.correoInstitucional.toLowerCase().includes(searchTerm.toLowerCase()));
-        if (!matchesSearch) return false;
-
-        // Filtro por programa académico
-        if (selectedPrograma && usuario.programaAcademico !== selectedPrograma) return false;
-
-        // Filtro por sector de experiencia
-        if (selectedSector) {
-            const userSectores = (usuario.sectoresExperiencia || []).map(s =>
-                typeof s === 'object' ? s.nombre : s
-            );
-            if (!userSectores.includes(selectedSector)) return false;
-        }
-
-        // Filtro por competencia técnica
-        if (selectedCompTecnica) {
-            const userCompTec = (usuario.competenciasTecnicas || []).map(c =>
-                typeof c === 'object' ? c.nombre : c
-            );
-            if (!userCompTec.includes(selectedCompTecnica)) return false;
-        }
-
-        // Filtro por competencia transversal
-        if (selectedCompTransversal) {
-            const userCompTrans = (usuario.competenciasTransversales || []).map(c =>
-                typeof c === 'object' ? c.nombre : c
-            );
-            if (!userCompTrans.includes(selectedCompTransversal)) return false;
-        }
-
-        return true;
-    });
+    const filteredUsuarios = filterUsersAdvanced(usuarios, searchTerm, filters, 'nombre');
 
     // ── Componente auxiliar de select ───────────────────────────────────────
 

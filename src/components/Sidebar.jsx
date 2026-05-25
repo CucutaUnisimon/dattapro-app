@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Sidebar = () => {
-    const { role, isAdmin } = useAuth();
+    const { role, isAdmin, isDirectivo, isProfesor } = useAuth();
     const location = useLocation();
 
     const isActive = (path) => {
@@ -32,15 +32,6 @@ const Sidebar = () => {
             )
         },
         {
-            label: 'Networking',
-            path: '/network',
-            icon: (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-            )
-        },
-        {
             label: 'Convocatorias',
             path: '/convocatorias',
             icon: (
@@ -51,7 +42,33 @@ const Sidebar = () => {
         }
     ];
 
-    // Si es admin, añadir la opción de Gestión de Usuarios
+    // Solo profesores ven el Networking (buscador general)
+    if (isProfesor()) {
+        navItems.push({
+            label: 'Networking',
+            path: '/network',
+            icon: (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+            )
+        });
+    }
+
+    // Si es admin o directivo
+    if (isAdmin() || isDirectivo()) {
+        navItems.push({
+            label: 'Directorio Inteligente',
+            path: '/inteligencia-academica',
+            icon: (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+            )
+        });
+    }
+
+    // Si es admin, añadir opciones específicas
     if (isAdmin()) {
         navItems.push({
             label: 'Crear Convocatorias',
