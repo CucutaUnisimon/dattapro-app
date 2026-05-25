@@ -14,8 +14,15 @@ import MisConvocatorias from './pages/MisConvocatorias';
 import ConvocatoriaForm from './pages/ConvocatoriaForm';
 import CambioPasswordView from './pages/CambioPasswordView';
 import GestionDatosMaestros from './pages/GestionDatosMaestros';
+import Unauthorized from './pages/Unauthorized';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
+import ProtectedRoute from './components/ProtectedRoute';
+
+// ─── Roles ────────────────────────────────────────────────────────────────────
+const ADMIN     = 'ADMIN';
+const DIRECTIVO = 'DIRECTIVO';
+const PROFESOR  = 'PROFESOR';
 
 // Layout Component to handle persistent Navbar and Sidebar
 const AppLayout = ({ children }) => {
@@ -24,7 +31,8 @@ const AppLayout = ({ children }) => {
   // MODIFICACIÓN: Usamos .includes o verificamos el final del path 
   // para que funcione con o sin el prefijo del servidor
   const isAuthPage = location.pathname.endsWith('/login') ||
-    location.pathname.endsWith('/register');
+    location.pathname.endsWith('/register') ||
+    location.pathname.endsWith('/unauthorized');
 
   const isRootWithoutToken = (location.pathname === '/' || location.pathname === '/dattapro/')
     && !localStorage.getItem('token');
@@ -56,21 +64,128 @@ function App() {
     <Router basename="/dattapro">
       <AppLayout>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/network" element={<NetworkingSearch />} />
-          <Route path="/inteligencia-academica" element={<NetworkingSearchDirectivo />} />
-          <Route path="/perfil/ver/:id" element={<ProfileDetail />} />
-          <Route path="/perfil" element={<PerfilWizard />} />
-          <Route path="/admin" element={<AdminUsers />} />
-          <Route path="/convocatorias" element={<Convocatorias />} />
-          <Route path="/convocatorias/detalles/:id" element={<ConvocatoriasDetalles />} />
-          <Route path="/mis-convocatorias" element={<MisConvocatorias />} />
-          <Route path="/convocatorias/crear" element={<ConvocatoriaForm />} />
-          <Route path="/convocatorias/editar/:id" element={<ConvocatoriaForm />} />
-          <Route path="/seguridad" element={<CambioPasswordView />} />
-          <Route path="/admin/datos-maestros" element={<GestionDatosMaestros />} />
-          <Route path="/" element={<RootRoute />} />
+          {/* ── Rutas públicas ─────────────────────────────────────────── */}
+          <Route path="/login"      element={<Login />} />
+          <Route path="/register"   element={<Register />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+
+          {/* ── Inicio: todos los roles ────────────────────────────────── */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute allowedRoles={[ADMIN, DIRECTIVO, PROFESOR]}>
+                <RootRoute />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ── Perfil (ver/editar): todos los roles ───────────────────── */}
+          <Route
+            path="/perfil"
+            element={
+              <ProtectedRoute allowedRoles={[ADMIN, DIRECTIVO, PROFESOR]}>
+                <PerfilWizard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/perfil/ver/:id"
+            element={
+              <ProtectedRoute allowedRoles={[ADMIN, DIRECTIVO, PROFESOR]}>
+                <ProfileDetail />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ── Convocatorias: todos los roles ─────────────────────────── */}
+          <Route
+            path="/convocatorias"
+            element={
+              <ProtectedRoute allowedRoles={[ADMIN, DIRECTIVO, PROFESOR]}>
+                <Convocatorias />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/convocatorias/detalles/:id"
+            element={
+              <ProtectedRoute allowedRoles={[ADMIN, DIRECTIVO, PROFESOR]}>
+                <ConvocatoriasDetalles />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mis-convocatorias"
+            element={
+              <ProtectedRoute allowedRoles={[ADMIN, DIRECTIVO, PROFESOR]}>
+                <MisConvocatorias />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/convocatorias/crear"
+            element={
+              <ProtectedRoute allowedRoles={[ADMIN, DIRECTIVO, PROFESOR]}>
+                <ConvocatoriaForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/convocatorias/editar/:id"
+            element={
+              <ProtectedRoute allowedRoles={[ADMIN, DIRECTIVO, PROFESOR]}>
+                <ConvocatoriaForm />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ── Seguridad: todos los roles ─────────────────────────────── */}
+          <Route
+            path="/seguridad"
+            element={
+              <ProtectedRoute allowedRoles={[ADMIN, DIRECTIVO, PROFESOR]}>
+                <CambioPasswordView />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ── Networking (profesores): ADMIN queda excluido ──────────── */}
+          <Route
+            path="/network"
+            element={
+              <ProtectedRoute allowedRoles={[PROFESOR]}>
+                <NetworkingSearch />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ── Inteligencia académica: ADMIN + DIRECTIVO ──────────────── */}
+          <Route
+            path="/inteligencia-academica"
+            element={
+              <ProtectedRoute allowedRoles={[ADMIN, DIRECTIVO]}>
+                <NetworkingSearchDirectivo />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ── Administración: solo ADMIN ─────────────────────────────── */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={[ADMIN]}>
+                <AdminUsers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/datos-maestros"
+            element={
+              <ProtectedRoute allowedRoles={[ADMIN]}>
+                <GestionDatosMaestros />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </AppLayout>
     </Router>
