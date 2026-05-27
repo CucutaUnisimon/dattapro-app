@@ -213,7 +213,7 @@ const Login = () => {
                     </div>
 
                     <div className="mt-auto pt-10 text-center text-xs text-slate-400">
-                        <p className="mb-1">© 2026 dattapro Inc. Colaboración investigativa segura y encriptada.</p>
+                        <p className="mb-1">© 2026 dattapro. Colaboración investigativa segura y encriptada.</p>
                         <p>
                             Elaborado por:{' '}
                             <a href="https://github.com/JorgeOrVerMur" className="hover:text-primary transition-colors">Jorge Vera</a>,{' '}
