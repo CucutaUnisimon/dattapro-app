@@ -3,7 +3,7 @@ pipeline {
 
   environment {
     DEPLOY_PATH = '/home/integracion/projects/dattapro'
-    VITE_API_URL = 'http://192.168.3.83'
+    VITE_API_URL = 'http://192.168.3.83/api'
   }
 
   stages {
@@ -35,6 +35,7 @@ pipeline {
         sh '''
           set -e
           rsync -r --delete --no-group --no-perms --omit-dir-times dist/ /home/integracion/projects/dattapro/
+          sudo systemctl restart nginx
         '''
       }
     }
