@@ -4,7 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../config/api';
 import { jwtDecode } from 'jwt-decode';
 import fotoLogin from '../../temporal/fotoLogin.jpeg';
-import logoUnisimon from '../../temporal/logo-unisimon recortado.png';
+import logoUnisimon from '../../temporal/logotipos unisimon 2025-negro.png';
+import logoDattapro from '../../temporal/logo_dattapro.png';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -78,12 +79,12 @@ const Login = () => {
                 <div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-24 bg-white dark:bg-background-dark">
                     <div className="sm:mx-auto sm:w-full sm:max-w-md">
                         <div className="flex items-center gap-3 mb-10">
-                            <div className="size-8 bg-primary rounded-md flex items-center justify-center p-1.5 shadow-lg shadow-sky-500/20">
-                                <svg viewBox="0 0 24 24" fill="none" className="text-white w-full h-full" stroke="currentColor" strokeWidth="2">
-                                    <path d="M12 2L2 7l10 5l10-5l-10-5zM2 17l10 5l10-5M2 12l10 5l10-5" />
-                                </svg>
+                            <div className="size-8">
+                                <img src={logoDattapro} alt="Logo Dattapro" className="w-full h-full object-contain" />
                             </div>
-                            <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Dattapro</h2>
+                            <h2 className="text-xl font-normal tracking-tight text-slate-900 dark:text-slate-100 font-montserrat">
+                                <span className="font-bold">Datta</span>pro
+                            </h2>
                         </div>
 
                         {/* MENSAJE DE ÉXITO O ERROR DINÁMICO */}

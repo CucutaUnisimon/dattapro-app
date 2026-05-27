@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../config/api';
+import logoDattapro from '../../temporal/logo_dattapro.png';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -110,12 +111,12 @@ const Register = () => {
                     <div className="relative z-10 w-full">
                         {/* Logo */}
                         <div className="flex items-center justify-center gap-3 mb-10">
-                            <div className="size-10 bg-gradient-to-br from-primary to-sky-400 rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20 p-2">
-                                <svg viewBox="0 0 24 24" fill="none" className="text-white w-full h-full" stroke="currentColor" strokeWidth="2">
-                                    <path d="M12 2L2 7l10 5l10-5l-10-5zM2 17l10 5l10-5M2 12l10 5l10-5" />
-                                </svg>
+                            <div className="size-10">
+                                <img src={logoDattapro} alt="Logo Dattapro" className="w-full h-full object-contain" />
                             </div>
-                            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Dattapro</h2>
+                            <h2 className="text-2xl font-normal tracking-tight text-slate-900 dark:text-white font-montserrat">
+                                <span className="font-bold">Datta</span>pro
+                            </h2>
                         </div>
 
                         {/* Header */}
