@@ -4,6 +4,18 @@ import { API_BASE_URL } from '../config/api';
 import { ArrowLeft, Calendar, Link as LinkIcon, DollarSign, Info, FileText, CheckCircle, Target, Users, Mail, Building, Briefcase } from 'lucide-react';
 import techImg from '../assets/convocatorias/tech.png';
 
+const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length >= 3) {
+        const day = parts[2].substring(0, 2);
+        const month = parts[1];
+        const year = parts[0];
+        return `${day}-${month}-${year}`;
+    }
+    return dateStr;
+};
+
 const ConvocatoriasDetalles = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -271,7 +283,7 @@ const ConvocatoriasDetalles = () => {
                                 </div>
                                 <div>
                                     <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Fecha Límite</p>
-                                    <p className="text-sm font-black text-red-600">{convocatoria.fechaLimite}</p>
+                                    <p className="text-sm font-black text-red-600">{formatDate(convocatoria.fechaLimite)}</p>
                                 </div>
                             </div>
 
@@ -282,7 +294,7 @@ const ConvocatoriasDetalles = () => {
                                     </div>
                                     <div>
                                         <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Fecha Inicio</p>
-                                        <p className="text-sm font-bold text-slate-700">{convocatoria.fechaInicio}</p>
+                                        <p className="text-sm font-bold text-slate-700">{formatDate(convocatoria.fechaInicio)}</p>
                                     </div>
                                 </div>
                             )}

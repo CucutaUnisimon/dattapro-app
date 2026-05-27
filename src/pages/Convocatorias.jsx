@@ -4,6 +4,18 @@ import { API_BASE_URL } from '../config/api';
 import { Calendar, ChevronDown, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import techImg from '../assets/convocatorias/tech.png';
 
+const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length >= 3) {
+        const day = parts[2].substring(0, 2);
+        const month = parts[1];
+        const year = parts[0];
+        return `${day}-${month}-${year}`;
+    }
+    return dateStr;
+};
+
 const Convocatorias = () => {
     const navigate = useNavigate();
     const [convocatorias, setConvocatorias] = useState([]);
@@ -506,7 +518,7 @@ const Convocatorias = () => {
                                                 </div>
                                                 <span>Fecha Límite</span>
                                             </div>
-                                            <span className="font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-md">{item.fechaLimite}</span>
+                                            <span className="font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-md">{formatDate(item.fechaLimite)}</span>
                                         </div>
                                         <div className="flex items-center justify-between text-sm">
                                             <div className="flex items-center gap-2.5 text-slate-400 font-medium">
