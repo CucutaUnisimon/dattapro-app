@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import logoDattapro from '../../temporal/logo_dattapro.png';
 
 const Navbar = () => {
     const { logout, role, user } = useAuth();
@@ -29,12 +30,12 @@ const Navbar = () => {
             {/* Logo y Marca */}
             <div className="flex items-center space-x-4">
                 <Link to="/" className="flex items-center space-x-4">
-                    <div className="size-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-sky-500/20">
-                        <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 2L2 7l10 5l10-5l-10-5zM2 17l10 5l10-5M2 12l10 5l10-5" />
-                        </svg>
+                    <div className="size-10">
+                        <img src={logoDattapro} alt="Logo Dattapro" className="w-full h-full object-contain" />
                     </div>
-                    <span className="text-2xl font-black tracking-tight text-slate-900">dattapro</span>
+                    <span className="text-2xl font-normal tracking-tight text-slate-900 font-montserrat">
+                        <span className="font-bold">Datta</span>pro
+                    </span>
                 </Link>
             </div>
 
