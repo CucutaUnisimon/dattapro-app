@@ -4,7 +4,7 @@ pipeline {
   environment {
     STAGING_PATH = '/home/integracion/projects/dattapro-staging'
     DEPLOY_PATH = '/var/www/dattapro'
-    VITE_API_URL = 'http://192.168.3.83/api'
+    VITE_API_URL = 'http://192.168.3.83/api/v1'
   }
 
   stages {
