@@ -20,9 +20,9 @@ import Sidebar from './components/Sidebar';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // ─── Roles ────────────────────────────────────────────────────────────────────
-const ADMIN     = 'ADMIN';
+const ADMIN = 'ADMIN';
 const DIRECTIVO = 'DIRECTIVO';
-const PROFESOR  = 'PROFESOR';
+const PROFESOR = 'PROFESOR';
 
 // Layout Component to handle persistent Navbar and Sidebar
 const AppLayout = ({ children }) => {
@@ -65,8 +65,8 @@ function App() {
       <AppLayout>
         <Routes>
           {/* ── Rutas públicas ─────────────────────────────────────────── */}
-          <Route path="/login"      element={<Login />} />
-          <Route path="/register"   element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* ── Inicio: todos los roles ────────────────────────────────── */}
@@ -153,7 +153,7 @@ function App() {
           <Route
             path="/network"
             element={
-              <ProtectedRoute allowedRoles={[PROFESOR]}>
+              <ProtectedRoute allowedRoles={[ADMIN, PROFESOR]}>
                 <NetworkingSearch />
               </ProtectedRoute>
             }
