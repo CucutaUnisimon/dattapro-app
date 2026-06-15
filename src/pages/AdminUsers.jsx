@@ -55,7 +55,7 @@ const AdminUsers = () => {
                 <select
                     id={`rol-${usuario.id}`}
                     value={usuario.rol || 'profesor'}
-                    disabled={updatingId === usuario.id || usuario.rol === 'admin'}
+                    disabled={updatingId === usuario.id}
                     onChange={(e) => handleRoleChange(usuario, e.target.value)}
                     className={`block w-full pl-3 pr-10 py-2 text-sm font-medium border ${currentStyle} rounded-lg focus:ring-red-500 focus:border-red-500 transition-colors appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
