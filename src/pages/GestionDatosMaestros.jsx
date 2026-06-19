@@ -12,7 +12,7 @@ const CATALOGS = [
     { key: 'tipos-proyecto', label: 'Tipos de Proyecto', endpoint: 'master-data/tipos-proyecto', hasSubtitulo: false },
     { key: 'sedes', label: 'Sedes', endpoint: 'master-data/sedes', hasSubtitulo: false },
     { key: 'sectores-experiencia', label: 'Sectores de Experiencia', endpoint: 'master-data/sectores-experiencia', hasSubtitulo: false },
-    { key: 'programas-academicos', label: 'Programas Académicos', endpoint: 'master-data/programas-academicos', hasSubtitulo: false },
+    { key: 'programas-academicos', label: 'Programas Académicos', endpoint: 'master-data/programas-academicos', hasSubtitulo: false, hasFacultad: true },
     { key: 'intereses', label: 'Intereses', endpoint: 'master-data/intereses', hasSubtitulo: false },
     { key: 'idiomas', label: 'Idiomas', endpoint: 'master-data/idiomas', hasSubtitulo: false },
     { key: 'facultades', label: 'Facultades', endpoint: 'master-data/facultades', hasSubtitulo: false },

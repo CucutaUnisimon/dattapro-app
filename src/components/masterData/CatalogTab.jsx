@@ -155,6 +155,7 @@ const CatalogTab = ({ catalog, toastRef }) => {
                 item={selectedItem}
                 catalogLabel={catalog.label}
                 hasSubtitulo={catalog.hasSubtitulo}
+                hasFacultad={catalog.hasFacultad}
                 isSaving={isSaving}
             />
         </div>

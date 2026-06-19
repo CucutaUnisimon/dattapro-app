@@ -9,26 +9,36 @@ import React, { useState, useEffect } from 'react';
  *   onSave        {function}        Called with payload object on submit
  *   item          {object|null}     null = create mode; object = edit mode
  *   catalogLabel  {string}          Human-readable catalog name (for title)
- *   hasSubtitulo  {boolean}         Whether to show the subtitulo field
+ *   hasFacultad   {boolean}         Whether to show the facultad dropdown
  *   isSaving      {boolean}         Whether save is in progress (disables form)
  */
-const CatalogModal = ({ isOpen, onClose, onSave, item, catalogLabel, hasSubtitulo, isSaving }) => {
+import { useMasterData } from '../../hooks/useMasterData';
+
+const CatalogModal = ({ isOpen, onClose, onSave, item, catalogLabel, hasSubtitulo, hasFacultad, isSaving }) => {
     const isEditMode = item !== null && item !== undefined;
 
-    const emptyForm = { nombre: '', subtitulo: '' };
+    const emptyForm = { nombre: '', subtitulo: '', id_facultad: '' };
     const [form, setForm]     = useState(emptyForm);
     const [errors, setErrors] = useState({});
+
+    // Fetch facultades if needed
+    const { items: facultades, refresh: refreshFacultades, hasFetched: hasFetchedFacultades } = useMasterData('master-data/facultades');
 
     // Sync form with selected item whenever modal opens
     useEffect(() => {
         if (isOpen) {
             setForm({
-                nombre:    item?.nombre    ?? '',
-                subtitulo: item?.subtitulo ?? '',
+                nombre:      item?.nombre      ?? '',
+                subtitulo:   item?.subtitulo   ?? '',
+                id_facultad: item?.facultad?.id ?? '',
             });
             setErrors({});
+            
+            if (hasFacultad && !hasFetchedFacultades) {
+                refreshFacultades();
+            }
         }
-    }, [isOpen, item]);
+    }, [isOpen, item, hasFacultad, hasFetchedFacultades, refreshFacultades]);
 
     if (!isOpen) return null;
 
@@ -42,6 +52,9 @@ const CatalogModal = ({ isOpen, onClose, onSave, item, catalogLabel, hasSubtitul
         }
         if (hasSubtitulo && !form.subtitulo.trim()) {
             errs.subtitulo = 'El subtítulo es obligatorio para este catálogo.';
+        }
+        if (hasFacultad && !form.id_facultad) {
+            errs.id_facultad = 'Debes seleccionar una facultad.';
         }
         return errs;
     };
@@ -67,6 +80,7 @@ const CatalogModal = ({ isOpen, onClose, onSave, item, catalogLabel, hasSubtitul
 
         const payload = { nombre: form.nombre.trim() };
         if (hasSubtitulo) payload.subtitulo = form.subtitulo.trim();
+        if (hasFacultad) payload.facultad = { id: parseInt(form.id_facultad) };
 
         await onSave(payload);
     };
@@ -165,6 +179,37 @@ const CatalogModal = ({ isOpen, onClose, onSave, item, catalogLabel, hasSubtitul
                                 />
                                 {errors.subtitulo && (
                                     <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.subtitulo}</p>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Facultad — only for programas-academicos */}
+                        {hasFacultad && (
+                            <div>
+                                <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                                    Facultad <span className="text-red-500">*</span>
+                                </label>
+                                <select
+                                    id="modal-facultad"
+                                    value={form.id_facultad}
+                                    onChange={handleChange('id_facultad')}
+                                    disabled={isSaving}
+                                    className={`w-full px-4 py-2.5 text-sm rounded-xl border bg-white dark:bg-slate-800 text-slate-900 dark:text-white
+                                        transition-colors outline-none
+                                        focus:ring-2 focus:ring-red-400 focus:border-red-400
+                                        disabled:opacity-50 disabled:cursor-not-allowed
+                                        ${errors.id_facultad
+                                            ? 'border-red-400 dark:border-red-500'
+                                            : 'border-slate-200 dark:border-slate-700'
+                                        }`}
+                                >
+                                    <option value="" disabled>Selecciona una facultad...</option>
+                                    {facultades.map(fac => (
+                                        <option key={fac.id} value={fac.id}>{fac.nombre}</option>
+                                    ))}
+                                </select>
+                                {errors.id_facultad && (
+                                    <p className="mt-1.5 text-xs text-red-500 font-medium">{errors.id_facultad}</p>
                                 )}
                             </div>
                         )}
