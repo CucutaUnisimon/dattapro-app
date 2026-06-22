@@ -55,7 +55,7 @@ const Login = () => {
                 // Redirección condicional según el rol (insensible a mayúsculas/minúsculas)
                 if (roleToSave === 'ROLE_ADMIN' || roleToSave === 'ADMIN') {
                     navigate('/admin');
-                } else if (roleToSave === 'ROLE_PROFESOR' || roleToSave === 'PROFESOR') {
+                } else if (roleToSave === 'ROLE_PROFESOR' || roleToSave === 'PROFESOR' || roleToSave === 'ROLE_DIRECTIVO' || roleToSave === 'DIRECTIVO') {
                     navigate('/');
                 } else {
                     // Redirección por defecto para otros roles
