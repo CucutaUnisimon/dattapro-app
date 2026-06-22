@@ -4,7 +4,7 @@ import CreatableSelect from 'react-select/creatable';
 import { API_BASE_URL } from '../../config/api';
 
 const Step3 = () => {
-  const { register, control, formState: { errors } } = useFormContext();
+  const { register, control, watch, formState: { errors } } = useFormContext();
   const [apiCertificaciones, setApiCertificaciones] = useState([]);
 
   // Cargar certificaciones desde la API
@@ -205,6 +205,14 @@ const Step3 = () => {
       fontWeight: '500'
     })
   };
+
+  const maxCharsExperiencia = 5000;
+  const maxCharsProyectos = 5000;
+  const maxCharsPerfil = 5000;
+
+  const experienciaVal = watch('experienciaServicios') || '';
+  const proyectosVal = watch('descripcionProyectos') || '';
+  const perfilVal = watch('perfil') || '';
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -566,10 +574,22 @@ const Step3 = () => {
             <textarea
               rows="4"
               placeholder="Describe brevemente tus años de experiencia y roles principales..."
-              {...register('experienciaServicios', { required: 'La experiencia es requerida' })}
-              className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400 resize-none leading-relaxed shadow-sm"
+              {...register('experienciaServicios', {
+                required: 'La experiencia es requerida',
+                maxLength: { value: maxCharsExperiencia, message: `Máximo ${maxCharsExperiencia} caracteres` }
+              })}
+              className={`w-full px-6 py-5 bg-slate-50 border rounded-[2rem] focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-medium resize-none leading-relaxed shadow-sm ${experienciaVal.length > maxCharsExperiencia ? 'border-red-500 text-red-900 focus:border-red-500 focus:ring-red-500/20' : 'border-slate-200 text-slate-700 placeholder:text-slate-400'}`}
             ></textarea>
-            {errors.experienciaServicios && <span className="text-red-500 text-[11px] font-bold uppercase block ml-1">{errors.experienciaServicios.message}</span>}
+            <div className="flex justify-between items-center px-1">
+              {errors.experienciaServicios ? (
+                <span className="text-red-500 text-[11px] font-bold uppercase block">{errors.experienciaServicios.message}</span>
+              ) : (
+                <span />
+              )}
+              <span className={`text-[11px] font-bold ${experienciaVal.length > maxCharsExperiencia ? 'text-red-500' : 'text-slate-400'}`}>
+                {experienciaVal.length} / {maxCharsExperiencia}
+              </span>
+            </div>
           </div>
 
           {/* Tipos de Proyecto */}
@@ -627,10 +647,22 @@ const Step3 = () => {
             <textarea
               rows="4"
               placeholder="Describe los proyectos más relevantes en los que has participado o liderado..."
-              {...register('descripcionProyectos', { required: 'La descripción de proyectos es requerida' })}
-              className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400 resize-none leading-relaxed shadow-sm"
+              {...register('descripcionProyectos', {
+                required: 'La descripción de proyectos es requerida',
+                maxLength: { value: maxCharsProyectos, message: `Máximo ${maxCharsProyectos} caracteres` }
+              })}
+              className={`w-full px-6 py-5 bg-slate-50 border rounded-[2rem] focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-medium resize-none leading-relaxed shadow-sm ${proyectosVal.length > maxCharsProyectos ? 'border-red-500 text-red-900 focus:border-red-500 focus:ring-red-500/20' : 'border-slate-200 text-slate-700 placeholder:text-slate-400'}`}
             ></textarea>
-            {errors.descripcionProyectos && <span className="text-red-500 text-[11px] font-bold uppercase block ml-1">{errors.descripcionProyectos.message}</span>}
+            <div className="flex justify-between items-center px-1">
+              {errors.descripcionProyectos ? (
+                <span className="text-red-500 text-[11px] font-bold uppercase block">{errors.descripcionProyectos.message}</span>
+              ) : (
+                <span />
+              )}
+              <span className={`text-[11px] font-bold ${proyectosVal.length > maxCharsProyectos ? 'text-red-500' : 'text-slate-400'}`}>
+                {proyectosVal.length} / {maxCharsProyectos}
+              </span>
+            </div>
           </div>
 
           {/* Formulario de Experiencia Perfil */}
@@ -639,10 +671,22 @@ const Step3 = () => {
             <textarea
               rows="4"
               placeholder="Un párrafo introductorio sobre tu enfoque y visión..."
-              {...register('perfil', { required: 'El perfil profesional es requerido' })}
-              className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400 resize-none leading-relaxed shadow-sm"
+              {...register('perfil', {
+                required: 'El perfil profesional es requerido',
+                maxLength: { value: maxCharsPerfil, message: `Máximo ${maxCharsPerfil} caracteres` }
+              })}
+              className={`w-full px-6 py-5 bg-slate-50 border rounded-[2rem] focus:ring-4 focus:ring-primary/10 focus:border-primary focus:bg-white outline-none transition-all font-medium resize-none leading-relaxed shadow-sm ${perfilVal.length > maxCharsPerfil ? 'border-red-500 text-red-900 focus:border-red-500 focus:ring-red-500/20' : 'border-slate-200 text-slate-700 placeholder:text-slate-400'}`}
             ></textarea>
-            {errors.perfil && <span className="text-red-500 text-[11px] font-bold uppercase block ml-1">{errors.perfil.message}</span>}
+            <div className="flex justify-between items-center px-1">
+              {errors.perfil ? (
+                <span className="text-red-500 text-[11px] font-bold uppercase block">{errors.perfil.message}</span>
+              ) : (
+                <span />
+              )}
+              <span className={`text-[11px] font-bold ${perfilVal.length > maxCharsPerfil ? 'text-red-500' : 'text-slate-400'}`}>
+                {perfilVal.length} / {maxCharsPerfil}
+              </span>
+            </div>
           </div>
         </div>
       </section>
